@@ -1,0 +1,22 @@
+{
+  "name": "talks",
+  "type": "module",
+  "private": true,
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "list": "node scripts/list.mjs",
+    "dev": "node scripts/dev.mjs",
+    "export": "node scripts/export.mjs"
+  },
+  "dependencies": {
+    "@slidev/cli": "^52.16.0",
+    "@slidev/theme-default": "latest",
+    "@slidev/types": "^52.16.0",
+    "vue": "^3.5.33"
+  },
+  "devDependencies": {
+    "playwright-chromium": "^1.52.0"
+  }
+}

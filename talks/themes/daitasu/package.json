@@ -1,0 +1,14 @@
+{
+  "name": "slidev-theme-daitasu",
+  "version": "0.2.0",
+  "slidev": {
+    "colorSchema": "both",
+    "defaults": {
+      "fonts": {
+        "sans": "Noto Sans JP, Inter, sans-serif",
+        "mono": "Fira Code, monospace"
+      },
+      "transition": "slide-left"
+    }
+  }
+}

@@ -1,0 +1,196 @@
+/* ============================================
+   daitasu slide theme
+   - dark: black bg, white text, orange accent
+   - light: white bg, black text, blue accent
+   ============================================ */
+
+/* ---------- Dark mode (default) ---------- */
+:root {
+  --dt-bg: #000000;
+  --dt-bg-soft: #111111;
+  --dt-text: #ffffff;
+  --dt-text-muted: #a1a1aa;
+  --dt-accent: #f59e0b;
+  --dt-link: #22d3ee;
+  --dt-border: #27272a;
+  --dt-code-bg: #18181b;
+  font-size: 16px;
+}
+
+/* ---------- Light mode override ---------- */
+html.light {
+  --dt-bg: #ffffff;
+  --dt-bg-soft: #f5f7fa;
+  --dt-text: #1a1a1a;
+  --dt-text-muted: #6b7280;
+  --dt-accent: #4a90d9;
+  --dt-link: #4a90d9;
+  --dt-border: #e5e7eb;
+  --dt-code-bg: #f1f5f9;
+}
+
+/* ---------- Slide container background ---------- */
+.slide-content {
+  background: var(--dt-bg) !important;
+}
+
+/* ---------- Base layout ---------- */
+.slidev-layout {
+  padding: 2rem 3rem;
+  height: 100%;
+  color: var(--dt-text);
+  background: var(--dt-bg);
+}
+
+/* ---------- Typography ---------- */
+.slidev-layout h1 {
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.3;
+  color: var(--dt-text);
+  margin-bottom: 0.75rem;
+}
+
+.slidev-layout h2 {
+  font-weight: 600;
+  font-size: 1.4rem;
+  color: var(--dt-text);
+  margin-bottom: 0.5rem;
+}
+
+.slidev-layout h3 {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--dt-text-muted);
+}
+
+.slidev-layout p {
+  line-height: 1.75;
+  font-size: 1rem;
+  color: var(--dt-text);
+}
+
+.slidev-layout strong {
+  color: var(--dt-accent);
+  font-weight: 700;
+}
+
+.slidev-layout a {
+  color: var(--dt-link);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ---------- Lists ---------- */
+.slidev-layout ul,
+.slidev-layout ol {
+  line-height: 2;
+}
+
+.slidev-layout ul {
+  list-style: none;
+  padding-left: 1.2em;
+}
+
+.slidev-layout ul li {
+  position: relative;
+}
+
+.slidev-layout ul li::before {
+  content: "▸";
+  position: absolute;
+  left: -1.2em;
+  color: var(--dt-accent);
+  font-size: 1.4em;
+  bottom: -0.5rem;
+}
+
+/* ---------- Inline code ---------- */
+.slidev-layout code:not(pre code) {
+  background: var(--dt-code-bg);
+  border: 1px solid var(--dt-border);
+  border-radius: 4px;
+  padding: 0.15em 0.4em;
+  font-size: 0.88em;
+  color: var(--dt-accent);
+}
+
+/* ---------- Cover layout ---------- */
+.slidev-layout.cover {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 3rem 4rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.slidev-layout.cover h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  margin-bottom: 4.25rem;
+}
+
+.slidev-layout.cover p {
+  color: var(--dt-text-muted);
+  font-size: 1.1rem;
+}
+
+/* ---------- Section layout ---------- */
+.slidev-layout.section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.slidev-layout.section h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+}
+
+/* ---------- Center layout ---------- */
+.slidev-layout.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.slidev-layout.center h1 {
+  font-size: 2rem;
+  font-weight: 800;
+}
+
+/* ---------- Intro layout ---------- */
+.slidev-layout.intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+  padding: 2.5rem 4rem;
+}
+
+/* ---------- Light mode title decoration ---------- */
+html.light .slidev-layout h1 {
+  position: relative;
+}
+
+html.light .slidev-layout.default h1::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 3px;
+  margin-top: 0.4rem;
+  background: linear-gradient(90deg, var(--dt-accent) 0%, transparent 80%);
+  border-radius: 2px;
+}
+
+/* ---------- Utility: accent text ---------- */
+.accent {
+  color: var(--dt-accent) !important;
+  font-weight: 700;
+}
