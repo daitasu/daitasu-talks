@@ -94,15 +94,29 @@ html.light {
 
 .slidev-layout ul li {
   position: relative;
+  margin-top: 12px;
 }
+
+.slidev-layout ul ul li {
+  position: relative;
+  margin-top: 2px;
+}
+
 
 .slidev-layout ul li::before {
   content: "▸";
   position: absolute;
   left: -1.2em;
+  top: 0;
   color: var(--dt-accent);
-  font-size: 1.4em;
-  bottom: -0.5rem;
+  font-size: 1.1em;
+  line-height: 2;
+}
+
+.slidev-layout ul ul li::before {
+  content: "▹";
+  color: var(--dt-text-muted);
+  font-size: 1em;
 }
 
 /* ---------- Inline code ---------- */

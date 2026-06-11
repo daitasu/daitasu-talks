@@ -17,10 +17,13 @@ export default {
       bold: "600",
     },
     fontSize: {
+      "8": ["8px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
+      "14": ["14px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
       "16": ["16px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
       "20": ["20px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
       "24": ["24px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
       "32": ["32px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
+      "40": ["40px", { lineHeight: "1.6", letterSpacing: "0.02em" }],
     },
     spacing: {
       "0": "0px",

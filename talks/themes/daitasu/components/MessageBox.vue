@@ -12,7 +12,7 @@
   margin-right: auto;
   padding: 1.25rem 1.5rem;
   border-radius: 8px;
-  background: #fde68a;
+  background: #fde3f0;
   color: #1a1a1a;
   font-weight: 700;
   font-size: 1.2rem;

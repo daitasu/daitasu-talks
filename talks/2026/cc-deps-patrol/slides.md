@@ -11,16 +11,14 @@ dino: /dino_cover_transparent.png
 
 # Semantic Version 単位で戦略を柔軟に変えて、パッケージアップデートを自動化する
 
-::footer::
-
-<div class="text-xl color-gray">2026.06.12 多摩.dev #3 〜半年記念回〜 @daitasu</div>
+<div class="mt-8 text-xl color-gray">2026.06.12 多摩.dev #3 〜半年記念回〜 @daitasu</div>
 
 ---
 layout: intro
 ---
 
 <div class="flex items-center gap-12">
-  <div class="">
+  <div>
     <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" />
     <div class="mt-2 flex gap-2 items-end w-full">
       <div class="flex flex-col items-center">
@@ -77,54 +75,60 @@ layout: intro
 layout: section
 ---
 
-# dependabot の滞納問題
+# dependabotのPR<br>溜まっていませんか？
 
 ---
 
-# dependabot PR、溜まってませんか？
+# パッケージアップデートの滞留問題
 
 <div class="mt-6 text-lg">
 
-- dependabot が PR を作ってくれる → **誰もレビューしない**
-- 放置すると**バージョン差異が肥大化**
-- いざ上げようとすると**破壊的変更が積み重なって大変**
+- dependabot が PR を作ってくれる → **しかし、レビュー時間がない**
+  - 運用の仕組みの整備の形骸化、誰かしらの勇姿で解決してしまう
+  - うまく回せても、対応コストが大きい
+- 放置するほどに、**バージョン差異が肥大化**
+  - 重い腰が着実に重たくなり、負債になってしまう
+- 脆弱性の露出、LTS切れの危険性
 
 </div>
-
-<MessageBox>開発生産性の低下に直結する</MessageBox>
-
----
-
-# なぜ人間がレビューしないのか
-
-<div class="mt-6 text-lg">
-
-- ビジネス機能の開発が優先される
-- dependabot PR は**数が多い**
-- 「ライブラリのアップデート内容を読む」のが**面倒**
-- 結果、**後回しにされ続ける**
-
-</div>
-
----
-
-# AI で解決できるのでは？
-
-<div class="mt-6 text-lg">
-
-- dependabot PR は**ビジネスロジックを含まない**
-- 既存コードとライブラリ情報の分析で対応可能
-- AIエージェントが**レビュー・マージ判断**を代行できる
-
-</div>
-
-<MessageBox>cc-deps-patrol を作った</MessageBox>
 
 ---
 layout: section
 ---
 
-# cc-deps-patrol
+# AIでなんとかならないの？
+
+
+---
+
+# AIレビューの問題点
+
+<div class="mt-6 text-lg">
+
+- dependabot はビジネスロジックを含むものではない
+  - AI レビューとの相性はいいはず
+- しかし昨今、**サプライチェーン侵害**が多発している
+  - 変更差分がOKでも、安易に信頼してマージできるかが分からない
+- メジャーリリースなど、AIで見たいもの、人が必ず見たいものなど、レベルによって**求める段階**が違う
+
+</div>
+
+---
+layout: section
+---
+
+# 状況に合わせて、AIのレビュー戦略をさくっと切り替えられたらいいのに 🤔
+
+---
+layout: two-cols
+---
+
+::left::
+<img :src="'/capture_github.png'" class="mt-2 rounded-1" />
+
+::right::
+
+<div class="flex items-center justify-center h-full w-full text-40">action つくった</div>
 
 ---
 
@@ -133,7 +137,7 @@ layout: section
 <div class="mt-6 text-lg">
 
 - Claude Code Action で dependabot PR を**パトロール**する GitHub Action
-- Semantic Version に応じて**4つの戦略**を使い分け
+- Semantic Version に応じて**4つの戦略**を使い分けできる
 - npm provenance チェック + AI レビューで**セキュリティも考慮**
 - 🔗 [github.com/daitasu/cc-deps-patrol](https://github.com/daitasu/cc-deps-patrol)
 
@@ -141,14 +145,27 @@ layout: section
 
 ---
 
-# 従来の dependabot の対応フロー
+# 従来の dependabot がマージされるまで
 
 <img :src="'/flow_original.png'" class="mt-6 rounded-lg w-2/3 mx-auto" />
 
 <div class="mt-6">
 
 - dependabot が PR を作成してからマージされるまでの一般的な流れ
-- <strong>人間</strong>がレビューし、マージまで持っていく
+- **人間**がレビューし、マージまで持っていく
+- この**レビューがボトルネック**となり、停滞要因となってしまう
+
+</div>
+
+---
+
+# レビューで抑えたい観点
+
+<div class="mt-6 text-lg">
+
+- セキュリティの危険性を担保する(**信頼できる開発元**かどうかを確認する)
+- バージョンアップデートに**クリティカル**な影響がないか
+- 人が見たい重要な変更は、**自動マージは決してしない**
 
 </div>
 
@@ -156,20 +173,30 @@ layout: section
 layout: section
 ---
 
-# このフローを4つの戦略に分けて<br>AIの対応範囲を決めていく
+# 4つの戦略に分けて<br>AIの対応範囲を決めていく
 
 ---
+layout: two-cols
+---
 
-# 4つのマージ戦略
+# Semantic Version レベルで4つの戦略を選べるように
 
-<img :src="'/strategy_overview.png'" class="mt-2 rounded-lg w-2/3 mx-auto" />
+::left::
 
-<div class="mt-6 text-sm">
+<div class="text-14">
 
-- バージョンの影響度に応じて、自動化の度合いを**段階的に変える**
-- patch → `verify-and-merge` ／ minor → `review-and-merge` ／ major → `review-only`
+- マージ戦略は4つのストラテジーから選択可能
+   - `review-only` ... AIがレビューコメントのみ残す(マージはしない)
+   - `review-and-merge` ... AIがレビューを行い、問題ないと判断した場合は自動マージ
+   - `verify-and-merge` ... 信頼できる開発元かどうかのチェックのみ行い、問題なければ自動マージ
+   - `auto-merge` ... AIレビュー、開発元チェックは行わず、自動マージ(非推奨)
+- 対応Agent は Claude Code
 
 </div>
+
+::right::
+
+<img :src="'/strategy_overview.png'" class="mt-4 rounded-lg mx-auto" />
 
 ---
 
@@ -179,25 +206,12 @@ layout: section
 
 <div class="mt-6">
 
-- AI レビューは**実施しない**（コスト削減）。開発元の**信頼性チェックのみ**で判断
-- 確認項目：**npm provenance**（由来検証）／ **install スクリプト**の有無 ／ **リリース経過日数**
+- AI レビューは**実施しない**（トークン削減）。開発元の**信頼性チェックのみ**で判断
+- 確認項目：
+  - **npm provenance**（由来検証）／ **install スクリプト**の有無 ／ **リリース経過日数**
+  - 後で話しますが、**これで安心**というわけではないです
 
 </div>
-
----
-
-# ⚠️ verify-and-merge の限界
-
-<div class="mt-6 text-lg">
-
-- npm provenance は「**由来の透明性**」を証明するだけ
-  - メンテナ認証情報が奪取された場合は防げない（例：2025年9月の chalk/debug 汚染）
-- install スクリプト検査は**回避手法**に対応しきれない
-  - binding.gyp + node-gyp 経由での任意コード実行 等
-
-</div>
-
-<MessageBox>過信禁物。最低限のスクリーニングに過ぎない</MessageBox>
 
 ---
 
@@ -208,7 +222,8 @@ layout: section
 <div class="mt-6">
 
 - patch より影響範囲が広いため、**AI の目を通してから**マージする
-- npm provenance 前段チェック → AI がアップデート影響をレビュー → 問題なければ **Approve + 自動マージ**
+- npm provenance 前段チェック → AI がアップデート影響をレビュー
+  - 問題なければ **Approve + 自動マージ**
 
 </div>
 
@@ -226,14 +241,8 @@ layout: section
 </div>
 
 ---
-layout: section
----
 
-# 使い方
-
----
-
-# GitHub Actions の設定
+# 使用例
 
 ```yaml
 - uses: daitasu/cc-deps-patrol@v1
@@ -241,18 +250,74 @@ layout: section
     github-token: ${{ steps.app-token.outputs.token }}
     anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
     claude-github-token: ${{ steps.app-token.outputs.token }}
-    patch-strategy: "verify-and-merge"
-    minor-strategy: "review-and-merge"
-    major-strategy: "review-only"
-    reviewer-login: "deps-keeper"
-    review-language: "ja"
+    patch-strategy: "verify-and-merge"     # patch バージョンの戦略
+        minor-strategy: "review-and-merge" # minor バージョンの戦略
+        major-strategy: "review-only"      # major バージョンの戦略
+        reviewer-login: "deps-keeper"      # github app の名前
+        review-language: "ja"              # レビューコメントの言語
 ```
 
 <div class="mt-4 text-base text-gray-400">
 
-戦略はバージョン種別ごとに柔軟に組み替え可能
+- 戦略はバージョン種別ごとに柔軟に組み替え可能
 
 </div>
+
+<style>
+.slidev-code,
+.slidev-code * {
+  font-size: 12px !important;
+  line-height: 1.5 !important;
+}
+</style>
+
+---
+layout: two-cols
+---
+
+# 他のパターン
+
+::left::
+
+<div class="text-16 mb-3">AIレビュー不要、開発元チェックのみ</div>
+
+```yaml
+- uses: daitasu/cc-deps-patrol@v1
+  with:
+    github-token: ${{ steps.app-token.outputs.token }}
+    patch-strategy: "verify-and-merge"
+    minor-strategy: "verify-and-merge"
+    major-strategy: "review-only"
+    anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }} # メジャーのみで利用
+    claude-github-token: ${{ steps.app-token.outputs.token }}
+```
+
+
+
+::right::
+
+<div class="text-16 mb-3">全レベルでAIレビューのみ(マージしない)</div>
+
+```yaml
+- uses: daitasu/cc-deps-patrol@v1
+  with:
+    github-token: ${{ steps.app-token.outputs.token }}
+    anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
+    claude-github-token: ${{ steps.app-token.outputs.token }}
+    patch-strategy: "review-and-merge"
+    minor-strategy: "review-and-merge"
+    major-strategy: "review-and-merge"
+    reviewer-login: "my-bot[bot]"
+```
+
+
+<style>
+.slidev-code,
+.slidev-code * {
+  font-size: 9px !important;
+  line-height: 1.5 !important;
+}
+</style>
 
 ---
 layout: section
@@ -289,39 +354,69 @@ AI のレビューコメントが残り、人間が最終判断する
 
 ---
 
-# 導入してどう変わったか
+# 導入後の変化
 
 <div class="mt-6 text-lg">
 
-- **滞っていた dependabot PR が消化**されるようになった
+- 個人開発に入れてみた
+  - **滞っていた dependabot PR が消化**されるようになった
 - `review-only` のコメントだけでも**調査の支援**になる
 - ケースに応じて**戦略を柔軟に組み替え**られる
 
 </div>
 
 ---
+layout: section
+---
 
-# 今後の展望
+# 👍️
+
+---
+layout: section
+---
+
+# ⚠️
+
+---
+
+# 今回の信頼元チェックは完璧ではない
 
 <div class="mt-6 text-lg">
 
-- Claude Code Action **以外のエージェント**対応
-- prompt の**外部カスタマイズ**機能
-- チーム規模やポリシーに応じた**戦略テンプレート**
+- 今回は信頼できる開発元のチェックとして、下記を検出した
+  - **npm provenance**（由来検証）／ **install スクリプト**の有無 ／ **リリース経過日数**
+- npm provenance は「**由来の透明性**」を証明するだけ
+  - メンテナ認証情報が奪取された場合は防げない（例：🔗[2025年9月の chalk/debug 汚染](https://unit42.paloaltonetworks.com/monitoring-npm-supply-chain-attacks/)）
+- install スクリプト検査は**回避手法**に対応しきれない
+  - 🔗[binding.gyp + node-gyp 経由での任意コード実行されるケース](https://snyk.io/jp/blog/node-gyp-supply-chain-compromise-self-propagating-npm-worm-binding-gyp/)も観測されている
 
 </div>
 
+<MessageBox>過信禁物。最低限のスクリーニングに過ぎない</MessageBox>
+
 ---
-layout: center
+layout: two-cols
 ---
 
 # まとめ
 
-<div class="text-left mt-8 space-y-5 text-xl">
+::left::
+
+<div class="text-left mt-5 space-y-2 text-16">
 
 - dependabot PR の滞納は**AI で解決できる**
 - Semantic Version ごとに**戦略を分けるのが肝**
 - セキュリティは**過信せず、最低限のスクリーニング**
 - `review-only` だけでも十分**開発体験が改善**する
 
+</div>
+
+::right::
+
+zenn にもまとめています！
+
+<img :src="'/zenn.png'" class="mt-2" />
+
+<div class="mt-3">
+🔗 <a href="https://zenn.dev/dev_commune/articles/85e6cf7049a4ce" style="font-size: 12px">https://zenn.dev/dev_commune/articles/85e6cf7049a4ce</a>
 </div>
