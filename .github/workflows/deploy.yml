@@ -37,7 +37,7 @@ jobs:
 
       - name: Build cc-deps-patrol
         working-directory: talks/2026/cc-deps-patrol
-        run: npx slidev build --base /slidev/ --out dist
+        run: npx slidev build --base /slidev/ --router-mode hash --out dist
 
       - uses: actions/configure-pages@v5
 
