@@ -40,6 +40,31 @@ if (talks.length === 0) {
   process.exit(0);
 }
 
+const exportTalk = (selected) => {
+  const outDir = join(TALKS_DIR, "dist", `${selected.year}-${selected.path}`);
+  mkdirSync(outDir, { recursive: true });
+
+  console.log(`\nExporting: ${selected.title}\n`);
+  execSync(
+    `npx slidev export ${join(selected.dir, "slides.md")} --output ${join(outDir, "slides.pdf")}`,
+    { stdio: "inherit", cwd: TALKS_DIR },
+  );
+  console.log(`\nExported to: ${outDir}/slides.pdf`);
+};
+
+const arg = process.argv[2];
+if (arg) {
+  const match = talks.find(
+    (t) => `${t.year}/${t.path}` === arg || t.path === arg,
+  );
+  if (match) {
+    exportTalk(match);
+    process.exit(0);
+  }
+  console.log(`Talk "${arg}" not found.`);
+  process.exit(1);
+}
+
 console.log("\nSelect a talk to export:\n");
 talks.forEach((talk, i) => {
   console.log(`  [${i + 1}] ${talk.year}/${talk.path} - ${talk.title}`);
@@ -54,14 +79,5 @@ rl.question("Enter number: ", (answer) => {
     console.log("Invalid selection.");
     process.exit(1);
   }
-  const selected = talks[index];
-  const outDir = join(TALKS_DIR, "dist", `${selected.year}-${selected.path}`);
-  mkdirSync(outDir, { recursive: true });
-
-  console.log(`\nExporting: ${selected.title}\n`);
-  execSync(
-    `npx slidev export ${join(selected.dir, "slides.md")} --output ${join(outDir, "slides.pdf")}`,
-    { stdio: "inherit", cwd: TALKS_DIR },
-  );
-  console.log(`\nExported to: ${outDir}/slides.pdf`);
+  exportTalk(talks[index]);
 });

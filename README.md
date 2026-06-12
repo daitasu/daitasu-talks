@@ -4,17 +4,24 @@
 
 ## 使い方
 
+タスクランナーに [just](https://github.com/casey/just) を利用。未インストールなら `brew install just`。
+
 ```bash
 pnpm install
 
+# レシピ一覧を表示
+just
+
 # トーク一覧を表示
-pnpm list
+just list
 
-# 開発サーバー起動（対話式で選択）
-pnpm dev
+# 開発サーバー起動（引数なしで対話式、SLUG 指定で直起動）
+just dev
+just dev sample
 
-# PDF エクスポート
-pnpm export
+# PDF エクスポート（引数なしで対話式、SLUG 指定で直エクスポート）
+just pdf
+just pdf sample
 ```
 
 ## 構成
@@ -32,17 +39,26 @@ talks/
 ## 新しいトークを追加する
 
 ```bash
-mkdir -p talks/2026/my-talk
+# 雛形作成 → そのまま dev サーバーを起動
+just new my-talk "タイトル" 2026-07-01 "イベント名"
+
+# 雛形のみ作成
+just scaffold my-talk "タイトル" 2026-07-01 "イベント名"
+
+# 年を指定する場合は最後に渡す（デフォルトは 2026）
+just new my-talk "タイトル" 2027-01-01 "イベント名" 2027
 ```
 
-`talks/2026/my-talk/slides.md` を作成し、frontmatter にテーマとメタデータを設定：
+`talks/<year>/<slug>/slides.md` が以下の frontmatter で生成される：
 
 ```yaml
 ---
 theme: ../../themes/daitasu
+colorSchema: light
 title: タイトル
 talk:
-  date: "2026-01-01"
+  date: "2026-07-01"
   event: "イベント名"
+layout: cover
 ---
 ```

@@ -40,6 +40,7 @@ html.light {
   height: 100%;
   color: var(--dt-text);
   background: var(--dt-bg);
+  font-size: 16px;
 }
 
 /* ---------- Typography ---------- */
@@ -66,7 +67,7 @@ html.light {
 
 .slidev-layout p {
   line-height: 1.75;
-  font-size: 1rem;
+  font-size: inherit;
   color: var(--dt-text);
 }
 

@@ -250,11 +250,11 @@ layout: two-cols
     github-token: ${{ steps.app-token.outputs.token }}
     anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
     claude-github-token: ${{ steps.app-token.outputs.token }}
-    patch-strategy: "verify-and-merge"     # patch バージョンの戦略
-        minor-strategy: "review-and-merge" # minor バージョンの戦略
-        major-strategy: "review-only"      # major バージョンの戦略
-        reviewer-login: "deps-keeper"      # github app の名前
-        review-language: "ja"              # レビューコメントの言語
+    patch-strategy: "verify-and-merge"   # patch バージョンの戦略
+    minor-strategy: "review-and-merge"   # minor バージョンの戦略
+    major-strategy: "review-only"        # major バージョンの戦略
+    reviewer-login: "deps-keeper"        # github app の名前
+    review-language: "ja"                # レビューコメントの言語
 ```
 
 <div class="mt-4 text-base text-gray-400">
@@ -267,54 +267,6 @@ layout: two-cols
 .slidev-code,
 .slidev-code * {
   font-size: 12px !important;
-  line-height: 1.5 !important;
-}
-</style>
-
----
-layout: two-cols
----
-
-# 他のパターン
-
-::left::
-
-<div class="text-16 mb-3">AIレビュー不要、開発元チェックのみ</div>
-
-```yaml
-- uses: daitasu/cc-deps-patrol@v1
-  with:
-    github-token: ${{ steps.app-token.outputs.token }}
-    patch-strategy: "verify-and-merge"
-    minor-strategy: "verify-and-merge"
-    major-strategy: "review-only"
-    anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }} # メジャーのみで利用
-    claude-github-token: ${{ steps.app-token.outputs.token }}
-```
-
-
-
-::right::
-
-<div class="text-16 mb-3">全レベルでAIレビューのみ(マージしない)</div>
-
-```yaml
-- uses: daitasu/cc-deps-patrol@v1
-  with:
-    github-token: ${{ steps.app-token.outputs.token }}
-    anthropic-api-key: ${{ secrets.ANTHROPIC_API_KEY }}
-    claude-github-token: ${{ steps.app-token.outputs.token }}
-    patch-strategy: "review-and-merge"
-    minor-strategy: "review-and-merge"
-    major-strategy: "review-and-merge"
-    reviewer-login: "my-bot[bot]"
-```
-
-
-<style>
-.slidev-code,
-.slidev-code * {
-  font-size: 9px !important;
   line-height: 1.5 !important;
 }
 </style>
@@ -341,12 +293,18 @@ AI がレビュー → Approve → 自動マージまで完了
 </div>
 
 ---
+layout: two-cols
+---
 
 # 導入結果: review-only（Major）
 
-<img src="https://static.zenn.studio/user-upload/e04584c8989b-20260609.png" class="mt-2 rounded-lg w-full" />
+::left::
 
-<div class="mt-4 text-base text-gray-400">
+<img src="https://static.zenn.studio/user-upload/e04584c8989b-20260609.png" class="mt-2 rounded-lg h-full" />
+
+::right::
+
+<div class="flex h-full justify-center items-center">
 
 AI のレビューコメントが残り、人間が最終判断する
 
