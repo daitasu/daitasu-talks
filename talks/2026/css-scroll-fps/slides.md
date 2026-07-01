@@ -52,10 +52,10 @@ layout: intro
 
 <div class="mt-8 text-xl">
 
-- 「FPS視点スクロールアクション」って**何？**
-- 昔は JS でやっていた。**今は CSS だけでいける**
-- キーになる **3つの CSS 技術**（scroll / 3D / sticky）
-- 実装のハマりどころと、**使いどころ・限界**
+- **① Scroll-driven Animations** … スクロール量で `@keyframes` を進める
+  - `animation-timeline: scroll()` / `view()`
+- **② 3D Transform** … 奥行きのある空間をつくる
+  - `perspective` / `transform-style: preserve-3d` / `translateZ`
 
 </div>
 
@@ -63,7 +63,128 @@ layout: intro
 layout: section
 ---
 
-# スクロールしただけで<br>世界の中を歩けたら？
+# animation-timeline
+
+---
+
+# animation-timeline とは
+
+<div class="mt-6 text-lg">
+
+- CSSアニメーションの進行を制御するためのtimeline を構築するCSSプロパティ
+- スクロール駆動アニメーションをCSSのみで実現できる
+- スクロールできるコンテナー内のスクロール位置の始点〜終点まででアニメーションを作成する
+
+```
+@keyframes scroll-scale {
+  from { scale: 0.5 1; }
+  to { scale: 1 1; }
+}
+
+.container {
+  animation: scroll-scale linear;
+  animation-timeline: scroll();
+}
+```
+
+</div>
+
+---
+
+# Sample: animation-timeline: view()
+
+<div class="mt-6 text-lg">
+
+- xxx
+- xxx
+
+以下、2列にしたい。
+
+左
+
+```
+簡易なコード
+```
+
+右
+
+iframe: https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/
+
+</div>
+
+---
+
+# Sample: animation-timeline: scroll()
+
+<div class="mt-6 text-lg">
+
+- xxx
+- xxx
+
+以下、2列にしたい。
+
+左
+
+```
+簡易なコード
+```
+
+右
+
+iframe: https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/
+
+</div>
+
+---
+layout: section
+---
+
+# 3D Transform
+
+---
+
+
+# 3D Transformとは?
+
+- xxx
+- xxx
+- xxx
+
+---
+
+
+# Sample: 3D Transformで立方体をつくる
+
+<div class="mt-6 text-lg">
+
+- xxx
+- xxx
+
+以下、2列にしたい。
+
+左
+
+```
+簡易なコード
+```
+
+右
+
+iframe: https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/
+
+</div>
+
+---
+layout: section
+---
+
+# 🤔
+
+---
+layout: section
+---
+
+# CSS だけでFPS視点を作れるのでは？　🙄
 
 ---
 
@@ -80,201 +201,34 @@ layout: section
 </div>
 
 ---
-layout: section
+
+# やってみた
+
+コード諸々
+
 ---
 
-# それ、JS 要る？🤔
+# Sample： 襲いかかる恐竜
 
----
+iframe: https://daitasu.github.io/css-scroll-fps/patterns/005-fps-flythrough/
 
-# 従来は JS でやっていた
-
-<div class="mt-6 text-lg">
-
-- `scroll` イベントで **スクロール量を取得** → `transform` を毎フレーム書き換え
-  - `requestAnimationFrame` でスロットリング、計算量との戦い
-- メインスレッドで動くので、**カクつき（jank）が出やすい**
-- 状態管理・破棄処理・ライブラリ依存で、**コードが太る**
-
-</div>
-
-<MessageBox>スクロール駆動アニメーションなら、これ全部 CSS に寄せられる</MessageBox>
 
 ---
 layout: section
 ---
 
-# CSS Scroll-driven<br>Animations の時代
+# CSS だけで、FPS視点は実現できる
 
----
-
-# キーになる 3つの CSS 技術
-
-<div class="mt-6 text-lg">
-
-- **① Scroll-driven Animations** … スクロール量で `@keyframes` を進める
-  - `animation-timeline: scroll()` / `view()`
-- **② 3D Transform** … 奥行きのある空間をつくる
-  - `perspective` / `transform-style: preserve-3d` / `translateZ`
-- **③ position: sticky** … ビューポートを固定し、背後で長くスクロールさせる
-
-</div>
-
----
-
-# ① スクロールで keyframes を進める
-
-```css
-@keyframes advance {
-  from { transform: translateZ(0); }
-  to   { transform: translateZ(-3000px); }
-}
-
-.camera {
-  animation: advance linear both;
-  /* 時間ではなく「スクロール量」でアニメを進める */
-  animation-timeline: scroll(root block);
-}
-```
-
-<div class="mt-4 text-base color-gray">
-
-- `scroll(root block)` = ルートスクローラの縦スクロール進捗（0〜100%）に連動
-- JS のスクロールイベントは **一切書かない**
-
-</div>
-
-<style>
-.slidev-code, .slidev-code * { font-size: 13px !important; line-height: 1.6 !important; }
-</style>
-
----
-
-# ② perspective と preserve-3d で空間をつくる
-
-```css
-.scene {
-  perspective: 400px;            /* 焦点距離。小さいほど広角＝没入感 */
-  overflow: hidden;
-}
-
-.world {
-  transform-style: preserve-3d;  /* 子を 3D 空間に配置する */
-}
-
-/* 通路の壁を左右に立てる */
-.wall-left  { transform: rotateY( 90deg) translateZ(300px); }
-.wall-right { transform: rotateY(-90deg) translateZ(300px); }
-```
-
-<div class="mt-4 text-base color-gray">
-
-- `perspective` がカメラの画角、`preserve-3d` が「空間として扱う」宣言
-
-</div>
-
-<style>
-.slidev-code, .slidev-code * { font-size: 13px !important; line-height: 1.6 !important; }
-</style>
-
----
-
-# ③ sticky で視点を固定して前進＆首振り
-
-```css
-.track    { height: 500vh; }        /* スクロール距離を稼ぐ */
-.viewport {
-  position: sticky; top: 0;
-  height: 100vh;
-  perspective: 400px;
-}
-
-@keyframes walk {
-  0%   { transform: translateZ(0)      rotateY(0deg); }
-  50%  { transform: translateZ(1500px) rotateY(-20deg); }  /* 曲がり角 */
-  100% { transform: translateZ(3000px) rotateY(10deg); }
-}
-
-.world {
-  transform-style: preserve-3d;
-  animation: walk linear both;
-  animation-timeline: scroll(root block);
-}
-```
-
-<div class="mt-3 text-base color-gray">
-
-- 距離・角度・符号は実際の見た目に合わせて **要調整**（ここが演出の勘所）
-
-</div>
-
-<style>
-.slidev-code, .slidev-code * { font-size: 12px !important; line-height: 1.5 !important; }
-</style>
-
----
-layout: section
----
-
-# デモ
-
-<div class="mt-6 text-xl color-gray">（ここでライブデモ / CodePen リンク）</div>
-
----
-
-# 実装のハマりどころ
-
-<div class="mt-6 text-lg">
-
-- **ブラウザ対応**：scroll-driven animations は新しめ。未対応環境の fallback を用意
-- **クリッピング**：`overflow` や `will-change` の指定で 3D の描画順・はみ出しが崩れる
-- **パフォーマンス**：`transform` / `opacity` に寄せてコンポジタで動かす
-- `scroll()` の対象スクローラ（`root` / `nearest` / 名前付き `scroll-timeline`）の取り違え
-
-</div>
-
----
-layout: section
----
-
-# ⚠️ ええことばかりやない
-
----
-
-# 使いどころと限界
-
-<div class="mt-6 text-lg">
-
-- **酔い・アクセシビリティ**：`prefers-reduced-motion` で必ずアニメを止める
-  - `@media (prefers-reduced-motion: reduce) { .world { animation: none; } }`
-- スクロール = 唯一の操作。**情報を読ませたいページには不向き**
-- 凝るほど「作品」寄りになる。**目的（体験 or 伝達）を見失わない**
-
-</div>
-
-<MessageBox>CSS だけで没入体験は作れる。あとは「どこで使うか」</MessageBox>
-
----
-layout: two-cols
 ---
 
 # まとめ
 
-::left::
-
-<div class="text-left mt-5 space-y-2 text-16">
+<div class="mt-6 text-lg">
 
 - スクロール = カメラ操作の FPS 体験が **CSS だけ**で作れる
 - 肝は **scroll-driven animation × 3D transform × sticky** の合わせ技
 - JS のスクロール処理を捨てて、**コンポジタ任せ**で滑らかに
-- 演出力は高いが、**酔い対策と使いどころ**はセットで考える
 
 </div>
 
-::right::
-
-<div class="flex h-full justify-center items-center text-lg color-gray">
-
-（デモ / 記事リンクをここに）
-
-</div>
+<MessageBox>酔いに注意</MessageBox>
