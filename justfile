@@ -50,4 +50,7 @@ scaffold slug title date event year=YEAR:
 
 # 新しいトークを作成して dev サーバーを起動（例: just new my-talk "タイトル" 2026-07-01 "イベント名"）
 new slug title date event year=YEAR: (scaffold slug title date event year)
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -d node_modules ] || pnpm install
     just dev {{ slug }}
