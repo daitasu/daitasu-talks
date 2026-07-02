@@ -5,13 +5,34 @@ title: CSS だけでFPS視点スクロールアクションを実現する
 talk:
   date: "2026-07-10"
   event: "Tamagawa.dev #2"
+fonts:
+  sans: Zen Kaku Gothic New
+  mono: JetBrains Mono
+  weights: "300,400,500,700"
 layout: cover
 dino: false
 ---
 
-# CSS だけでFPS視点スクロールアクションを実現する
 
-<div class="mt-8 text-xl color-gray">2026.07.10 Tamagawa.dev #2 @daitasu</div>
+# CSS だけで<br>FPS視点スクロールアクションを実現する
+
+<div>
+  <span class="cover-eyebrow">Tamagawa.dev #2 ・ 2026.07.10</span>
+  <span class="cover-by">@daitasu</span>
+</div>
+ 
+<style>
+/* deck-local branding font (dark decks untouched) */
+.slidev-layout {
+  font-family: "Zen Kaku Gothic New", "IBM Plex Sans", "Hiragino Sans", sans-serif;
+}
+.slidev-layout code,
+.slidev-layout pre,
+.slidev-layout .slidev-code,
+.slidev-layout .slidev-code * {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace !important;
+}
+</style>
 
 ---
 layout: intro
@@ -19,7 +40,7 @@ layout: intro
 
 <div class="flex items-center gap-12">
   <div>
-    <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" />
+    <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" style="box-shadow: 0 18px 44px -18px rgba(30, 64, 128, 0.45); background: #fff;" />
     <div class="mt-3 flex flex-col items-center">
       <p>X</p>
       <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
@@ -119,7 +140,7 @@ layout: two-cols
 
 ::right::
 
-<iframe src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" class="w-full h-[400px] mt-2 rounded-lg border border-gray-200"></iframe>
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" height="380px" class="mt-2" />
 
 ---
 layout: two-cols
@@ -153,7 +174,7 @@ layout: two-cols
 
 ::right::
 
-<iframe src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" class="w-full h-[400px] mt-2 rounded-lg border border-gray-200"></iframe>
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="380px" class="mt-2" />
 
 ---
 layout: section
@@ -207,7 +228,7 @@ layout: two-cols
 
 ::right::
 
-<iframe src="https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/" class="w-full h-400px mt-2 rounded-lg border border-gray-200"></iframe>
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/" height="380px" class="mt-2" />
 
 ---
 layout: section
@@ -272,7 +293,9 @@ layout: default
 
 # Sample: 襲いかかる恐竜
 
-<iframe src="https://daitasu.github.io/css-scroll-fps/patterns/005-fps-flythrough/" class="w-full h-400px mt-2 rounded-lg border border-gray-200"></iframe>
+<div class="max-w-4xl mx-auto">
+  <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/005-fps-flythrough/" height="380px" class="mt-2" />
+</div>
 
 ---
 layout: section

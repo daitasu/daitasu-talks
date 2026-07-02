@@ -209,3 +209,71 @@ html.light .slidev-layout.default h1::after {
   color: var(--dt-accent) !important;
   font-weight: 700;
 }
+
+/* ============================================
+   Branding polish (light mode only)
+   dark decks are untouched (guarded by html.light)
+   ============================================ */
+
+/* Cover: soft ambient accent glow behind the title */
+html.light .slidev-layout.cover::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(760px 460px at 90% -14%, rgba(74, 144, 217, 0.16), transparent 62%),
+    radial-gradient(620px 420px at -12% 114%, rgba(74, 144, 217, 0.09), transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+html.light .slidev-layout.cover > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Cover: eyebrow tag / subtitle / byline */
+html.light .slidev-layout.cover h1 {
+  margin-bottom: 0;
+  line-height: 1.18;
+}
+.cover-eyebrow {
+  display: inline-block;
+  align-self: flex-start;
+  padding: 6px 16px;
+  margin-top: 1.75rem;
+  border-radius: 999px;
+  background: rgba(74, 144, 217, 0.12);
+  color: var(--dt-accent);
+  font-weight: 500;
+  font-size: 0.85rem;
+  letter-spacing: 0.14em;
+}
+.cover-sub {
+  margin-top: 1.5rem;
+  font-size: 1.35rem;
+  font-weight: 400;
+  color: var(--dt-text-muted);
+}
+.cover-by {
+  margin-left: 32px;
+  font-size: 1.05rem;
+  letter-spacing: 0.06em;
+  color: var(--dt-text-muted);
+}
+
+/* Code blocks: lift them off the page with a soft, blue-tinted shadow */
+html.light .slidev-code {
+  border-radius: 12px !important;
+  padding: 16px 18px !important;
+  background: #f6f8fc !important;
+  border: 1px solid rgba(74, 144, 217, 0.12);
+  box-shadow:
+    0 16px 36px -22px rgba(30, 64, 128, 0.34),
+    0 2px 6px -3px rgba(15, 23, 42, 0.06);
+}
+
+/* Default content headings: slightly tighter, more intentional */
+html.light .slidev-layout.default h1,
+html.light .slidev-layout h1 {
+  letter-spacing: -0.01em;
+}

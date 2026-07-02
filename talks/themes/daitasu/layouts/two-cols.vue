@@ -1,7 +1,7 @@
 <template>
   <div class="slidev-layout default">
     <slot name="default" />
-    <div class="grid grid-cols-2 gap-8 mt-4">
+    <div class="grid grid-cols-2 gap-8 mt-2">
       <div>
         <slot name="left" />
       </div>
