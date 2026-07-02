@@ -21,19 +21,6 @@ dino: false
   <span class="cover-by">@daitasu</span>
 </div>
  
-<style>
-/* deck-local branding font (dark decks untouched) */
-.slidev-layout {
-  font-family: "Zen Kaku Gothic New", "IBM Plex Sans", "Hiragino Sans", sans-serif;
-}
-.slidev-layout code,
-.slidev-layout pre,
-.slidev-layout .slidev-code,
-.slidev-layout .slidev-code * {
-  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace !important;
-}
-</style>
-
 ---
 layout: intro
 ---
@@ -96,7 +83,7 @@ layout: section
 - スクロール駆動アニメーションをCSSのみで実現できる
 - スクロールできるコンテナー内のスクロール位置の始点〜終点まででアニメーションを作成する
 
-```
+```css
 @keyframes scroll-scale {
   from { scale: 0.5 1; }
   to { scale: 1 1; }
@@ -243,10 +230,14 @@ layout: section
 # CSS だけでFPS視点を作れるのでは？　🙄
 
 ---
+layout: two-cols
+---
 
 # FPS視点スクロールアクションとは
 
-<div class="mt-6 text-lg">
+::left::
+
+<div class="text-base mt-2">
 
 - スクロール量を **カメラの前進・首振り** にマッピングする体験
   - 縦スクロール = 前進、進むにつれて **視点が回り込む**
@@ -255,6 +246,10 @@ layout: section
   - ストーリーテリング LP、ポートフォリオ、ゲーム風の導入に相性がいい
 
 </div>
+
+::right::
+
+<img :src="'/fps_sample.jpeg'" class="rounded-xl mt-2" style="box-shadow: 0 24px 60px -28px rgba(30, 64, 128, 0.5), 0 0 0 1px rgba(74, 144, 217, 0.14);" />
 
 ---
 

@@ -215,20 +215,12 @@ html.light .slidev-layout.default h1::after {
    dark decks are untouched (guarded by html.light)
    ============================================ */
 
-/* Cover: soft ambient accent glow behind the title */
-html.light .slidev-layout.cover::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
+/* Cover: soft ambient accent glow behind the title (on the element itself,
+   so ::before / ::after stay free for the HUD frame) */
+html.light .slidev-layout.cover {
+  background-image:
     radial-gradient(760px 460px at 90% -14%, rgba(74, 144, 217, 0.16), transparent 62%),
     radial-gradient(620px 420px at -12% 114%, rgba(74, 144, 217, 0.09), transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-html.light .slidev-layout.cover > * {
-  position: relative;
-  z-index: 1;
 }
 
 /* Cover: eyebrow tag / subtitle / byline */
@@ -276,4 +268,43 @@ html.light .slidev-code {
 html.light .slidev-layout.default h1,
 html.light .slidev-layout h1 {
   letter-spacing: -0.01em;
+}
+
+/* Branding font (light decks only; dark decks keep their font) */
+html.light .slidev-layout {
+  font-family: "Zen Kaku Gothic New", "IBM Plex Sans", "Hiragino Sans", sans-serif;
+}
+html.light .slidev-layout code,
+html.light .slidev-layout pre,
+html.light .slidev-layout .slidev-code,
+html.light .slidev-layout .slidev-code * {
+  font-family: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace !important;
+}
+
+/* ============================================
+   Ocean / wave frame — soft blue waves on every slide
+   (light decks). Layered sea at the bottom + a calm
+   wave ribbon at the top. Drawn as the layout's own
+   background so it sits behind content.
+   ============================================ */
+html.light .slidev-layout {
+  position: relative;
+}
+html.light .slidev-layout::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-repeat: no-repeat;
+  background-position: center bottom, left bottom, center top;
+  background-size: 100% 92px, 118% 126px, 100% 66px;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 58 C220 98 420 18 660 52 C900 86 1140 22 1440 60 L1440 120 L0 120 Z' fill='%234a90d9' fill-opacity='0.22'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 74 C260 34 520 104 780 68 C1020 36 1240 98 1440 66 L1440 120 L0 120 Z' fill='%234a90d9' fill-opacity='0.10'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 58 C240 98 480 18 720 54 C960 90 1200 22 1440 58 L1440 0 L0 0 Z' fill='%234a90d9' fill-opacity='0.07'/%3E%3C/svg%3E");
+}
+html.light .slidev-layout > * {
+  position: relative;
+  z-index: 1;
 }
