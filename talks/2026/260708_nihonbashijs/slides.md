@@ -57,72 +57,237 @@ layout: intro
 </div>
 
 ---
-
-# 今日話すこと
-
-<div class="mt-8 text-xl">
-
-- **Generative UI** … LLM がその場で UI を組み立てて返す
-- **json-render の逐次描画** … なぜ UI が「じわじわ生えて」くるのか
-  - RFC 6902 の JSON Patch を 1 行ずつストリームしている
-- **A2UI と比較** … 同じ「UI を喋る」でも“生え方”が違う
-  - 差の正体は思想ではなく **ストリームの最小単位の粒度**
-
-</div>
-
-<MessageBox>コードは実際に触って確かめた小さな検証アプリがベース</MessageBox>
-
----
-layout: section
----
-
-# 題材：LLM に「今日の天気は？」
-
+layout: two-cols
 ---
 
 # Generative UI ってなに？
 
-<div class="mt-6 text-lg">
+::left::
 
-- LLM が**その場で UI を生成**して返す。ボタンやカードの JSON を喋る
-- 前提として、フレームワーク側が **catalog（AI に見せる部品カタログ）** を持つ
-  - `WeatherWidget` / `Text` / `Stack` … 「使っていい部品と props」の契約
-- LLM は catalog の語彙だけで**構造を組み立てて**ストリームで返す
-- 今日はこの返り方を **json-render** と **A2UI** で比べる
+<div class="mt-4 text-lg">
+
+- LLM が**その場で UI を生成**して返すアプローチ
+- 返答が「文章」ではなく、**ボタン・カード・フォーム**そのものになる
+- 「今日の天気は？」→ テキストの説明ではなく**天気カード**が返ってくる
+- ユーザーは読むだけでなく、返ってきた UI を**そのまま操作**できる
 
 </div>
 
-<div class="mt-6 text-base color-gray">
+::right::
 
-題材は共通で「今日の天気は？」→ 天気カード＋週間予報を組む、というやりとり。
+<!-- TODO: MCP Apps の返却例のキャプチャを差し替える -->
+<div class="mt-8 h-72 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
+  MCP Apps の返却例（キャプチャ）
+</div>
 
+---
+layout: two-cols
+---
+
+# json-render / A2UI とは？
+
+::left::
+
+<div class="compare-box compare-left mr-2">
+
+**既存のアプローチ**
+
+<div class="mt-2 text-base">
+
+- AI が事前定義したコンポーネントやテンプレートを用いるが、**意図しない構造の UI** を生成するケースもある
+- **iframe サンドボックス**環境にレンダリング
+- アプリのデザインシステムと**分断**されがち
+- アプリ側の状態やイベントと**連携しづらい**
+
+</div>
+</div>
+
+::right::
+
+<div class="compare-box compare-right ml-2">
+
+**json-render / A2UI**
+
+<div class="mt-2 text-base">
+
+- **JSON スキーマの制約**に従うため、AI が誤るリスクが軽減される
+- アプリケーションの**一部として統合された UI** を提供
+- 自前の React コンポーネントで描画 → **デザインシステムに沿う**
+- アプリの状態・イベントハンドラと**直結**できる
+
+</div>
+</div>
+
+<style>
+.compare-box { margin-top: 1rem; padding: 1.1rem 1.3rem; border-radius: 12px; min-height: 340px; font-size: 1.125rem; }
+.compare-left { background: #e9f6ec; border: 1.5px solid #6cbf7d; }
+.compare-right { background: #fdedeb; border: 1.5px solid #e58c80; }
+</style>
+
+---
+layout: two-cols
+---
+
+# json-render の How to
+
+::left::
+
+<div class="mt-6 text-lg space-y-5">
+  <div class="howto-step active">① カタログを定義する</div>
+  <div class="howto-step">② 実態（コンポーネント）を定義する</div>
+  <div class="howto-step">③ カタログからシステムプロンプトを生成</div>
+</div>
+
+::right::
+
+```ts
+import { defineCatalog } from "@json-render/core";
+import { z } from "zod";
+
+export const catalog = defineCatalog({
+  components: {
+    Stack: {
+      props: z.object({
+        direction: z.enum(["row", "column"]),
+      }),
+      hasChildren: true,
+    },
+    WeatherWidget: {
+      props: z.object({
+        city: z.string(),
+        temperature: z.number(),
+        condition: z.string(),
+      }),
+    },
+  },
+});
+```
+
+<style>
+.howto-step { opacity: 0.35; }
+.howto-step.active { opacity: 1; font-weight: 700; }
+.slidev-code, .slidev-code * { font-size: 11px !important; line-height: 1.5 !important; }
+</style>
+
+---
+layout: two-cols
+---
+
+# json-render の How to
+
+::left::
+
+<div class="mt-6 text-lg space-y-5">
+  <div class="howto-step">① カタログを定義する</div>
+  <div class="howto-step active">② 実態（コンポーネント）を定義する</div>
+  <div class="howto-step">③ カタログからシステムプロンプトを生成</div>
+</div>
+
+::right::
+
+```tsx
+import { defineRegistry } from "@json-render/react";
+import { catalog } from "./catalog";
+
+export const { registry } = defineRegistry(catalog, {
+  components: {
+    Stack: ({ props, children }) => (
+      <div className={props.direction === "row"
+        ? "flex flex-row gap-2"
+        : "flex flex-col gap-2"}>
+        {children}
+      </div>
+    ),
+    WeatherWidget: ({ props }) => (
+      <WeatherCard
+        city={props.city}
+        temperature={props.temperature}
+        condition={props.condition}
+      />
+    ),
+  },
+});
+```
+
+<style>
+.howto-step { opacity: 0.35; }
+.howto-step.active { opacity: 1; font-weight: 700; }
+.slidev-code, .slidev-code * { font-size: 11px !important; line-height: 1.5 !important; }
+</style>
+
+---
+layout: two-cols
+---
+
+# json-render の How to
+
+::left::
+
+<div class="mt-6 text-lg space-y-5">
+  <div class="howto-step">① カタログを定義する</div>
+  <div class="howto-step">② 実態（コンポーネント）を定義する</div>
+  <div class="howto-step active">③ カタログからシステムプロンプトを生成</div>
+</div>
+
+::right::
+
+```ts
+const systemPrompt = catalog.prompt();
+
+const result = streamText({
+  model: anthropic("claude-haiku-4-5"),
+  system: systemPrompt,
+  prompt,
+});
+```
+
+<div class="text-sm color-gray mt-4">
+
+catalog の「使っていい部品と props」が、そのまま LLM への契約になる。
+
+</div>
+
+<style>
+.howto-step { opacity: 0.35; }
+.howto-step.active { opacity: 1; font-weight: 700; }
+.slidev-code, .slidev-code * { font-size: 12px !important; line-height: 1.55 !important; }
+</style>
+
+---
+layout: section
+---
+
+# json-render と A2UI で何が違う？
+
+---
+layout: two-cols
+---
+
+# 同じ「天気 UI」を組み立てると
+
+::left::
+
+<div class="text-sm mt-2 text-center font-bold">json-render</div>
+
+<!-- TODO: json-render が天気UIを組み立てる GIF を差し替える -->
+<div class="mt-2 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
+  json-render の GIF
+</div>
+
+::right::
+
+<div class="text-sm mt-2 text-center font-bold">A2UI</div>
+
+<!-- TODO: A2UI が天気UIを組み立てる GIF を差し替える -->
+<div class="mt-2 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
+  A2UI の GIF
 </div>
 
 ---
 layout: section
 ---
 
-# json-render の逐次描画
-
----
-
-# json-render の登場人物
-
-<div class="mt-6 text-lg">
-
-- **catalog** … `defineCatalog()`。LLM に見せる部品と props の契約
-  - `catalog.prompt()` でシステムプロンプトを自動生成
-- **サーバ** … LLM の出力（JSONL）を `text/plain` でそのままストリーム
-- **クライアント** … `SpecStreamCompiler` が受信しながら spec を組み立て
-- **Renderer**（`"use client"`）… spec を registry の React 部品で描画
-
-</div>
-
-<div class="mt-5 text-base color-gray">
-
-肝は「サーバは 1 行ずつ流すだけ」「クライアントは届いた分だけ描く」。
-
-</div>
+# json-render の逐次描画はどうやっている？
 
 ---
 
@@ -169,6 +334,12 @@ for (;;) {
 - 新しいパッチが出たら `setState` → **React 再レンダー**
 - partial spec を許容：`root` と実体が揃った瞬間から描き始める
 
+<div class="mt-3 text-xs color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
+
+※ React なら `@json-render/react` の `useUIStream` が楽。今回は仕組み説明のため core を直接使用。
+
+</div>
+
 </div>
 
 <style>
@@ -177,112 +348,13 @@ for (;;) {
 
 ---
 
-# だから「じわじわ生える」
+# 一方、A2UI とは？
 
-<div class="mt-4 text-base">
+<div class="mt-3 text-base">
 
-`add` パッチを上から適用すると、画面はこの順で育つ：
-
-| パッチ | 画面の変化 |
-|--------|-----------|
-| `add /elements/main = Stack([])` | **空の縦スタックが出現** |
-| `add /elements/widget = WeatherWidget` | 実体だけ用意（まだ親に未接続） |
-| `add /elements/main/children/- = "widget"` | **天気カードが Stack に生える** |
-
-</div>
-
-<div class="mt-4 text-lg">
-
-- **「実体の追加」と「children への参照追加」が別パッチ**
-- だから *箱 → 中身* の順で、1 ノードずつ積み上がる
-
-</div>
-
----
-layout: two-cols
----
-
-# json-render の流れ
-
-::left::
-
-<div class="text-sm mt-2">
-
-- catalog を prompt 化して LLM に提示
-- LLM は JSON Patch(JSONL) をストリーム
-- compiler が spec に逐次適用
-- パッチごとに再レンダー＝**ノード単位で生える**
-
-</div>
-
-::right::
-
-```mermaid {scale: 0.62}
-sequenceDiagram
-  participant AI as LLM
-  participant SPEC as SpecStreamCompiler
-  participant RND as Renderer
-  loop 1行=1パッチ
-    AI-->>SPEC: {"op":"add", ...}
-    SPEC-->>RND: partial spec
-    RND-->>RND: その分だけ再描画
-  end
-```
-
-<div class="text-xs color-gray mt-2">
-
-全パッチが揃うのを待たない。ここが“逐次描画”。
-
-</div>
-
----
-layout: default
----
-
-# 実演：UI が生えてくる
-
-<div class="max-w-4xl mx-auto">
-  <DemoFrame src="http://localhost:5211/" height="360px" label="json-render weather (localhost:5211)" class="mt-2" />
-</div>
-
-<div class="mt-3 text-sm color-gray text-center">
-
-「東京の天気は？」→ Stack → カード → 区切り → 週間予報… と節ごとに積み上がる
-
-</div>
-
----
-layout: section
----
-
-# A2UI と比較する
-
----
-
-# A2UI とは
-
-<div class="mt-6 text-lg">
-
-- agent が **“UI を喋る” プロトコル**（Agent-to-UI）
-- やりとりは**メッセージ単位**。主に 3 種：
-  - `createSurface` … 描画面をつくる
-  - `updateComponents` … **コンポーネントツリー（構造）**を送る
-  - `updateDataModel` … **データ**を送る
-- Client 側が schema を内省して `path` を data model に **subscribe**
-
-</div>
-
-<div class="mt-5 text-base color-gray">
-
-json-render と違い、**構造とデータが別メッセージ**で届く。
-
-</div>
-
----
-
-# A2UI のメッセージ列
-
-<div class="mt-2 text-base">
+- agent が **“UI を喋る” プロトコル**（Agent-to-UI）。やりとりは**メッセージ単位**
+  - `createSurface` … 描画面をつくる / `updateComponents` … **構造** / `updateDataModel` … **データ**
+- **構造とデータが別メッセージ**で届き、client は `path` で data model に **subscribe**
 
 ```json
 {"createSurface":{"surfaceId":"s1","catalogId":".../catalog.json"}}
@@ -296,7 +368,6 @@ json-render と違い、**構造とデータが別メッセージ**で届く。
 ```
 
 - `updateComponents` は **ツリー全体を 1 メッセージ**に flat で同梱
-- データは `updateDataModel` で先に一括投入、`path` で束縛
 
 </div>
 
@@ -306,13 +377,7 @@ json-render と違い、**構造とデータが別メッセージ**で届く。
 
 ---
 
-# 比較①：“生え方”の差の正体
-
-<div class="mt-4 text-lg">
-
-思想の差ではなく、**ストリームの最小単位の粒度**の差。
-
-</div>
+# 対比：json-render vs A2UI
 
 <div class="mt-4 text-base">
 
@@ -324,85 +389,48 @@ json-render と違い、**構造とデータが別メッセージ**で届く。
 
 </div>
 
-<div class="mt-4 text-base color-gray">
-
-※ A2UI も `updateComponents` を分割送信すれば細かく生やせる。逆に json-render も 1 チャンクで送れば一気に出る。
-
-</div>
-
----
-layout: two-cols
----
-
-# 比較②：受信オペレーションを可視化
-
-::left::
-
-<div class="text-xs mt-2">
+<div class="grid grid-cols-2 gap-4 mt-3 text-xs">
+<div>
 
 **json-render** — 極小パッチが大量
 
 ```json
 {"op":"add","path":"/root",...}
 {"op":"add","path":"/elements/main",...}
-{"op":"add","path":"/elements/summary",...}
-{"op":"add","path":".../children/-",...}
-{"op":"add","path":"/elements/widget",...}
 {"op":"add","path":".../children/-",...}
 … (十数行つづく)
 ```
 
 </div>
-
-::right::
-
-<div class="text-xs mt-2">
+<div>
 
 **A2UI** — 巨大メッセージが数発
 
 ```json
 {"createSurface":{...}}
 {"updateDataModel":{...}}
-{"updateComponents":{"components":[
-   /* ツリー全体がここに丸ごと */
-]}}
+{"updateComponents":{"components":[ /* ツリー全体 */ ]}}
 ```
 
-</div>
+<div class="mt-2 color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
 
-<div class="text-sm color-gray mt-4 col-span-2">
-
-検証アプリのチャット右側に「受信した操作」を到着順で積むログを付けた → 粒度差が一目で分かる。
+※ `updateComponents` を細かく分割して送れば、A2UI でも json-render に近い逐次描画は可能
 
 </div>
 
----
-
-# 比較③：データ束縛と live 更新
-
-<div class="mt-4 text-base">
-
-| | json-render | A2UI |
-|---|---|---|
-| prop の束縛 | `{"$state":"/weather/condition"}` | `{"path":"/weather/condition"}` |
-| テンプレート | `{"$template":"最高 ${/weather/high}°"}` | data model 側で組む |
-| 双方向 | `{"$bindState":"/favorite"}` | data model への write-back |
-| データの確定 | **生成時スナップショット**（AI が state に焼く） | `updateDataModel` **再送で更新**（live に強い） |
-
+</div>
 </div>
 
-<div class="mt-5 text-lg">
-
-- json-render = 手軽。ただしデータは生成した瞬間の値で固定
-- A2UI = 2 チャネルの配管は要るが、後から `updateDataModel` で貼り替え可
-
-</div>
-
----
-layout: section
----
-
-# まとめ
+<style>
+.slidev-code, .slidev-code * { font-size: 10px !important; line-height: 1.45 !important; }
+table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 10px; overflow: hidden; border: 1px solid #dde4ee; }
+th, td { border: 1px solid #e6ebf3; padding: 8px 14px; }
+td:first-child { background: #f6f8fb; font-weight: 500; }
+th:nth-child(2) { background: #cfe3f8; color: #1e4080; }
+td:nth-child(2) { background: #eaf3fc; }
+th:nth-child(3) { background: #fbe3d9; color: #a04a2c; }
+td:nth-child(3) { background: #fdf1ea; }
+</style>
 
 ---
 
@@ -410,13 +438,11 @@ layout: section
 
 <div class="mt-6 text-lg">
 
-- json-render の逐次描画 = **RFC 6902 の `add` を 1 行ずつ適用して spec を育てる**
-  - 「実体追加」と「children 参照追加」が別パッチ → *箱 → 中身* で生える
-- A2UI は **メッセージ単位**（createSurface / updateComponents / updateDataModel）
-  - 構造とデータを別チャネルで送る
-- “生え方”の違いは思想ではなく **ストリームの最小単位の粒度**
-- データ束縛は両者とも `path`/`$state`。**live 更新は A2UI が一歩リード**
+- Generative UI = LLM が**その場で UI を生成**して返すアプローチ
+- json-render / A2UI は **JSON スキーマの制約**で AI の誤りを抑え、**アプリに統合された UI** を返す
+- json-render の逐次描画 = **RFC 6902 の JSON Patch を 1 行ずつ適用**して spec を育てる
+  - シンプルな仕組みで UI が「じわじわ生える」体験を作れるのが面白い
+- 一方で「JSON Patch で UI を組み替える」体験は、良くも悪くも**独特**
+- 逐次描画の仕組みはまだ発展途上。**今後いろんなアプローチが出てきそう**で楽しみ
 
 </div>
-
-<MessageBox>結局は「どの粒度で、どの面がデータを持つか」の設計選択</MessageBox>
