@@ -16,6 +16,10 @@ list:
 pdf slug="":
     pnpm export {{ slug }}
 
+# 全トークを dist/ にビルド（Cloudflare Pages 配信用）
+build:
+    pnpm build
+
 # 新しいトークの雛形のみ作成（dev サーバーは起動しない）
 scaffold slug title date event year=YEAR:
     #!/usr/bin/env bash
