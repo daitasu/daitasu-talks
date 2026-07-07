@@ -1,7 +1,7 @@
 ---
 theme: ../../themes/daitasu
 colorSchema: light
-title: json-render の逐次描画処理はどうなっているのか？ ~A2UIと比較する~
+title: Generative UI の逐次描画はどうなっている？ ~json-render と A2UI の思想を比べる~
 talk:
   date: "2026-07-08"
   event: "Nihonbashi.js #10"
@@ -10,17 +10,20 @@ fonts:
   mono: JetBrains Mono
   weights: "300,400,500,700"
 layout: cover
-dino: false
+dino: /dino_cover.png
 ---
 
-# json-render の逐次描画は<br>どうなっているのか？
+# Generative UI の逐次描画は<br>どうなっている？
 
 <div>
-  <span class="cover-sub">〜 A2UI と比較する 〜</span>
+  <span class="cover-sub">〜 json-render と A2UI の思想を比べる 〜</span>
 </div>
 <div>
-  <span class="cover-eyebrow">Nihonbashi.js #10 ・ 2026.07.08</span>
+  <span class="cover-eyebrow">Nihonbashi.js #11 ・ 2026.07.08</span>
   <span class="cover-by">@daitasu</span>
+</div>
+<div class="mt-6 text-sm" style="opacity:0.65;">
+  ※ 今日は <b>json-render の仕組みを軸に</b>、A2UI の思想と対比します
 </div>
 
 ---
@@ -30,12 +33,18 @@ layout: intro
 <div class="flex items-center gap-12">
   <div>
     <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" style="box-shadow: 0 18px 44px -18px rgba(30, 64, 128, 0.45); background: #fff;" />
-    <div class="mt-3 flex flex-col items-center">
-      <p>X</p>
-      <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
+    <div class="mt-3 flex gap-3 items-end justify-center">
+      <div class="flex flex-col items-center">
+        <p>X</p>
+        <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
+      </div>
+      <div class="flex flex-col items-center">
+        <p>Tachikawa.any</p>
+        <img :src="'/qrcode_discord.png'" class="mt-1 rounded-1 h-24" />
+      </div>
     </div>
   </div>
-  <div class="text-xl space-y-2">
+  <div class="text-xl space-y-1.5">
     <h2 class="!text-2xl">自己紹介</h2>
     <div>
       <p>Name:</p>
@@ -47,11 +56,12 @@ layout: intro
     </div>
     <div>
       <p>Favorite:</p>
-      <p class="ml-3">TypeScript, Sauna, Dinosaurs</p>
+      <p class="ml-3">TypeScript, Onsen, Dinosaurs</p>
     </div>
     <div>
       <p>Community:</p>
       <p class="ml-3">Tachikawa.any</p>
+      <a class="ml-3">https://tachikawaany.connpass.com/</a>
     </div>
   </div>
 </div>
@@ -75,9 +85,8 @@ layout: two-cols
 
 ::right::
 
-<!-- TODO: MCP Apps の返却例のキャプチャを差し替える -->
-<div class="mt-8 h-72 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
-  MCP Apps の返却例（キャプチャ）
+<div class="mt-8 flex justify-center">
+  <img :src="'/mcp_apps_color_picker.png'" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ---
@@ -90,14 +99,15 @@ layout: two-cols
 
 <div class="compare-box compare-left mr-2">
 
-**既存のアプローチ**
+**MCP Appsのアプローチ**
 
 <div class="mt-2 text-base">
 
-- AI が事前定義したコンポーネントやテンプレートを用いるが、**意図しない構造の UI** を生成するケースもある
-- **iframe サンドボックス**環境にレンダリング
-- アプリのデザインシステムと**分断**されがち
-- アプリ側の状態やイベントと**連携しづらい**
+- AI がテキストだけでなくインタラクティブなUIを返却するMCPサーバを提供
+- HTMLを**iframe サンドボックス**で隔離
+  - ホスト側のUIに依存
+  - アプリのデザインシステムと**分断**されがち
+- 事前定義したコンポーネントを用いるが、**意図しない構造の UI** を生成するケースもある
 
 </div>
 </div>
@@ -110,10 +120,11 @@ layout: two-cols
 
 <div class="mt-2 text-base">
 
-- **JSON スキーマの制約**に従うため、AI が誤るリスクが軽減される
+- 宣言的なJSONスキーマを返却
+- **スキーマ制約**に従うため、AI が誤るリスクが軽減される
 - アプリケーションの**一部として統合された UI** を提供
-- 自前の React コンポーネントで描画 → **デザインシステムに沿う**
-- アプリの状態・イベントハンドラと**直結**できる
+- アプリ状態・イベントハンドラと**直結**できる
+- プロトコル(A2UI)、フレームワーク(json-render)なので層は異なる
 
 </div>
 </div>
@@ -287,7 +298,7 @@ layout: two-cols
 layout: section
 ---
 
-# json-render の逐次描画はどうやっている？
+# 逐次描画はどうやっている？
 
 ---
 
@@ -348,11 +359,11 @@ for (;;) {
 
 ---
 
-# 一方、A2UI とは？
+# A2UI はどう描く？
 
 <div class="mt-3 text-base">
 
-- agent が **“UI を喋る” プロトコル**（Agent-to-UI）。やりとりは**メッセージ単位**
+- AIが返すJSONの **“メッセージ形式を担う” プロトコル**（Agent-to-UI）。
   - `createSurface` … 描画面をつくる / `updateComponents` … **構造** / `updateDataModel` … **データ**
 - **構造とデータが別メッセージ**で届き、client は `path` で data model に **subscribe**
 
@@ -367,7 +378,8 @@ for (;;) {
 ]}}
 ```
 
-- `updateComponents` は **ツリー全体を 1 メッセージ**に flat で同梱
+- `updateComponents` はツリーを **flat な隣接リスト**で表現
+  - **まとめて描画**も**分割送信での逐次描画**も可能
 
 </div>
 
@@ -383,9 +395,9 @@ for (;;) {
 
 | | json-render | A2UI |
 |---|---|---|
-| ストリームの 1 単位 | **1 パッチ = 1 ノード**（極小・大量） | **1 メッセージ**（ツリー全体を同梱しうる） |
-| 描画のされ方 | パッチ適用ごとに **node 単位で生える** | メッセージ到着で **まとめて描画** |
-| 構造とデータ | 同じ spec に同梱（state 内包） | `updateComponents` と `updateDataModel` に分離 |
+| ストリームの 1 単位 | **1 パッチ = 1 ノード**（極小・大量） | **1 メッセージ**（複数ノードをまとめられる） |
+| 逐次描画 | パッチ適用ごとに **node 単位で生える** | メッセージを**分割すれば同様に逐次**（粒度は実装次第） |
+| 構造とデータ | 同じ spec に**同梱**（state 内包） | `updateComponents` と `updateDataModel` に**分離** |
 
 </div>
 
@@ -404,21 +416,21 @@ for (;;) {
 </div>
 <div>
 
-**A2UI** — 巨大メッセージが数発
+**A2UI** — 構造とデータを分けて送る
 
 ```json
 {"createSurface":{...}}
 {"updateDataModel":{...}}
-{"updateComponents":{"components":[ /* ツリー全体 */ ]}}
+{"updateComponents":{"components":[ /* まとめても分割してもよい */ ]}}
 ```
 
-<div class="mt-2 color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
-
-※ `updateComponents` を細かく分割して送れば、A2UI でも json-render に近い逐次描画は可能
-
+</div>
 </div>
 
-</div>
+<div class="mt-3 mx-auto max-w-4xl text-center text-sm color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
+
+※ 差は「まとめ vs 逐次」ではなく **粒度と分離の思想**。A2UI も `updateComponents` を分割すれば逐次描画できる
+
 </div>
 
 <style>
@@ -440,9 +452,10 @@ td:nth-child(3) { background: #fdf1ea; }
 
 - Generative UI = LLM が**その場で UI を生成**して返すアプローチ
 - json-render / A2UI は **JSON スキーマの制約**で AI の誤りを抑え、**アプリに統合された UI** を返す
-- json-render の逐次描画 = **RFC 6902 の JSON Patch を 1 行ずつ適用**して spec を育てる
-  - シンプルな仕組みで UI が「じわじわ生える」体験を作れるのが面白い
-- 一方で「JSON Patch で UI を組み替える」体験は、良くも悪くも**独特**
+- 逐次描画の実現思想は**二者二様**
+  - **json-render** = RFC 6902 の JSON Patch を 1 行ずつ適用し、**node 単位で spec を育てる**（粒度が細かい）
+  - **A2UI** = 構造(`updateComponents`)とデータ(`updateDataModel`)を**分離**し、粒度は送り方しだい
+- どちらも「じわじわ生える」体験は作れる。違いは **粒度と分離の思想**
 - 逐次描画の仕組みはまだ発展途上。**今後いろんなアプローチが出てきそう**で楽しみ
 
 </div>

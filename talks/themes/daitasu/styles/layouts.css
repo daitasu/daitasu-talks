@@ -308,3 +308,14 @@ html.light .slidev-layout > * {
   position: relative;
   z-index: 1;
 }
+
+/* The `> *` lift above out-specifies cover.vue's scoped `.dino-img`, which
+   un-absolutes the dino in light mode and lets the flex column stretch it
+   horizontally. Re-pin it bottom-right so light covers match dark covers. */
+html.light .slidev-layout.cover .dino-img {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  height: 16rem;
+  width: auto;
+}
