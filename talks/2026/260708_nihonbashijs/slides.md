@@ -104,10 +104,9 @@ layout: two-cols
 <div class="mt-2 text-base">
 
 - AI がテキストだけでなくインタラクティブなUIを返却するMCPサーバを提供
-- HTMLを**iframe サンドボックス**で隔離
-  - ホスト側のUIに依存
-  - アプリのデザインシステムと**分断**されがち
-- 事前定義したコンポーネントを用いるが、**意図しない構造の UI** を生成するケースもある
+- UI の実体は**開発者が登録した HTML**（`ui://`）、AI はデータを渡す
+- HTMLを**iframe サンドボックス**で隔離して描画
+  - アプリ独自の**デザインシステムには沿えにくい**
 
 </div>
 </div>
@@ -116,7 +115,7 @@ layout: two-cols
 
 <div class="compare-box compare-right ml-2">
 
-**json-render / A2UI**
+**json-render / A2UIのアプローチ**
 
 <div class="mt-2 text-base">
 
@@ -280,18 +279,16 @@ layout: two-cols
 
 <div class="text-sm mt-2 text-center font-bold">json-render</div>
 
-<!-- TODO: json-render が天気UIを組み立てる GIF を差し替える -->
-<div class="mt-2 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
-  json-render の GIF
+<div class="mt-2 flex justify-center">
+  <img :src="'/json-render.gif'" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ::right::
 
 <div class="text-sm mt-2 text-center font-bold">A2UI</div>
 
-<!-- TODO: A2UI が天気UIを組み立てる GIF を差し替える -->
-<div class="mt-2 h-64 flex items-center justify-center rounded-lg border-2 border-dashed border-gray-300 text-gray-400 text-sm">
-  A2UI の GIF
+<div class="mt-2 flex justify-center">
+  <img :src="'/a2ui.gif'" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ---
@@ -391,10 +388,11 @@ for (;;) {
 
 # 対比：json-render vs A2UI
 
-<div class="mt-4 text-base">
+<div class="mt-4 text-sm">
 
 | | json-render | A2UI |
 |---|---|---|
+| レイヤ | **フレームワーク**（schema-agnostic・A2UI 形式も描ける） | **プロトコル**（メッセージ仕様のみ） |
 | ストリームの 1 単位 | **1 パッチ = 1 ノード**（極小・大量） | **1 メッセージ**（複数ノードをまとめられる） |
 | 逐次描画 | パッチ適用ごとに **node 単位で生える** | メッセージを**分割すれば同様に逐次**（粒度は実装次第） |
 | 構造とデータ | 同じ spec に**同梱**（state 内包） | `updateComponents` と `updateDataModel` に**分離** |
@@ -425,12 +423,6 @@ for (;;) {
 ```
 
 </div>
-</div>
-
-<div class="mt-3 mx-auto max-w-4xl text-center text-sm color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
-
-※ 差は「まとめ vs 逐次」ではなく **粒度と分離の思想**。A2UI も `updateComponents` を分割すれば逐次描画できる
-
 </div>
 
 <style>
