@@ -30,7 +30,7 @@ layout: intro
     <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" style="box-shadow: 0 18px 44px -18px rgba(30, 64, 128, 0.45); background: #fff;" />
     <div class="mt-3 flex flex-col items-center">
       <p>X</p>
-      <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
+      <img :src="$public('/qrcode_x.com.png')" class="mt-1 rounded-1 h-24" />
     </div>
   </div>
   <div class="text-xl space-y-2">
@@ -249,7 +249,7 @@ layout: two-cols
 
 ::right::
 
-<img :src="'/fps_sample.jpeg'" class="rounded-xl mt-2" style="box-shadow: 0 24px 60px -28px rgba(30, 64, 128, 0.5), 0 0 0 1px rgba(74, 144, 217, 0.14);" />
+<img :src="$public('/fps_sample.jpeg')" class="rounded-xl mt-2" style="box-shadow: 0 24px 60px -28px rgba(30, 64, 128, 0.5), 0 0 0 1px rgba(74, 144, 217, 0.14);" />
 
 ---
 

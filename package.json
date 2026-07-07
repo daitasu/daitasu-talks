@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "pnpm --filter talks run dev",
     "talks": "pnpm --filter talks run list",
-    "export": "pnpm --filter talks run export"
+    "export": "pnpm --filter talks run export",
+    "build": "pnpm --filter talks run build"
   }
 }

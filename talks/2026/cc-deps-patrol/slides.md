@@ -24,7 +24,7 @@ layout: intro
       <div class="flex flex-col items-center">
         <p>X</p>
         <p>
-          <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
+          <img :src="$public('/qrcode_x.com.png')" class="mt-1 rounded-1 h-24" />
         </p>
       </div>
       <div class="flex flex-col items-center">
@@ -32,7 +32,7 @@ layout: intro
           <img src="https://media.connpass.com/thumbs/54/39/5439d93cdc71a42279d5aa1415c9c39e.png" class="w-16 rounded-2" />
         </p>
         <p>
-          <img :src="'/qrcode_discord.gg.png'" class="mt-1 rounded-1 h-24" />
+          <img :src="$public('/qrcode_discord.gg.png')" class="mt-1 rounded-1 h-24" />
         </p>
       </div>
     </div>
@@ -124,7 +124,7 @@ layout: two-cols
 ---
 
 ::left::
-<img :src="'/capture_github.png'" class="mt-2 rounded-1" />
+<img :src="$public('/capture_github.png')" class="mt-2 rounded-1" />
 
 ::right::
 
@@ -147,7 +147,7 @@ layout: two-cols
 
 # 従来の dependabot がマージされるまで
 
-<img :src="'/flow_original.png'" class="mt-6 rounded-lg w-2/3 mx-auto" />
+<img :src="$public('/flow_original.png')" class="mt-6 rounded-lg w-2/3 mx-auto" />
 
 <div class="mt-6">
 
@@ -196,13 +196,13 @@ layout: two-cols
 
 ::right::
 
-<img :src="'/strategy_overview.png'" class="mt-4 rounded-lg mx-auto" />
+<img :src="$public('/strategy_overview.png')" class="mt-4 rounded-lg mx-auto" />
 
 ---
 
 # ① verify-and-merge（patch向け）
 
-<img :src="'/verify_merge.png'" class="mt-2 rounded-lg w-3/4 mx-auto" />
+<img :src="$public('/verify_merge.png')" class="mt-2 rounded-lg w-3/4 mx-auto" />
 
 <div class="mt-6">
 
@@ -217,7 +217,7 @@ layout: two-cols
 
 # ② review-and-merge（minor向け）
 
-<img :src="'/review_merge.png'" class="mt-2 rounded-lg w-3/4 mx-auto" />
+<img :src="$public('/review_merge.png')" class="mt-2 rounded-lg w-3/4 mx-auto" />
 
 <div class="mt-6">
 
@@ -231,7 +231,7 @@ layout: two-cols
 
 # ③ review-only（major向け）
 
-<img :src="'/review_only.png'" class="mt-2 rounded-lg w-3/4 mx-auto" />
+<img :src="$public('/review_only.png')" class="mt-2 rounded-lg w-3/4 mx-auto" />
 
 <div class="mt-6">
 
@@ -373,7 +373,7 @@ layout: two-cols
 
 zenn にもまとめています！
 
-<img :src="'/zenn.png'" class="mt-2" />
+<img :src="$public('/zenn.png')" class="mt-2" />
 
 <div class="mt-3">
 🔗 <a href="https://zenn.dev/dev_commune/articles/85e6cf7049a4ce" style="font-size: 12px">https://zenn.dev/dev_commune/articles/85e6cf7049a4ce</a>

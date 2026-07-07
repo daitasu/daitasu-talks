@@ -36,11 +36,11 @@ layout: intro
     <div class="mt-3 flex gap-3 items-end justify-center">
       <div class="flex flex-col items-center">
         <p>X</p>
-        <img :src="'/qrcode_x.com.png'" class="mt-1 rounded-1 h-24" />
+        <img :src="$public('/qrcode_x.com.png')" class="mt-1 rounded-1 h-24" />
       </div>
       <div class="flex flex-col items-center">
         <p>Tachikawa.any</p>
-        <img :src="'/qrcode_discord.png'" class="mt-1 rounded-1 h-24" />
+        <img :src="$public('/qrcode_discord.png')" class="mt-1 rounded-1 h-24" />
       </div>
     </div>
   </div>
@@ -86,7 +86,7 @@ layout: two-cols
 ::right::
 
 <div class="mt-8 flex justify-center">
-  <img :src="'/mcp_apps_color_picker.png'" class="rounded-lg" style="max-height: 20rem;" />
+  <img :src="$public('/mcp_apps_color_picker.png')" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ---
@@ -280,7 +280,7 @@ layout: two-cols
 <div class="text-sm mt-2 text-center font-bold">json-render</div>
 
 <div class="mt-2 flex justify-center">
-  <img :src="'/json-render.gif'" class="rounded-lg" style="max-height: 20rem;" />
+  <img :src="$public('/json-render.gif')" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ::right::
@@ -288,7 +288,7 @@ layout: two-cols
 <div class="text-sm mt-2 text-center font-bold">A2UI</div>
 
 <div class="mt-2 flex justify-center">
-  <img :src="'/a2ui.gif'" class="rounded-lg" style="max-height: 20rem;" />
+  <img :src="$public('/a2ui.gif')" class="rounded-lg" style="max-height: 20rem;" />
 </div>
 
 ---

@@ -22,7 +22,9 @@ const props = defineProps({
 })
 
 const dinoVisible = computed(() => props.dino !== false && props.dino !== 'false')
-const dinoSrc = computed(() => typeof props.dino === 'string' && props.dino !== 'true' ? props.dino : '/assets/title_dino.svg')
+// Prefix with the deploy base so the dino resolves under a sub-route (e.g. /talks/2026/slug/)
+const withBase = (p) => import.meta.env.BASE_URL + String(p).replace(/^\//, '')
+const dinoSrc = computed(() => withBase(typeof props.dino === 'string' && props.dino !== 'true' ? props.dino : '/assets/title_dino.svg'))
 </script>
 
 <style scoped>
