@@ -347,8 +347,7 @@ for (;;) {
 ```
 
 - `compiler.push()` がチャンク境界を吸収し、**完成した行だけ**を適用
-- 新しいパッチが出たら `setState` → **React 再レンダー**
-- partial spec を許容：`root` と実体が揃った瞬間から描き始める
+- partial spec を許容：新しいパッチが出たら `setState` → **React 再レンダー**
 
 <div class="mt-3 text-xs color-gray px-3 py-2 rounded-md" style="background: #f2f3f5;">
 
@@ -371,6 +370,8 @@ for (;;) {
 - AIが返すJSONの **“メッセージ形式を担う” プロトコル**（Agent-to-UI）。
   - `createSurface` … 描画面をつくる / `updateComponents` … **構造** / `updateDataModel` … **データ**
 - **構造とデータが別メッセージ**で届き、client は `path` で data model に **subscribe**
+- `updateComponents` はツリーを **flat な配列**で表現
+  - **まとめて描画**も**分割送信での逐次描画**も可能
 
 ```json
 {"createSurface":{"surfaceId":"s1","catalogId":".../catalog.json"}}
@@ -382,9 +383,6 @@ for (;;) {
   {"id":"forecast","component":"WeeklyForecastList","days":[ /* ...7日分... */ ]}
 ]}}
 ```
-
-- `updateComponents` はツリーを **flat な隣接リスト**で表現
-  - **まとめて描画**も**分割送信での逐次描画**も可能
 
 </div>
 
@@ -452,8 +450,8 @@ td:nth-child(3) { background: #fdf1ea; }
 
 - AIがUIを設計する時代になった
 - json-render / A2UI は **JSON スキーマの制約**で AI の誤りを抑え、**アプリに統合された UI** を返す
-- 逐次描画の実現思想は**二者二様**
-  - **json-render** = RFC 6902 の JSON Patch を 1 行ずつ適用し、**node 単位で spec を育てる**（粒度が細かい）
+- 逐次描画の実現思想
+  - **json-render** = RFC 6902 の JSON Patch を 1 行ずつ適用し、**node 単位で spec を修正**
   - **A2UI** = 構造(`updateComponents`)とデータ(`updateDataModel`)を**分離**し、粒度は送り方しだい
 - これらの設計の考え方をプロダクト転用できると、**UIをユーザーが動的に組める体験**を提供できうる
 - 逐次描画の仕組みはまだ発展途上。**今後いろんなアプローチが出てきそう**で楽しみ
