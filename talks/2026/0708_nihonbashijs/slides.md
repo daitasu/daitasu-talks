@@ -93,7 +93,7 @@ layout: two-cols
 layout: two-cols
 ---
 
-# json-render / A2UI とは？
+# Generative UI の 2つの解法
 
 ::left::
 
@@ -126,12 +126,16 @@ layout: two-cols
 - プロトコル(A2UI)、フレームワーク(json-render)なので層は異なる
 
 </div>
+
+<div class="today-badge">👉 今日はこちらの話をします</div>
+
 </div>
 
 <style>
 .compare-box { margin-top: 1rem; padding: 1.1rem 1.3rem; border-radius: 12px; min-height: 340px; font-size: 1.125rem; }
 .compare-left { background: #e9f6ec; border: 1.5px solid #6cbf7d; }
 .compare-right { background: #fdedeb; border: 1.5px solid #e58c80; }
+.today-badge { display: block; width: fit-content; margin-top: 0.6rem; margin-left: auto; padding: 0.25rem 0.7rem; border-radius: 999px; background: #e58c80; color: #fff; font-size: 0.9rem; font-weight: 700; }
 </style>
 
 ---
@@ -202,9 +206,13 @@ import { catalog } from "./catalog";
 export const { registry } = defineRegistry(catalog, {
   components: {
     Stack: ({ props, children }) => (
-      <div className={props.direction === "row"
-        ? "flex flex-row gap-2"
-        : "flex flex-col gap-2"}>
+      <div
+        className={
+          props.direction === "row"
+            ? "flex flex-row gap-2"
+            : "flex flex-col gap-2"
+        }
+      >
         {children}
       </div>
     ),
@@ -390,12 +398,12 @@ for (;;) {
 
 <div class="mt-4 text-sm">
 
-| | json-render | A2UI |
-|---|---|---|
-| レイヤ | **フレームワーク**（schema-agnostic・A2UI 形式も描ける） | **プロトコル**（メッセージ仕様のみ） |
-| ストリームの 1 単位 | **1 パッチ = 1 ノード**（極小・大量） | **1 メッセージ**（複数ノードをまとめられる） |
-| 逐次描画 | パッチ適用ごとに **node 単位で生える** | メッセージを**分割すれば同様に逐次**（粒度は実装次第） |
-| 構造とデータ | 同じ spec に**同梱**（state 内包） | `updateComponents` と `updateDataModel` に**分離** |
+|                     | json-render                                              | A2UI                                                   |
+| ------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| レイヤ              | **フレームワーク**（schema-agnostic・A2UI 形式も描ける） | **プロトコル**（メッセージ仕様のみ）                   |
+| ストリームの 1 単位 | **1 パッチ = 1 ノード**（極小・大量）                    | **1 メッセージ**（複数ノードをまとめられる）           |
+| 逐次描画            | パッチ適用ごとに **node 単位で生える**                   | メッセージを**分割すれば同様に逐次**（粒度は実装次第） |
+| 構造とデータ        | 同じ spec に**同梱**（state 内包）                       | `updateComponents` と `updateDataModel` に**分離**     |
 
 </div>
 

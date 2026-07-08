@@ -20,6 +20,14 @@ pdf slug="":
 build:
     pnpm build
 
+# ビルド結果（dist/）をローカル配信して本番同等の見た目を確認（port 4173）
+start port="4173":
+    #!/usr/bin/env bash
+    set -euo pipefail
+    [ -d dist ] || { echo "Error: dist/ がない。先に just build を実行して" >&2; exit 1; }
+    echo "▸ http://localhost:{{ port }}/"
+    python3 -m http.server {{ port }} --directory dist
+
 # 新しいトークの雛形のみ作成（dev サーバーは起動しない）
 scaffold slug title date event year=YEAR:
     #!/usr/bin/env bash
