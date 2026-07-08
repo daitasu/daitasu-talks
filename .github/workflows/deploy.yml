@@ -24,6 +24,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # pnpm 10 は依存の postinstall を無視するため、OGP 生成用ブラウザを明示導入する。
+      - name: Install Playwright browser (for OGP export)
+        run: pnpm --filter talks exec playwright install --with-deps chromium
+
+      # CI=true なので build.mjs が各デッキの表紙を og.png に書き出し、meta を注入する。
       - name: Build all decks into dist/
         run: pnpm build
 

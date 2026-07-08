@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync, mkdirSync, writeFileSync, rmSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -6,6 +6,11 @@ import { execFileSync } from "node:child_process";
 const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
 const REPO_ROOT = join(TALKS_DIR, "..");
 const DIST = join(REPO_ROOT, "dist");
+// 本番ドメイン。OGP の og:image は絶対 URL 必須なのでここを前置する。
+const SITE = "https://talks.daitasu.work";
+// OGP 画像（表紙 PNG）の生成は headless ブラウザが要る。CI では必ず生成し、
+// ローカルは既定でスキップ（毎回の just build を遅くしない）。OG=1 で強制。
+const GEN_OG = !!(process.env.CI || process.env.OG);
 
 const findSlides = (dir) => {
   const results = [];
@@ -28,6 +33,7 @@ const findSlides = (dir) => {
         title: fm.match(/^title:\s*(.+)$/m)?.[1]?.trim() ?? talk,
         date: fm.match(/date:\s*"?([^"\n]+)"?/m)?.[1]?.trim() ?? "",
         event: fm.match(/event:\s*"?([^"\n]+)"?/m)?.[1]?.trim() ?? "",
+        description: fm.match(/^description:\s*(.+)$/m)?.[1]?.trim() ?? "",
       });
     }
   }
@@ -35,6 +41,29 @@ const findSlides = (dir) => {
 };
 
 const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+// PNG の IHDR から実寸を読む（先頭 24 byte、big-endian）。
+const pngSize = (p) => {
+  const b = readFileSync(p);
+  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20) };
+};
+
+// 表紙（1 枚目）を PNG 出力して <out>/og.png に置く。best-effort。
+// slidev export は --output のディレクトリを丸ごとクリーンするので、必ず一時
+// ディレクトリに吐いてから og.png だけコピーする（out には build 済み成果物がある）。
+const genOg = (t, out) => {
+  const tmp = join(DIST, ".og-tmp", `${t.year}-${t.slug}`);
+  rmSync(tmp, { recursive: true, force: true });
+  // --wait-until load: 既定の networkidle は常時アニメの deck で発火せず固まるため。
+  execFileSync(
+    "npx",
+    ["slidev", "export", t.slidesPath, "--format", "png", "--range", "1",
+      "--wait-until", "load", "--wait", "800", "--timeout", "60000", "--output", tmp],
+    { stdio: "inherit", cwd: TALKS_DIR },
+  );
+  copyFileSync(join(tmp, "1.png"), join(out, "og.png")); // png export は "<n>.png" で吐く
+  rmSync(tmp, { recursive: true, force: true });
+};
 
 const talks = findSlides(TALKS_DIR);
 if (talks.length === 0) {
@@ -56,7 +85,44 @@ for (const t of talks) {
     ["slidev", "build", t.slidesPath, "--base", t.base, "--router-mode", "hash", "--out", out],
     { stdio: "inherit", cwd: TALKS_DIR },
   );
+
+  // OGP: 表紙 PNG を生成し（CI/OG=1 のみ）、og/twitter の meta を注入する。
+  // og:image は絶対 URL 必須。Slidev が付ける title の " - Slidev" 接尾辞は剥がす。
+  const ogPng = join(out, "og.png");
+  if (GEN_OG) {
+    try {
+      genOg(t, out);
+      console.log("  + OGP image generated");
+    } catch (e) {
+      console.warn(`  ! OGP image 生成に失敗（meta はスキップ）: ${e.message}`);
+    }
+  }
+  const htmlPath = join(out, "index.html");
+  if (existsSync(ogPng) && existsSync(htmlPath)) {
+    const img = `${SITE}${t.base}og.png`;
+    const desc = t.description || [t.event, t.date].filter(Boolean).join(" · ");
+    const { w, h } = pngSize(ogPng);
+    const tags = [
+      `<meta property="og:type" content="website">`,
+      `<meta property="og:url" content="${SITE}${t.base}">`,
+      `<meta name="twitter:title" content="${esc(t.title)}">`,
+      desc && `<meta property="og:description" content="${esc(desc)}">`,
+      desc && `<meta name="twitter:description" content="${esc(desc)}">`,
+      `<meta property="og:image" content="${img}">`,
+      `<meta property="og:image:width" content="${w}">`,
+      `<meta property="og:image:height" content="${h}">`,
+      `<meta name="twitter:card" content="summary_large_image">`,
+      `<meta name="twitter:image" content="${img}">`,
+    ].filter(Boolean).join("\n");
+    const html = readFileSync(htmlPath, "utf-8")
+      .replace(/(<(?:title|meta property="og:title" content=")[^<]*?)\s*-\s*Slidev/g, "$1")
+      .replace("</head>", `${tags}\n</head>`);
+    writeFileSync(htmlPath, html);
+    console.log("  + OGP meta injected");
+  }
 }
+
+rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時親を除去
 
 // Root index linking to every deck
 const items = talks
