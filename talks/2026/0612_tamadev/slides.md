@@ -4,7 +4,7 @@ colorSchema: dark
 title: Semantic Version 単位で戦略を柔軟に変えて、パッケージアップデートを自動化する
 talk:
   date: "2026-06-12"
-  event: "LT会"
+  event: "多摩.dev #3"
 layout: cover
 dino: /dino_cover_transparent.png
 ---
