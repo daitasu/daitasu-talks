@@ -48,7 +48,9 @@ mkdirSync(DIST, { recursive: true });
 for (const t of talks) {
   const out = join(DIST, "talks", t.year, t.slug);
   console.log(`\n▸ ${t.base}  —  ${t.title}`);
-  // hash router avoids per-deck SPA fallback config; base makes assets resolve under the sub-route
+  // hash router: static hosting needs no SPA-fallback config (the deck lives at
+  // /talks/<year>/<slug>/, slides are #/<n>). The theme setup fixes the --base
+  // navigation bug. Assets resolve via the deploy base + $public().
   execFileSync(
     "npx",
     ["slidev", "build", t.slidesPath, "--base", t.base, "--router-mode", "hash", "--out", out],
