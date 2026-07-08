@@ -2,6 +2,7 @@
 theme: ../../themes/daitasu
 colorSchema: dark
 title: Semantic Version 単位で戦略を柔軟に変えて、パッケージアップデートを自動化する
+description: 2026年6月12日 「多摩.dev #3」における登壇資料です。
 talk:
   date: "2026-06-12"
   event: "多摩.dev #3"

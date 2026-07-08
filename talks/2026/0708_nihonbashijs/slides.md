@@ -2,9 +2,10 @@
 theme: ../../themes/daitasu
 colorSchema: light
 title: Generative UI の逐次描画はどうなっている？ ~json-render と A2UI の思想を比べる~
+description: 2026年7月8日 「Nihonbashi.js #11」における登壇資料です。
 talk:
   date: "2026-07-08"
-  event: "Nihonbashi.js #10"
+  event: "Nihonbashi.js #11"
 fonts:
   sans: Zen Kaku Gothic New
   mono: JetBrains Mono

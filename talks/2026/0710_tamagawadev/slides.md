@@ -2,6 +2,7 @@
 theme: ../../themes/daitasu
 colorSchema: light
 title: CSS だけでFPS視点スクロールアクションを実現する
+description: 2026年7月10日 Tamagawa.dev #2」における登壇資料です。
 talk:
   date: "2026-07-10"
   event: "Tamagawa.dev #2"
@@ -12,7 +13,6 @@ fonts:
 layout: cover
 dino: false
 ---
-
 
 # CSS だけで<br>FPS視点スクロールアクションを実現する
 
@@ -68,8 +68,8 @@ layout: intro
 </div>
 
 ---
-layout: section
----
+
+## layout: section
 
 # animation-timeline
 
@@ -85,8 +85,12 @@ layout: section
 
 ```css
 @keyframes scroll-scale {
-  from { scale: 0.5 1; }
-  to { scale: 1 1; }
+  from {
+    scale: 0.5 1;
+  }
+  to {
+    scale: 1 1;
+  }
 }
 
 .container {
@@ -98,8 +102,8 @@ layout: section
 </div>
 
 ---
-layout: two-cols
----
+
+## layout: two-cols
 
 # Sample: animation-timeline: view()
 
@@ -113,8 +117,14 @@ layout: two-cols
 
 ```css
 @keyframes reveal {
-  from { opacity: 0; transform: translateY(60px); }
-  to   { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 .card {
   animation: reveal linear both;
@@ -130,8 +140,8 @@ layout: two-cols
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" height="380px" class="mt-2" />
 
 ---
-layout: two-cols
----
+
+## layout: two-cols
 
 # Sample: animation-timeline: scroll()
 
@@ -152,8 +162,12 @@ layout: two-cols
   animation-timeline: scroll(root);
 }
 @keyframes grow-x {
-  from { transform: scaleX(0); }
-  to   { transform: scaleX(1); }
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
 }
 ```
 
@@ -164,8 +178,8 @@ layout: two-cols
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="380px" class="mt-2" />
 
 ---
-layout: section
----
+
+## layout: section
 
 # 3D Transform
 
@@ -183,8 +197,8 @@ layout: section
 </div>
 
 ---
-layout: two-cols
----
+
+## layout: two-cols
 
 # Sample: 3D Transform で立方体をつくる
 
@@ -197,17 +211,27 @@ layout: two-cols
 - あとは `@keyframes` で **rotateX/Y を回し続ける**だけ（スクロール非依存）
 
 ```css
-.scene { perspective: 900px; }
+.scene {
+  perspective: 900px;
+}
 .cube {
   transform-style: preserve-3d;
   animation: tumble 14s linear infinite;
 }
 @keyframes tumble {
-  to { transform: rotateX(360deg) rotateY(360deg); }
+  to {
+    transform: rotateX(360deg) rotateY(360deg);
+  }
 }
-.front { transform: translateZ(100px); }
-.right { transform: rotateY(90deg) translateZ(100px); }
-.top   { transform: rotateX(90deg) translateZ(100px); }
+.front {
+  transform: translateZ(100px);
+}
+.right {
+  transform: rotateY(90deg) translateZ(100px);
+}
+.top {
+  transform: rotateX(90deg) translateZ(100px);
+}
 /* back / left / bottom も同様に組む */
 ```
 
@@ -218,20 +242,20 @@ layout: two-cols
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/" height="380px" class="mt-2" />
 
 ---
-layout: section
----
+
+## layout: section
 
 # これはもしや
 
 ---
-layout: section
----
+
+## layout: section
 
 # CSS だけでFPS視点を作れるのでは？　🙄
 
 ---
-layout: two-cols
----
+
+## layout: two-cols
 
 # FPS視点スクロールアクションとは
 
@@ -263,17 +287,26 @@ layout: two-cols
 - 実 DOM で足すのは **距離を稼ぐ縦長ダミー（`height: 1000vh`）だけ**
 
 ```css
-.viewport {                       /* カメラ */
-  position: fixed; inset: 0;
+.viewport {
+  /* カメラ */
+  position: fixed;
+  inset: 0;
   perspective: 760px;
 }
-.world {                          /* 世界ごと手前へ前進 */
+.world {
+  /* 世界ごと手前へ前進 */
   transform-style: preserve-3d;
   animation: fly linear both;
   animation-timeline: scroll(root);
 }
-@keyframes fly { to { transform: translateZ(8200px); } }
-.scroll-track { height: 1000vh; } /* スクロール距離を稼ぐダミー */
+@keyframes fly {
+  to {
+    transform: translateZ(8200px);
+  }
+}
+.scroll-track {
+  height: 1000vh;
+} /* スクロール距離を稼ぐダミー */
 ```
 
 </div>
@@ -283,8 +316,8 @@ layout: two-cols
 </style>
 
 ---
-layout: default
----
+
+## layout: default
 
 # Sample: 襲いかかる恐竜
 
@@ -293,8 +326,8 @@ layout: default
 </div>
 
 ---
-layout: section
----
+
+## layout: section
 
 # CSS だけで、FPS視点は実現できる
 
