@@ -68,8 +68,8 @@ layout: intro
 </div>
 
 ---
-
-## layout: section
+layout: section
+---
 
 # animation-timeline
 
@@ -102,8 +102,8 @@ layout: intro
 </div>
 
 ---
-
-## layout: two-cols
+layout: two-cols
+---
 
 # Sample: animation-timeline: view()
 
@@ -140,8 +140,8 @@ layout: intro
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" height="380px" class="mt-2" />
 
 ---
-
-## layout: two-cols
+layout: two-cols
+---
 
 # Sample: animation-timeline: scroll()
 
@@ -178,8 +178,8 @@ layout: intro
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="380px" class="mt-2" />
 
 ---
-
-## layout: section
+layout: section
+---
 
 # 3D Transform
 
@@ -197,8 +197,8 @@ layout: intro
 </div>
 
 ---
-
-## layout: two-cols
+layout: two-cols
+---
 
 # Sample: 3D Transform で立方体をつくる
 
@@ -242,20 +242,20 @@ layout: intro
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/" height="380px" class="mt-2" />
 
 ---
-
-## layout: section
+layout: section
+---
 
 # これはもしや
 
 ---
-
-## layout: section
+layout: section
+---
 
 # CSS だけでFPS視点を作れるのでは？　🙄
 
 ---
-
-## layout: two-cols
+layout: two-cols
+---
 
 # FPS視点スクロールアクションとは
 
@@ -316,8 +316,8 @@ layout: intro
 </style>
 
 ---
-
-## layout: default
+layout: default
+---
 
 # Sample: 襲いかかる恐竜
 
@@ -326,8 +326,8 @@ layout: intro
 </div>
 
 ---
-
-## layout: section
+layout: section
+---
 
 # CSS だけで、FPS視点は実現できる
 

@@ -120,16 +120,28 @@ for (const t of talks) {
     writeFileSync(htmlPath, html);
     console.log("  + OGP meta injected");
   }
+  t.hasOg = existsSync(ogPng); // 一覧カードのサムネ有無に使う
 }
 
 rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時親を除去
 
-// Root index linking to every deck
-const items = talks
+// Root index: 全デッキをカードのグリッドで並べる
+const cards = talks
   .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
   .map((t) => {
     const meta = [t.date, t.event].filter(Boolean).map(esc).join(" · ");
-    return `    <li><a href="${t.base}">${esc(t.title)}</a>${meta ? `<span>${meta}</span>` : ""}</li>`;
+    // og.png は相対参照（同一オリジンなのでドメイン非依存）。無ければタイトルの
+    // プレースホルダを出す。
+    const thumb = t.hasOg
+      ? `<img class="thumb" src="${t.base}og.png" alt="" loading="lazy">`
+      : `<div class="thumb thumb-ph"><span>${esc(t.title)}</span></div>`;
+    return `      <a class="card" href="${t.base}">
+        ${thumb}
+        <div class="body">
+          <h2>${esc(t.title)}</h2>
+          ${meta ? `<p class="meta">${meta}</p>` : ""}
+        </div>
+      </a>`;
   })
   .join("\n");
 
@@ -142,20 +154,34 @@ writeFileSync(
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>daitasu slides</title>
 <style>
-  body { font-family: system-ui, sans-serif; max-width: 720px; margin: 4rem auto; padding: 0 1.5rem; color: #1a1a1a; }
-  h1 { font-size: 1.5rem; }
-  ul { list-style: none; padding: 0; }
-  li { padding: 0.9rem 0; border-bottom: 1px solid #e5e7eb; }
-  a { color: #4a90d9; text-decoration: none; font-weight: 600; }
-  a:hover { text-decoration: underline; }
-  span { display: block; color: #6b7280; font-size: 0.85rem; margin-top: 0.2rem; }
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; max-width: 1080px; margin: 0 auto; padding: 3rem 1.5rem 5rem; color: #1a1a1a; background: #fff; }
+  h1 { font-size: 1.6rem; margin: 0 0 1.8rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.4rem; }
+  .card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; background: #fff; transition: transform .15s ease, box-shadow .15s ease; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(30, 64, 128, .45); }
+  .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #eef4fb; border-bottom: 1px solid #e5e7eb; }
+  .thumb-ph { display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; background: linear-gradient(135deg, #eaf3fc, #f7fafd); }
+  .thumb-ph span { font-weight: 700; font-size: .95rem; color: #3a6099; }
+  .body { padding: .9rem 1.1rem 1.1rem; }
+  .body h2 { font-size: 1.02rem; line-height: 1.4; margin: 0; font-weight: 700; }
+  .meta { color: #6b7280; font-size: .82rem; margin: .5rem 0 0; }
+  @media (prefers-color-scheme: dark) {
+    body { color: #e7ebf2; background: #0f1115; }
+    .card { background: #171a21; border-color: #262b35; }
+    .thumb { background: #1c2530; border-color: #262b35; }
+    .thumb-ph { background: linear-gradient(135deg, #1a2331, #141821); }
+    .thumb-ph span { color: #8fb4e6; }
+    .meta { color: #98a2b3; }
+  }
 </style>
 </head>
 <body>
   <h1>daitasu slides</h1>
-  <ul>
-${items}
-  </ul>
+  <div class="grid">
+${cards}
+  </div>
 </body>
 </html>
 `,
