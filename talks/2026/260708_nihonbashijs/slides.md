@@ -442,12 +442,11 @@ td:nth-child(3) { background: #fdf1ea; }
 
 <div class="mt-6 text-lg">
 
-- Generative UI = LLM が**その場で UI を生成**して返すアプローチ
+- AIがUIを設計する時代になった
 - json-render / A2UI は **JSON スキーマの制約**で AI の誤りを抑え、**アプリに統合された UI** を返す
 - 逐次描画の実現思想は**二者二様**
   - **json-render** = RFC 6902 の JSON Patch を 1 行ずつ適用し、**node 単位で spec を育てる**（粒度が細かい）
   - **A2UI** = 構造(`updateComponents`)とデータ(`updateDataModel`)を**分離**し、粒度は送り方しだい
-- どちらも「じわじわ生える」体験は作れる。違いは **粒度と分離の思想**
+- これらの設計の考え方をプロダクト転用できると、**UIをユーザーが動的に組める体験**を提供できうる
 - 逐次描画の仕組みはまだ発展途上。**今後いろんなアプローチが出てきそう**で楽しみ
-
 </div>
