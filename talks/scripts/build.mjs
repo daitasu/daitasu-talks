@@ -2,6 +2,7 @@ import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSy
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
+import { talks as talkList } from "../talks.config.ts";
 
 const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
 const REPO_ROOT = join(TALKS_DIR, "..");
@@ -40,7 +41,26 @@ const findSlides = (dir) => {
   return results;
 };
 
-const esc = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+
+// HTML 属性値の実体参照を戻す（fetch した og:title 用）。
+const unesc = (s) =>
+  String(s).replace(/&(amp|lt|gt|quot|#39|#x27);/g, (_, e) =>
+    ({ amp: "&", lt: "<", gt: ">", quot: '"', "#39": "'", "#x27": "'" })[e]);
+
+// URL から og:title / og:image を取得（属性順は両パターン許容）。best-effort。
+const fetchOg = async (url) => {
+  const pick = (html, prop) =>
+    html.match(new RegExp(`<meta[^>]+property=["']${prop}["'][^>]+content=["']([^"']*)["']`, "i"))?.[1] ??
+    html.match(new RegExp(`<meta[^>]+content=["']([^"']*)["'][^>]+property=["']${prop}["']`, "i"))?.[1];
+  try {
+    const html = await (await fetch(url, { redirect: "follow" })).text();
+    return { title: unesc(pick(html, "og:title") ?? ""), image: pick(html, "og:image") ?? "" };
+  } catch (e) {
+    console.warn(`  ! og 取得失敗 ${url}: ${e.message}`);
+    return {};
+  }
+};
 
 // PNG の IHDR から実寸を読む（先頭 24 byte、big-endian）。
 const pngSize = (p) => {
@@ -125,28 +145,43 @@ for (const t of talks) {
 
 rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時親を除去
 
-// Root index: 全デッキをカードのグリッドで並べる
-const cards = talks
-  .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
-  .map((t) => {
-    const meta = [
-      t.date && esc(t.date),
-      t.event && `<span class="ev">${esc(t.event)}</span>`,
-    ].filter(Boolean).join(" · ");
-    // og.png は相対参照（同一オリジンなのでドメイン非依存）。無ければタイトルの
-    // プレースホルダを出す。
-    const thumb = t.hasOg
-      ? `<img class="thumb" src="${t.base}og.png" alt="" loading="lazy">`
-      : `<div class="thumb thumb-ph"><span>${esc(t.title)}</span></div>`;
-    return `      <a class="card" href="${t.base}">
+// ---- 一覧カード: talks.config.ts を単一ソースに、slidev / speakerdeck を正規化 ----
+const deckBySlug = new Map(talks.map((d) => [`${d.year}/${d.slug}`, d]));
+
+// 各エントリを共通形 { href, title, date, event, image, external } に正規化
+const items = [];
+for (const t of talkList) {
+  if (t.kind === "slidev") {
+    const d = deckBySlug.get(t.slug);
+    if (!d) { console.warn(`  ! index: slidev slug 未検出 "${t.slug}"`); continue; }
+    // og.png は相対参照（同一オリジンなのでドメイン非依存）
+    items.push({ href: d.base, title: d.title, date: d.date, event: d.event, image: d.hasOg ? `${d.base}og.png` : "", external: false });
+  } else {
+    const og = t.title && t.image ? {} : await fetchOg(t.url); // 手動で両方揃っていれば fetch 不要
+    items.push({ href: t.url, title: t.title || og.title || t.url, date: t.date, event: t.event ?? "SpeakerDeck", image: t.image || og.image || "", external: true });
+  }
+}
+items.sort((a, b) => (b.date || "").localeCompare(a.date || "")); // 日付降順
+
+// presentational: 正規化済み item を 1 枚のカードに（slidev/speakerdeck 共通）
+const renderCard = (it) => {
+  const meta = [
+    it.date && esc(it.date),
+    it.event && `<span class="ev">${esc(it.event)}</span>`,
+  ].filter(Boolean).join(" · ");
+  const thumb = it.image
+    ? `<img class="thumb" src="${esc(it.image)}" alt="" loading="lazy">`
+    : `<div class="thumb thumb-ph"><span>${esc(it.title)}</span></div>`;
+  const ext = it.external ? ` target="_blank" rel="noopener"` : "";
+  return `      <a class="card" href="${esc(it.href)}"${ext}>
         ${thumb}
         <div class="body">
-          <h2>${esc(t.title)}</h2>
+          <h2>${esc(it.title)}</h2>
           ${meta ? `<p class="meta">${meta}</p>` : ""}
         </div>
       </a>`;
-  })
-  .join("\n");
+};
+const cards = items.map(renderCard).join("\n");
 
 writeFileSync(
   join(DIST, "index.html"),
