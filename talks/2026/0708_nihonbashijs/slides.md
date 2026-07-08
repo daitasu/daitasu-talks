@@ -307,7 +307,7 @@ layout: section
 
 ---
 
-# サーバは JSON Patch を 1 行ずつ流す
+# json-render: サーバは JSON Patch を 1 行ずつ流す
 
 <div class="mt-2 text-base">
 
@@ -331,7 +331,7 @@ layout: section
 
 ---
 
-# クライアントは届いた分だけ spec に積む
+# json-render: クライアントは届いた分だけ spec に積む
 
 <div class="mt-2 text-base">
 
