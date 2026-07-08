@@ -173,7 +173,9 @@ const renderCard = (it) => {
     ? `<img class="thumb" src="${esc(it.image)}" alt="" loading="lazy">`
     : `<div class="thumb thumb-ph"><span>${esc(it.title)}</span></div>`;
   const ext = it.external ? ` target="_blank" rel="noopener"` : "";
+  const badge = it.external ? `<span class="badge">Speakerdeck</span>` : "";
   return `      <a class="card" href="${esc(it.href)}"${ext}>
+        ${badge}
         ${thumb}
         <div class="body">
           <h2>${esc(it.title)}</h2>
@@ -216,13 +218,21 @@ writeFileSync(
   .lead { color: #6b7280; font-size: .92rem; margin: 0 0 2rem; }
   .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
   .card {
+    position: relative;
     display: flex; flex-direction: column; text-decoration: none; color: inherit;
-    border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; background: #fff;
+    border: 1px solid #e5e7eb; border-radius: 16px; background: #fff;
     box-shadow: 0 10px 30px -22px rgba(30, 64, 128, .35);
     transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
   }
   .card:hover { transform: translateY(-5px); border-color: rgba(74, 144, 217, .5); box-shadow: 0 22px 48px -22px rgba(30, 64, 128, .5); }
-  .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #eef4fb; border-bottom: 1px solid #e5e7eb; }
+  /* 角の枠にはみ出して重なる SpeakerDeck バッジ */
+  .badge {
+    position: absolute; top: -9px; left: -9px; z-index: 2;
+    background: #009287; color: #fff; font-size: .72rem; font-weight: 700;
+    padding: .24rem .62rem; border-radius: 7px; letter-spacing: .02em;
+    box-shadow: 0 5px 12px -4px rgba(0, 146, 135, .6);
+  }
+  .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #eef4fb; border-bottom: 1px solid #e5e7eb; border-radius: 15px 15px 0 0; }
   .thumb-ph { display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; background: linear-gradient(135deg, #eaf3fc, #f7fafd); }
   .thumb-ph span { font-weight: 700; font-size: .95rem; color: #3a6099; }
   .body { padding: 1rem 1.15rem 1.2rem; }
