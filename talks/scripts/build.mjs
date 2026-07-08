@@ -149,18 +149,18 @@ rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時
 const deckBySlug = new Map(talks.map((d) => [`${d.year}/${d.slug}`, d]));
 
 // 各エントリを共通形 { href, title, date, event, image, external } に正規化
-const items = [];
-for (const t of talkList) {
+// speakerdeck の og 取得は並列で。
+const items = (await Promise.all(talkList.map(async (t) => {
   if (t.kind === "slidev") {
     const d = deckBySlug.get(t.slug);
-    if (!d) { console.warn(`  ! index: slidev slug 未検出 "${t.slug}"`); continue; }
+    if (!d) { console.warn(`  ! index: slidev slug 未検出 "${t.slug}"`); return null; }
     // og.png は相対参照（同一オリジンなのでドメイン非依存）
-    items.push({ href: d.base, title: d.title, date: d.date, event: d.event, image: d.hasOg ? `${d.base}og.png` : "", external: false });
-  } else {
-    const og = t.title && t.image ? {} : await fetchOg(t.url); // 手動で両方揃っていれば fetch 不要
-    items.push({ href: t.url, title: t.title || og.title || t.url, date: t.date, event: t.event ?? "SpeakerDeck", image: t.image || og.image || "", external: true });
+    return { href: d.base, title: d.title, date: d.date, event: d.event, image: d.hasOg ? `${d.base}og.png` : "", external: false };
   }
-}
+  const og = t.title && t.image ? {} : await fetchOg(t.url); // 手動で両方揃っていれば fetch 不要
+  // event は任意。無指定なら空（バッジで SpeakerDeck と分かるため冗長にしない）
+  return { href: t.url, title: t.title || og.title || t.url, date: t.date, event: t.event ?? "", image: t.image || og.image || "", external: true };
+}))).filter(Boolean);
 items.sort((a, b) => (b.date || "").localeCompare(a.date || "")); // 日付降順
 
 // presentational: 正規化済み item を 1 枚のカードに（slidev/speakerdeck 共通）
