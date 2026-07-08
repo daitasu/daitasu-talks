@@ -2,7 +2,7 @@
 theme: ../../themes/daitasu
 colorSchema: light
 title: CSS だけでFPS視点スクロールアクションを実現する
-description: 2026年7月10日 Tamagawa.dev #2」における登壇資料です。
+description: 2026年7月10日 「Tamagawa.dev #2」における登壇資料です。
 talk:
   date: "2026-07-10"
   event: "Tamagawa.dev #2"
