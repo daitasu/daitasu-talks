@@ -449,10 +449,10 @@ td:nth-child(3) { background: #fdf1ea; }
 <div class="mt-6 text-lg">
 
 - AIがUIを設計する時代になった
-- json-render / A2UI は **JSON スキーマの制約**で AI の誤りを抑え、**アプリに統合された UI** を返す
 - 逐次描画の実現思想
   - **json-render** = RFC 6902 の JSON Patch を 1 行ずつ適用し、**node 単位で spec を修正**
-  - **A2UI** = 構造(`updateComponents`)とデータ(`updateDataModel`)を**分離**し、粒度は送り方しだい
-- これらの設計の考え方をプロダクト転用できると、**UIをユーザーが動的に組める体験**を提供できうる
+  - **A2UI** = 構造(`updateComponents`)とデータ(`updateDataModel`)を**分離**し、粒度は送り方次第
+- どちらもAIが見る制約(catalog)、実際のUI(component)、AIが出す中間表現(spec)の構図になっている
+  - これらの設計の考え方をプロダクト転用できると、**UIをユーザーが動的に組める体験**を提供できうる
 - 逐次描画の仕組みはまだ発展途上。**今後いろんなアプローチが出てきそう**で楽しみ
 </div>
