@@ -8,9 +8,9 @@ const REPO_ROOT = join(TALKS_DIR, "..");
 const DIST = join(REPO_ROOT, "dist");
 // 本番ドメイン。OGP の og:image は絶対 URL 必須なのでここを前置する。
 const SITE = "https://talks.daitasu.work";
-// OGP 画像（表紙 PNG）の生成は headless ブラウザが要る。CI では必ず生成し、
-// ローカルは既定でスキップ（毎回の just build を遅くしない）。OG=1 で強制。
-const GEN_OG = !!(process.env.CI || process.env.OG);
+// OGP 画像（表紙 PNG）の生成。既定で生成する（本番と同じ成果物をローカルでも
+// 確認できるように）。速く回したいときは SKIP_OG=1 でスキップ。要 headless ブラウザ。
+const GEN_OG = !process.env.SKIP_OG;
 
 const findSlides = (dir) => {
   const results = [];
@@ -129,7 +129,10 @@ rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時
 const cards = talks
   .sort((a, b) => (b.date || "").localeCompare(a.date || ""))
   .map((t) => {
-    const meta = [t.date, t.event].filter(Boolean).map(esc).join(" · ");
+    const meta = [
+      t.date && esc(t.date),
+      t.event && `<span class="ev">${esc(t.event)}</span>`,
+    ].filter(Boolean).join(" · ");
     // og.png は相対参照（同一オリジンなのでドメイン非依存）。無ければタイトルの
     // プレースホルダを出す。
     const thumb = t.hasOg
@@ -154,33 +157,52 @@ writeFileSync(
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>daitasu slides</title>
 <style>
-  :root { color-scheme: light dark; }
   * { box-sizing: border-box; }
-  body { font-family: system-ui, sans-serif; max-width: 1080px; margin: 0 auto; padding: 3rem 1.5rem 5rem; color: #1a1a1a; background: #fff; }
-  h1 { font-size: 1.6rem; margin: 0 0 1.8rem; }
-  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.4rem; }
-  .card { display: flex; flex-direction: column; text-decoration: none; color: inherit; border: 1px solid #e5e7eb; border-radius: 14px; overflow: hidden; background: #fff; transition: transform .15s ease, box-shadow .15s ease; }
-  .card:hover { transform: translateY(-4px); box-shadow: 0 18px 40px -20px rgba(30, 64, 128, .45); }
+  /* スライドテーマ（daitasu）に合わせた白×青の海イメージ */
+  body {
+    font-family: "Zen Kaku Gothic New", system-ui, sans-serif; color: #1a1a1a;
+    margin: 0; min-height: 100vh; padding: 3.5rem 1.5rem 8rem;
+    background-color: #fff;
+    background-image:
+      radial-gradient(760px 460px at 90% -14%, rgba(74, 144, 217, 0.16), transparent 62%),
+      radial-gradient(620px 420px at -12% 40%, rgba(74, 144, 217, 0.09), transparent 60%);
+    background-repeat: no-repeat;
+  }
+  /* 下端の波（cover と同じモチーフ） */
+  body::after {
+    content: ""; position: fixed; left: 0; right: 0; bottom: 0; height: 120px; z-index: 0; pointer-events: none;
+    background-repeat: no-repeat; background-position: bottom; background-size: 100% 100%;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 58 C220 98 420 18 660 52 C900 86 1140 22 1440 60 L1440 120 L0 120 Z' fill='%234a90d9' fill-opacity='0.22'/%3E%3C/svg%3E"),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 120' preserveAspectRatio='none'%3E%3Cpath d='M0 74 C260 34 520 104 780 68 C1020 36 1240 98 1440 66 L1440 120 L0 120 Z' fill='%234a90d9' fill-opacity='0.10'/%3E%3C/svg%3E");
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; position: relative; z-index: 1; }
+  h1 { font-size: 1.7rem; margin: 0 0 0.4rem; letter-spacing: .01em; }
+  .lead { color: #6b7280; font-size: .92rem; margin: 0 0 2rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.5rem; }
+  .card {
+    display: flex; flex-direction: column; text-decoration: none; color: inherit;
+    border: 1px solid #e5e7eb; border-radius: 16px; overflow: hidden; background: #fff;
+    box-shadow: 0 10px 30px -22px rgba(30, 64, 128, .35);
+    transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+  }
+  .card:hover { transform: translateY(-5px); border-color: rgba(74, 144, 217, .5); box-shadow: 0 22px 48px -22px rgba(30, 64, 128, .5); }
   .thumb { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; display: block; background: #eef4fb; border-bottom: 1px solid #e5e7eb; }
   .thumb-ph { display: flex; align-items: center; justify-content: center; padding: 1rem; text-align: center; background: linear-gradient(135deg, #eaf3fc, #f7fafd); }
   .thumb-ph span { font-weight: 700; font-size: .95rem; color: #3a6099; }
-  .body { padding: .9rem 1.1rem 1.1rem; }
-  .body h2 { font-size: 1.02rem; line-height: 1.4; margin: 0; font-weight: 700; }
-  .meta { color: #6b7280; font-size: .82rem; margin: .5rem 0 0; }
-  @media (prefers-color-scheme: dark) {
-    body { color: #e7ebf2; background: #0f1115; }
-    .card { background: #171a21; border-color: #262b35; }
-    .thumb { background: #1c2530; border-color: #262b35; }
-    .thumb-ph { background: linear-gradient(135deg, #1a2331, #141821); }
-    .thumb-ph span { color: #8fb4e6; }
-    .meta { color: #98a2b3; }
-  }
+  .body { padding: 1rem 1.15rem 1.2rem; }
+  .body h2 { font-size: 1.02rem; line-height: 1.45; margin: 0; font-weight: 700; }
+  .meta { color: #6b7280; font-size: .82rem; margin: .55rem 0 0; }
+  .meta .ev { color: #4a90d9; font-weight: 600; }
 </style>
 </head>
 <body>
-  <h1>daitasu slides</h1>
-  <div class="grid">
+  <div class="wrap">
+    <h1>daitasu slides</h1>
+    <p class="lead">登壇スライド一覧</p>
+    <div class="grid">
 ${cards}
+    </div>
   </div>
 </body>
 </html>
