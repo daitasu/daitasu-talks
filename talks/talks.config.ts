@@ -8,6 +8,9 @@ export type Talk =
       /** talks/<slug>/slides.md の <slug>（例: "2026/0708_nihonbashijs"）。
        *  title / date / event / OGP はデッキから自動解決するので書かない。 */
       slug: string;
+      /** "draft" は一覧に出さない（デッキ自体はビルドされ URL 直開きは可能）。
+       *  未指定は "shipped" 扱い。 */
+      status?: "draft" | "shipped";
     }
   | {
       kind: "speakerdeck";
@@ -24,7 +27,7 @@ export type Talk =
     };
 
 export const talks: Talk[] = [
-  { kind: "slidev", slug: "2026/0710_tamagawadev" },
+  { kind: "slidev", slug: "2026/0710_tamagawadev", status: "draft" },
   { kind: "slidev", slug: "2026/0708_nihonbashijs" },
   { kind: "slidev", slug: "2026/0612_tamadev" },
 

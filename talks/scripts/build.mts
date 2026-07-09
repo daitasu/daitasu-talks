@@ -348,8 +348,10 @@ for (const deck of decks) processDeck(deck);
 rmSync(join(DIST, ".og-tmp"), { recursive: true, force: true }); // 空の一時親を除去
 
 // talks.config.ts を単一ソースに、slidev / SpeakerDeck を正規化して日付降順で並べる。
+// slidev の draft は一覧から除外（デッキ自体はビルド済みで URL 直開きは可能）。
 const deckBySlug = new Map(decks.map((d) => [`${d.year}/${d.slug}`, d]));
-const cards = (await Promise.all(talkList.map((t) => toCard(t, deckBySlug))))
+const visible = talkList.filter((t) => !(t.kind === "slidev" && t.status === "draft"));
+const cards = (await Promise.all(visible.map((t) => toCard(t, deckBySlug))))
   .filter((c): c is Card => c !== null)
   .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
 
