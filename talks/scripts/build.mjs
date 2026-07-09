@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync } from "node:fs";
+import { readdirSync, readFileSync, statSync, existsSync, mkdirSync, writeFileSync, rmSync, copyFileSync, cpSync } from "node:fs";
 import { join, relative } from "node:path";
 import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
@@ -185,6 +185,32 @@ const renderCard = (it) => {
 };
 const cards = items.map(renderCard).join("\n");
 
+// talks/public/ を dist 直下へコピー（トップ用 OGP 画像などを配信）
+const ROOT_PUBLIC = join(TALKS_DIR, "public");
+if (existsSync(ROOT_PUBLIC)) cpSync(ROOT_PUBLIC, DIST, { recursive: true });
+
+// トップ一覧の OGP meta（daitasu-talks-ogp.png があれば注入）
+const INDEX_DESC = "daitasu の登壇スライドまとめ";
+let indexMeta = `<meta name="description" content="${INDEX_DESC}">`;
+const indexOg = join(DIST, "daitasu-talks-ogp.png");
+if (existsSync(indexOg)) {
+  const { w, h } = pngSize(indexOg);
+  const img = `${SITE}/daitasu-talks-ogp.png`;
+  indexMeta += "\n" + [
+    `<meta property="og:type" content="website">`,
+    `<meta property="og:url" content="${SITE}/">`,
+    `<meta property="og:title" content="daitasu slides">`,
+    `<meta property="og:description" content="${INDEX_DESC}">`,
+    `<meta name="twitter:title" content="daitasu slides">`,
+    `<meta name="twitter:description" content="${INDEX_DESC}">`,
+    `<meta property="og:image" content="${img}">`,
+    `<meta property="og:image:width" content="${w}">`,
+    `<meta property="og:image:height" content="${h}">`,
+    `<meta name="twitter:card" content="summary_large_image">`,
+    `<meta name="twitter:image" content="${img}">`,
+  ].join("\n");
+}
+
 writeFileSync(
   join(DIST, "index.html"),
   `<!doctype html>
@@ -193,6 +219,7 @@ writeFileSync(
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>daitasu slides</title>
+${indexMeta}
 <style>
   * { box-sizing: border-box; }
   /* スライドテーマ（daitasu）に合わせた白×青の海イメージ */
