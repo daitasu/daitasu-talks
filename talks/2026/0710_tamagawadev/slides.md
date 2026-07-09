@@ -11,48 +11,19 @@ fonts:
   mono: JetBrains Mono
   weights: "300,400,500,700"
 layout: cover
-dino: false
+dino: /daitasaurus-bolt-lord.png
 ---
 
-# CSS だけで<br>FPS視点スクロールアクションを実現する
+# CSS だけでFPS視点<br>スクロールアクションを実現する
 
 <div>
   <span class="cover-eyebrow">Tamagawa.dev #2 ・ 2026.07.10</span>
   <span class="cover-by">@daitasu</span>
 </div>
- 
----
-layout: intro
----
 
-<div class="flex items-center gap-12">
-  <div>
-    <img src="https://avatars.githubusercontent.com/u/28728602" class="w-48 h-48 rounded-full" style="box-shadow: 0 18px 44px -18px rgba(30, 64, 128, 0.45); background: #fff;" />
-    <div class="mt-3 flex flex-col items-center">
-      <p>X</p>
-      <img :src="$public('/qrcode_x.com.png')" class="mt-1 rounded-1 h-24" />
-    </div>
-  </div>
-  <div class="text-xl space-y-2">
-    <h2 class="!text-2xl">自己紹介</h2>
-    <div>
-      <p>Name:</p>
-      <p class="ml-3">@daitasu</p>
-    </div>
-    <div>
-      <p>Belong to:</p>
-      <p class="ml-3">コミューン株式会社</p>
-    </div>
-    <div>
-      <p>Favorite:</p>
-      <p class="ml-3">TypeScript, Sauna, Dinosaurs</p>
-    </div>
-    <div>
-      <p>Community:</p>
-      <p class="ml-3">Tachikawa.any</p>
-    </div>
-  </div>
-</div>
+<style>
+:global(.slidev-layout.cover .dino-img) { height: 18rem !important; bottom: 1.5rem !important; right: 1.5rem !important; }
+</style>
 
 ---
 
