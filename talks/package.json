@@ -9,7 +9,7 @@
     "list": "node scripts/list.mjs",
     "dev": "node scripts/dev.mjs",
     "export": "node scripts/export.mjs",
-    "build": "node scripts/build.mjs"
+    "build": "node scripts/build.mts"
   },
   "dependencies": {
     "@slidev/cli": "^52.16.0",
