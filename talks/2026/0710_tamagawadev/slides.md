@@ -39,46 +39,18 @@ dino: /daitasaurus-bolt-lord.png
 </div>
 
 ---
-
-# animation-timeline とは
-
-<div class="mt-6 text-lg">
-
-- CSSアニメーションの進行を制御するためのtimeline を構築するCSSプロパティ
-- スクロール駆動アニメーションをCSSのみで実現できる
-- スクロールできるコンテナー内のスクロール位置の始点〜終点まででアニメーションを作成する
-
-```css
-@keyframes scroll-scale {
-  from {
-    scale: 0.5 1;
-  }
-  to {
-    scale: 1 1;
-  }
-}
-
-.container {
-  animation: scroll-scale linear;
-  animation-timeline: scroll();
-}
-```
-
-</div>
-
----
 layout: two-cols
 ---
 
-# Sample: animation-timeline: view()
+# animation-timeline とは
 
 ::left::
 
 <div class="text-sm">
 
-- `view()` = **要素自身がビューポートを横切る進捗**でアニメを駆動
-- `animation-range` で「どの区間で animate するか」を指定
-- shorthand の `animation` は timeline を auto に戻すので、**timeline / range は後に書く**
+- アニメの進行を制御する timeline を作る CSS プロパティ
+- **スクロール駆動アニメーションを CSS だけ**で実現できる
+- スクロール位置の**始点〜終点**でアニメを進める
 
 ```css
 @keyframes reveal {
@@ -102,7 +74,11 @@ layout: two-cols
 
 ::right::
 
-<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" height="380px" class="mt-2" />
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/001-fade-in/" height="360px" class="mt-2" />
+
+<style>
+.slidev-code, .slidev-code * { font-size: 11px !important; line-height: 1.5 !important; }
+</style>
 
 ---
 layout: two-cols
@@ -115,7 +91,7 @@ layout: two-cols
 <div class="text-sm">
 
 - `scroll(root)` = **ページ全体の縦スクロール進捗 0〜100%** をタイムライン化
-- `scaleX` を 0→1 で伸ばすだけ。**レイアウトを起こさず GPU 合成**で軽い
+- `scaleX` を伸ばすだけ。**レイアウト再計算が起きず**軽い
 - 読み進みバーや円形インジケーターなど「**進捗 UI**」に最適
 
 ```css
@@ -140,7 +116,11 @@ layout: two-cols
 
 ::right::
 
-<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="380px" class="mt-2" />
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="360px" class="mt-2" />
+
+<style>
+.slidev-code, .slidev-code * { font-size: 10.5px !important; line-height: 1.45 !important; }
+</style>
 
 ---
 
@@ -151,7 +131,6 @@ layout: two-cols
 - `perspective` … **カメラの焦点距離**。小さいほど広角＝遠近が強調され、没入感が出る
 - `transform-style: preserve-3d` … 子要素を平面に潰さず **3D 空間に配置**する宣言
 - `translateZ` / `rotateX・Y` … **奥行き方向の移動・回転**。面を組めば立体になる
-- スクロール非依存でも成立する。**あとで scroll と掛け合わせる**のが今日の本題
 
 </div>
 
@@ -165,9 +144,9 @@ layout: two-cols
 
 <div class="text-sm">
 
-- 6 枚の面を **回転 → `translateZ`（一辺の半分）** で押し出して組む
+- 6 枚の面を **回転 → `translateZ`（一辺の半分）** で押し出す
 - 親に `perspective`、立方体に `preserve-3d`
-- あとは `@keyframes` で **rotateX/Y を回し続ける**だけ（スクロール非依存）
+- あとは `@keyframes` で **rotateX/Y を回し続ける**だけ
 
 ```css
 .scene {
@@ -178,19 +157,11 @@ layout: two-cols
   animation: tumble 14s linear infinite;
 }
 @keyframes tumble {
-  to {
-    transform: rotateX(360deg) rotateY(360deg);
-  }
+  to { transform: rotateX(360deg) rotateY(360deg); }
 }
-.front {
-  transform: translateZ(100px);
-}
-.right {
-  transform: rotateY(90deg) translateZ(100px);
-}
-.top {
-  transform: rotateX(90deg) translateZ(100px);
-}
+.front { transform: translateZ(100px); }
+.right { transform: rotateY(90deg) translateZ(100px); }
+.top   { transform: rotateX(90deg) translateZ(100px); }
 /* back / left / bottom も同様に組む */
 ```
 
@@ -199,6 +170,10 @@ layout: two-cols
 ::right::
 
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/004-3d-cube/" height="380px" class="mt-2" />
+
+<style>
+.slidev-code, .slidev-code * { font-size: 11px !important; line-height: 1.5 !important; }
+</style>
 
 ---
 layout: section
@@ -231,60 +206,52 @@ layout: two-cols
 <img :src="$public('/fps_sample.jpeg')" class="rounded-xl mt-2" style="box-shadow: 0 24px 60px -28px rgba(30, 64, 128, 0.5), 0 0 0 1px rgba(74, 144, 217, 0.14);" />
 
 ---
+layout: two-cols
+---
 
-# やってみた: FPS 視点の組み立て方
+# やってみた：FPS視点「迫りくる恐竜」
 
-<div class="mt-4 text-base">
+::left::
 
-- **カメラ** = 画面いっぱいに `position: fixed` した `perspective` 付きビューポート
-- 奥（`-Z`）にオブジェクトを置き、`scroll(root)` 連動で `.world` を **`translateZ` 前進**
-- スクロールするほど手前に迫る → **一人称で突っ込んでいく**感覚に
-- 実 DOM で足すのは **距離を稼ぐ縦長ダミー（`height: 1000vh`）だけ**
+<div class="text-sm">
+
+- **カメラ** = `position: fixed` + `perspective`
+- 奥の `.world` を `scroll(root)` で **`translateZ` 前進**
+- 進むほど迫る → **一人称で突っ込む**感覚
+- 実 DOM は **縦長ダミー（`1000vh`）だけ**
 
 ```css
-.viewport {
-  /* カメラ */
+.viewport {        /* カメラ */
   position: fixed;
   inset: 0;
   perspective: 760px;
 }
-.world {
-  /* 世界ごと手前へ前進 */
+.world {           /* 世界ごと前進 */
   transform-style: preserve-3d;
   animation: fly linear both;
   animation-timeline: scroll(root);
 }
 @keyframes fly {
-  to {
-    transform: translateZ(8200px);
-  }
+  to { transform: translateZ(8200px); }
 }
-.scroll-track {
-  height: 1000vh;
-} /* スクロール距離を稼ぐダミー */
+.scroll-track { height: 1000vh; } /* 距離稼ぎ */
 ```
 
 </div>
 
+::right::
+
+<DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/005-fps-flythrough/" height="380px" class="mt-2" />
+
 <style>
-.slidev-code, .slidev-code * { font-size: 12px !important; line-height: 1.5 !important; }
+.slidev-code, .slidev-code * { font-size: 11px !important; line-height: 1.5 !important; }
 </style>
-
----
-layout: default
----
-
-# Sample: 襲いかかる恐竜
-
-<div class="max-w-4xl mx-auto">
-  <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/005-fps-flythrough/" height="380px" class="mt-2" />
-</div>
 
 ---
 
 # CSS だけで、FPS視点は実現できる　👍️
 
-<div class="mt-6 text-lg">
+<div class="mt-4 text-base">
 
 - スクロール = カメラ操作の FPS 体験が **CSS だけ**で作れる
 - 肝は **scroll-driven animation（`scroll()` / `view()`）× 3D transform**
@@ -293,4 +260,10 @@ layout: default
 
 </div>
 
-<MessageBox>酔いに注意</MessageBox>
+<div class="flex items-center justify-center gap-10 mt-3">
+  <GithubCard owner="daitasu" repo="css-scroll-fps" desc="CSS だけで作る FPS 視点スクロールアクションの実験場" />
+  <div class="flex flex-col items-center gap-2">
+    <span class="text-base font-bold color-gray">デモサイト</span>
+    <img :src="$public('/qrcode_scroll_driven_playground.png')" class="rounded-lg w-44 h-44" />
+  </div>
+</div>
