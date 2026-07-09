@@ -68,12 +68,6 @@ layout: intro
 </div>
 
 ---
-layout: section
----
-
-# animation-timeline
-
----
 
 # animation-timeline とは
 
@@ -178,12 +172,6 @@ layout: two-cols
 <DemoFrame src="https://daitasu.github.io/css-scroll-fps/patterns/002-progress-bar/" height="380px" class="mt-2" />
 
 ---
-layout: section
----
-
-# 3D Transform
-
----
 
 # 3D Transform とは?
 
@@ -246,12 +234,8 @@ layout: section
 ---
 
 # これはもしや
-
----
-layout: section
----
-
 # CSS だけでFPS視点を作れるのでは？　🙄
+
 
 ---
 layout: two-cols
@@ -326,14 +310,8 @@ layout: default
 </div>
 
 ---
-layout: section
----
 
-# CSS だけで、FPS視点は実現できる
-
----
-
-# まとめ
+# CSS だけで、FPS視点は実現できる　👍️
 
 <div class="mt-6 text-lg">
 
