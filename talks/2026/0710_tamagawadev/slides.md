@@ -184,12 +184,8 @@ layout: section
 
 
 ---
-layout: two-cols
----
 
 # FPS視点スクロールアクションとは
-
-::left::
 
 <div class="text-base mt-2">
 
@@ -200,10 +196,6 @@ layout: two-cols
   - ストーリーテリング LP、ポートフォリオ、ゲーム風の導入に相性がいい
 
 </div>
-
-::right::
-
-<img :src="$public('/fps_sample.jpeg')" class="rounded-xl mt-2" style="box-shadow: 0 24px 60px -28px rgba(30, 64, 128, 0.5), 0 0 0 1px rgba(74, 144, 217, 0.14);" />
 
 ---
 layout: two-cols
