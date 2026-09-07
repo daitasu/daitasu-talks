@@ -2,10 +2,10 @@
 theme: ../../themes/daitasu
 colorSchema: light
 title: AI がUIをつくる時代の制約を考える
-description: 2026年9月7日 「gotanda.ts」における登壇資料です。
+description: 2026年9月7日 「五反田.ts」における登壇資料です。
 talk:
   date: "2026-09-07"
-  event: "gotanda.ts"
+  event: "五反田.ts"
 fonts:
   sans: Zen Kaku Gothic New
   mono: JetBrains Mono
