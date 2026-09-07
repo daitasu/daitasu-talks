@@ -4,6 +4,7 @@
   "slidev": {
     "colorSchema": "both",
     "defaults": {
+      "favicon": "/favicon.png",
       "fonts": {
         "sans": "Noto Sans JP, Inter, sans-serif",
         "mono": "Fira Code, monospace"

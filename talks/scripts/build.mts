@@ -243,7 +243,7 @@ const renderCard = (c: Card): string => {
 const buildIndexHead = (): string => {
   if (existsSync(ROOT_PUBLIC)) cpSync(ROOT_PUBLIC, DIST, { recursive: true });
 
-  let head = `<meta name="description" content="${INDEX_DESC}">`;
+  let head = `<link rel="icon" href="/favicon.png">\n<meta name="description" content="${INDEX_DESC}">`;
   const ogPng = join(DIST, "daitasu-talks-ogp.png");
   if (existsSync(ogPng)) {
     const { w, h } = pngSize(ogPng);
