@@ -19,6 +19,7 @@ dino: /daitasaurus-wind-lord.png
   <span class="cover-eyebrow">五反田.ts ・ 2026.09.07</span>
   <span class="cover-by">@daitasu</span>
 </div>
+<p class="mt-6 text-xs" style="color: var(--dt-text-muted); opacity: 0.75;">※ 枠空いたので、飛び込みLTとして今日拵えました</p>
 
 <style>
 :global(.slidev-layout.cover .dino-img) {
