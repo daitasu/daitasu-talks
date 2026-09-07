@@ -65,6 +65,10 @@ layout: intro
       <p class="ml-3">TypeScript, Onsen, Dinosaurs</p>
     </div>
     <div>
+      <p>Career:</p>
+      <p class="ml-3">SIer(2年)→ Frontend (3年) → EM (4年) → IC</p>
+    </div>
+    <div>
       <p>Community:</p>
       <a class="ml-3" href="https://tachikawaany.connpass.com/" target="_blank">
         Tachikawa.any
