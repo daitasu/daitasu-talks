@@ -113,65 +113,64 @@ layout: intro
 
 # なんで出社回帰が起きるのか？
 
-<div class="flex items-stretch justify-center gap-3 mt-10">
-  <div class="step-card">
-    <div class="step-no">1</div>
-    <div class="step-title">大きな固定費</div>
-    <div class="step-body">経営から見ると、<b>人件費・オフィス代</b>は大きな固定費</div>
-  </div>
-  <div class="step-arrow">→</div>
-  <div class="step-card">
-    <div class="step-no">2</div>
-    <div class="step-title">利益率を最大化したい</div>
-    <div class="step-body">かけた固定費に対して、<b>成果は当然最大化したい</b></div>
-  </div>
-  <div class="step-arrow">→</div>
-  <div class="step-card">
-    <div class="step-no">3</div>
-    <div class="step-title">でも、見えない</div>
-    <div class="step-body">リモートだと、その成果が<b>本当に出ているのか見えない</b></div>
-  </div>
+<div class="flex items-center justify-center gap-3 mt-2 text-base">
+  <div class="chain">経営から見ると、<b>人件費・オフィス代</b>は大きな固定費</div>
+  <div class="chain-arrow">→</div>
+  <div class="chain">かけた固定費に対して、<b>成果は当然最大化したい</b></div>
+  <div class="chain-arrow">→</div>
+  <div class="chain chain-accent">でも、リモートだと<br><b>それが見えない</b></div>
 </div>
 
-<div class="mt-10 text-lg text-center color-gray">
-  「組織」を見る人から見ると、<b>「見えない」は怖い</b>
-</div>
+<div class="mt-6 text-lg font-bold text-center">「見えない」は、<span class="accent">プロジェクトの進捗遅延や炎上、誤った意思決定</span>につながる</div>
 
-<style>
-.step-card { flex: 1; max-width: 260px; padding: 1.2rem 1.3rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.25); box-shadow: 0 16px 36px -22px rgba(30, 64, 128, 0.34); }
-.step-no { width: 2rem; height: 2rem; border-radius: 999px; background: #4a90d9; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-.step-title { margin-top: 0.7rem; font-size: 1.15rem; font-weight: 700; }
-.step-body { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; color: #4b5563; }
-.step-arrow { align-self: center; font-size: 2rem; color: #4a90d9; font-weight: 700; }
-</style>
-
----
-
-# <span class="accent">「見えない」</span>ことでの弊害
-
-<div class="flex items-stretch justify-center gap-4 mt-10">
-  <div class="fear-card">
-    <div class="fear-title">作業パフォーマンス</div>
-    <div class="fear-body">今どこまで進んでいて、どこで詰まっているのか分からない</div>
+<div class="worry">
+  <div class="moya moya-left">
+    <div class="moya-title">作業パフォーマンス</div>
+    <div class="moya-body">どこで詰まっているのか分からない</div>
   </div>
-  <div class="fear-card">
-    <div class="fear-title">士気の変化</div>
-    <div class="fear-body">元気がない、疲れている、の変化に気づけない</div>
+  <div class="moya moya-top">
+    <div class="moya-title">見えない士気変化</div>
+    <div class="moya-body">元気がない、疲れている、に気づけない</div>
   </div>
-  <div class="fear-card">
-    <div class="fear-title">認識誤差</div>
-    <div class="fear-body">リモート会議では、表情や空気感から<b>微細な不安</b>を拾いにくい</div>
+  <div class="moya moya-right">
+    <div class="moya-title">認識誤差</div>
+    <div class="moya-body">会議越しでは、微細な不安を拾いにくい</div>
   </div>
-</div>
-
-<div class="mt-10 text-lg text-center color-gray">
-  「見えない」は、<b>プロジェクトの進捗遅延や炎上、誤った意思決定</b>につながる
+  <svg class="stick" viewBox="0 0 120 150" fill="none" stroke="#374151" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 14 q5 -8 10 0 t10 0 t10 0 t10 0" stroke="#9ca3af" stroke-width="3" />
+    <circle cx="60" cy="42" r="16" />
+    <path d="M53 40 l4 3 M67 40 l-4 3" stroke-width="3" />
+    <path d="M53 52 q7 -5 14 0" stroke-width="3" />
+    <path d="M82 34 q4 6 0 9 q-4 -3 0 -9 z" fill="#93c5fd" stroke="#60a5fa" stroke-width="2" />
+    <line x1="60" y1="58" x2="60" y2="105" />
+    <path d="M60 70 L38 58 L46 34" />
+    <path d="M60 70 L82 58 L74 34" />
+    <path d="M60 105 L44 140" />
+    <path d="M60 105 L76 140" />
+  </svg>
 </div>
 
 <style>
-.fear-card { flex: 1; max-width: 260px; padding: 1.2rem 1.3rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.25); box-shadow: 0 16px 36px -22px rgba(30, 64, 128, 0.34); }
-.fear-title { font-size: 1.15rem; font-weight: 700; }
-.fear-body { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; color: #4b5563; }
+.chain { flex: 1; max-width: 270px; padding: 0.7rem 1rem; border-radius: 999px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.25); font-size: 0.85rem; line-height: 1.5; text-align: center; }
+.chain-accent { border-color: #4a90d9; background: #eaf2fc; }
+.chain-arrow { font-size: 1.5rem; color: #4a90d9; font-weight: 700; }
+.worry { position: relative; height: 13rem; margin-top: 0.8rem; }
+.stick { position: absolute; left: 50%; bottom: 0; width: 6rem; transform: translateX(-50%); }
+.moya { position: absolute; padding: 0.6rem 1.4rem; background: #f3f4f6; border: 2px solid #9ca3af; border-radius: 48% 52% 45% 55% / 60% 45% 55% 40%; text-align: center; white-space: nowrap; }
+.moya::before, .moya::after { content: ""; position: absolute; background: #f3f4f6; border: 2px solid #9ca3af; border-radius: 50%; }
+.moya::before { width: 0.9rem; height: 0.9rem; }
+.moya::after { width: 0.5rem; height: 0.5rem; }
+.moya-title { font-size: 0.95rem; font-weight: 700; color: #374151; }
+.moya-body { margin-top: 0.1rem; font-size: 0.75rem; line-height: 1.5; color: #4b5563; }
+.moya-top { right: 55%; top: 0; transform: rotate(-3deg); }
+.moya-top::before { right: -0.6rem; bottom: -1rem; }
+.moya-top::after { display: block; right: -1.5rem; bottom: -1.8rem; }
+.moya-right { left: 57%; top: 2.8rem; transform: rotate(2deg); }
+.moya-right::before { left: -1.2rem; bottom: 0.2rem; }
+.moya-right::after { left: -2.1rem; bottom: -0.4rem; }
+.moya-left { right: 60%; top: 8.3rem; transform: rotate(-1.5deg); }
+.moya-left::before { right: -1.3rem; top: 0.1rem; }
+.moya-left::after { right: -2.2rem; top: -0.5rem; }
 </style>
 
 ---
@@ -214,65 +213,60 @@ layout: two-cols
 
 # 「コミュニケーション」の logging
 
-<div class="mt-8 text-xl">
+<div class="mt-6 text-xl">
 
-- **times**：今やっていること、詰まっていることを独り言のように流す
-- **日報**：やったこと・明日やることを 1日の終わりに残す
-- **Slack での定期的な宣言**：「今日はこれをやります」を朝に宣言する
+- **times**：今やっていること、詰まっていることを、作業の合間に流す
+- **日報**：やったこと・次にやることを残し、**見通し**を共有する
+- **Slack での定期的な宣言**：「今日はここまでやります」を朝に宣言する
+- **小さな報連相**：相談は待たずに、**早めに小さく**出す
 
 </div>
 
-<div class="mt-10 text-lg text-center color-gray">
-  お迎えで早めに抜ける日も、<b>何をやったかが残っていれば</b>気まずくない
+<div class="mt-6 text-lg text-center color-gray">
+  育児で時間の制約があっても、<b>見通しが出続けていれば、周りは安心できる</b>
 </div>
 
+<div class="mt-4 text-center" style="font-size: 0.7rem; color: #6b7280;">
+  参考: <a href="https://blog.pinkumohikan.com/entry/for-continuing-to-remote-work" target="_blank">リモートワークを続けるためにやるべきこと（モヒカン技術ブログ）</a>
+</div>
+---
+layout: two-cols
 ---
 
 # 「自身」の logging
 
-<div class="text-sm color-gray">EM 時代に「この人優秀だな」と感じた人は、自分自身をよく logging していた</div>
+::left::
 
-<div class="mt-5 space-y-4">
-  <div class="log-row">
-    <div class="log-main">
-      <div class="log-title">毎月、勝手に振り返る</div>
-      <div class="log-body">作業を logging して、月に一度自分で振り返る<br>評価面談の前に、材料がもう揃っている</div>
-    </div>
-    <div class="bubble">
-      <div class="bubble-label">例えば</div>
-      月末に「やったこと・効いたこと・来月やること」を 3 行でまとめる
-    </div>
-  </div>
-  <div class="log-row">
-    <div class="log-main">
-      <div class="log-title">目標を段階的に構造化する</div>
-      <div class="log-body">フォーマットがなくても、成果を段階的に具体化する<br>タスクではなく、<b>事業的な効果</b>を前提に置く</div>
-    </div>
-    <div class="bubble">
-      <div class="bubble-label">例えば</div>
-      S/A/B/C の段階ごとに「何ができたら、事業にどう効くか」まで書く
-    </div>
-  </div>
-  <div class="log-row">
-    <div class="log-main">
-      <div class="log-title">小さな可視化で、自分を watch する</div>
-      <div class="log-body">他人に見せる前に、まず自分の変化に自分で気づく<br>数字の推移で、自分の波やクセを知る</div>
-    </div>
-    <div class="bubble">
-      <div class="bubble-label">例えば</div>
-      GitHub Insights、Findy Team+、Claude Code の利用トークン推移
-    </div>
-  </div>
+<div class="mt-6 text-base">
+
+**小さな可視化で、自分自身を watch する**
+
+- **GitHub Insights**：PR・コミットの推移で、自分の波が見える
+- **Findy Team+**：リードタイムやレビュー時間で、チームの中の自分が見える
+- **Claude Code の利用トークン推移**：AI の使い方の変化が見える
+
+</div>
+
+<div class="mt-4" style="font-size: 0.85rem; color: #6b7280;">他人に見せる前に、まず<b>自分が自分の変化に気づける</b>ようにする</div>
+
+::right::
+
+<div class="msg-box mt-6">
+  <div class="msg-label">EM 時代に「この人優秀だな」と感じたケース</div>
+<div class="text-base">
+
+- **毎月、勝手に振り返っている**
+  - 作業を logging して、月末に自分でまとめている
+- **目標設定がきれい**
+  - フォーマットがなくても、S/A/B/C のように**段階的な成果を具体化**できる
+  - タスクではなく、**事業的な効果**が前提にある
+
+</div>
 </div>
 
 <style>
-.log-row { display: flex; align-items: center; gap: 2rem; }
-.log-main { flex: 1; }
-.log-title { font-size: 1.1rem; font-weight: 700; color: #4a90d9; }
-.log-body { margin-top: 0.2rem; font-size: 0.9rem; line-height: 1.6; }
-.bubble { position: relative; flex: 0 0 42%; padding: 0.9rem 1.1rem 0.7rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.35); font-size: 0.85rem; line-height: 1.6; color: #4b5563; }
-.bubble::before { content: ""; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); border: 10px solid transparent; border-right-color: rgba(74, 144, 217, 0.35); border-left: 0; }
-.bubble-label { position: absolute; top: -0.7rem; left: 0.8rem; padding: 0 0.6rem; border-radius: 999px; background: #4a90d9; color: #fff; font-size: 0.7rem; font-weight: 700; }
+.msg-box { position: relative; padding: 1.6rem 1.4rem 1.2rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.35); box-shadow: 0 16px 36px -22px rgba(30, 64, 128, 0.34); }
+.msg-label { position: absolute; top: -0.8rem; left: 1rem; padding: 0.1rem 0.7rem; border-radius: 999px; background: #4a90d9; color: #fff; font-size: 0.8rem; font-weight: 700; }
 </style>
 
 ---
@@ -298,30 +292,44 @@ layout: two-cols
       問題提起を積極的に出し、<b>旗を立てる</b><br>
       できるものは、<b>まず自分がやってみせる</b>
     </div>
+    <div class="bubble">
+      <div class="bubble-label">例えば</div>
+      「テストが足りない」と Slack で投げて、ガイドラインのたたき台を自分で出す
+    </div>
   </div>
   <div class="principle">
     <div class="principle-name">のせていき</div>
     <div class="principle-body">
-      誰かのやっていきに<b>前のめりで 👍</b>。スタンプだけでも構わない<br>
-      他人がいるチャンネルで「この人のこれがすごい」と<b>素直に褒める</b>
+      誰かのやっていきに<b>前のめりで 👍</b><br>
+      人がいるチャンネルで<b>素直に褒める</b>
+    </div>
+    <div class="bubble">
+      <div class="bubble-label">例えば</div>
+      times の投稿にスタンプを押す。全体チャンネルで「〇〇さんのこれ、すごい」と紹介する
     </div>
   </div>
   <div class="principle">
     <div class="principle-name">マジョリティ</div>
     <div class="principle-body">
-      「自分もやっていきたい」という<b>空気をつくり、乗る人を増やす</b><br>
-      集団が次のやっていきを生む。<b>自分で 100 点にしない</b>
+      「自分もやっていきたい」<b>空気をつくる</b><br>
+      集団が次を生む。<b>自分で 100 点にしない</b>
+    </div>
+    <div class="bubble">
+      <div class="bubble-label">例えば</div>
+      他のチームが真似し始めたら運用を任せて、自分は次の旗を立てる
     </div>
   </div>
 </div>
 
 <style>
-.principle { display: flex; align-items: center; gap: 2rem; padding-bottom: 1rem; border-bottom: 1px dashed rgba(74, 144, 217, 0.35); }
+.principle { display: flex; align-items: center; gap: 1.5rem; padding-bottom: 1rem; border-bottom: 1px dashed rgba(74, 144, 217, 0.35); }
 .principle:last-child { border-bottom: none; }
-.principle-name { flex: 0 0 11rem; font-size: 1.7rem; font-weight: 700; color: #d9442f; }
-.principle-body { font-size: 1.1rem; line-height: 1.8; }
+.principle-name { flex: 0 0 9rem; font-size: 1.5rem; font-weight: 700; color: #d9442f; }
+.principle-body { flex: 1; font-size: 0.95rem; line-height: 1.7; }
+.bubble { position: relative; flex: 0 0 38%; padding: 0.9rem 1.1rem 0.7rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.35); font-size: 0.8rem; line-height: 1.6; color: #4b5563; }
+.bubble::before { content: ""; position: absolute; left: -10px; top: 50%; transform: translateY(-50%); border: 10px solid transparent; border-right-color: rgba(74, 144, 217, 0.35); border-left: 0; }
+.bubble-label { position: absolute; top: -0.7rem; left: 0.8rem; padding: 0 0.6rem; border-radius: 999px; background: #4a90d9; color: #fff; font-size: 0.7rem; font-weight: 700; }
 </style>
-
 
 ---
 
