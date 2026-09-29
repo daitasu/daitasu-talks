@@ -136,6 +136,10 @@ layout: intro
     <div class="moya-title">認識誤差</div>
     <div class="moya-body">会議越しでは、微細な不安を拾いにくい</div>
   </div>
+  <div class="moya moya-br">
+    <div class="moya-title">投資対効果が説明できない</div>
+    <div class="moya-body">この人数とコストで、何が進んだか言えない</div>
+  </div>
   <svg class="stick" viewBox="0 0 120 150" fill="none" stroke="#374151" stroke-width="4" stroke-linecap="round" stroke-linejoin="round">
     <path d="M40 14 q5 -8 10 0 t10 0 t10 0 t10 0" stroke="#9ca3af" stroke-width="3" />
     <circle cx="60" cy="42" r="16" />
@@ -171,6 +175,9 @@ layout: intro
 .moya-left { right: 60%; top: 8.3rem; transform: rotate(-1.5deg); }
 .moya-left::before { right: -1.3rem; top: 0.1rem; }
 .moya-left::after { right: -2.2rem; top: -0.5rem; }
+.moya-br { left: 56%; top: 8.6rem; transform: rotate(2.5deg); }
+.moya-br::before { left: -1.2rem; top: 0.1rem; }
+.moya-br::after { left: -2.1rem; top: -0.5rem; }
 </style>
 
 ---
