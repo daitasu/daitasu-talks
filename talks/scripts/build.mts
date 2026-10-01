@@ -127,10 +127,21 @@ const exportCover = (deck: Deck, outDir: string): void => {
   rmSync(tmp, { recursive: true, force: true });
 };
 
+const deckDesc = (deck: Deck): string =>
+  deck.description || [deck.event, deck.date].filter(Boolean).join(" · ");
+
+// デッキ index.html に注入する検索エンジン向け meta（OGP の有無に関係なく入れる）。
+// canonical は pages.dev 側との重複を避けるため本番ドメインに固定する。
+const deckSeoTags = (deck: Deck): string =>
+  [
+    `<link rel="canonical" href="${SITE}${deck.base}">`,
+    deckDesc(deck) && `<meta name="description" content="${esc(deckDesc(deck))}">`,
+  ].filter(Boolean).join("\n");
+
 // デッキ index.html に注入する og/twitter meta 群を組み立てる。
 const deckOgpTags = (deck: Deck, ogPng: string): string => {
   const img = `${SITE}${deck.base}og.png`;
-  const desc = deck.description || [deck.event, deck.date].filter(Boolean).join(" · ");
+  const desc = deckDesc(deck);
   const { w, h } = pngSize(ogPng);
   return [
     `<meta property="og:type" content="website">`,
@@ -147,8 +158,10 @@ const deckOgpTags = (deck: Deck, ogPng: string): string => {
 };
 
 // </head> 直前に tags を挿入し、Slidev が付ける title の " - Slidev" 接尾辞を除去。
+// Slidev は lang="en" 固定で吐くので、日本語デッキに合わせて ja へ置換する。
 const injectHead = (htmlPath: string, tags: string): void => {
   const html = readFileSync(htmlPath, "utf-8")
+    .replace('<html lang="en">', '<html lang="ja">')
     .replace(/(<(?:title|meta property="og:title" content=")[^<]*?)\s*-\s*Slidev/g, "$1")
     .replace("</head>", `${tags}\n</head>`);
   writeFileSync(htmlPath, html);
@@ -170,12 +183,12 @@ const processDeck = (deck: Deck): void => {
   }
 
   const ogPng = join(outDir, "og.png");
-  const htmlPath = join(outDir, "index.html");
-  if (existsSync(ogPng) && existsSync(htmlPath)) {
-    injectHead(htmlPath, deckOgpTags(deck, ogPng));
-    console.log("  + OGP meta injected");
-  }
   deck.hasOg = existsSync(ogPng);
+  injectHead(
+    join(outDir, "index.html"),
+    [deckSeoTags(deck), deck.hasOg && deckOgpTags(deck, ogPng)].filter(Boolean).join("\n"),
+  );
+  if (deck.hasOg) console.log("  + OGP meta injected");
 };
 
 // ---------- 一覧（トップ index.html） ----------
@@ -243,7 +256,7 @@ const renderCard = (c: Card): string => {
 const buildIndexHead = (): string => {
   if (existsSync(ROOT_PUBLIC)) cpSync(ROOT_PUBLIC, DIST, { recursive: true });
 
-  let head = `<link rel="icon" href="/favicon.png">\n<meta name="description" content="${INDEX_DESC}">`;
+  let head = `<link rel="icon" href="/favicon.png">\n<link rel="canonical" href="${SITE}/">\n<meta name="description" content="${INDEX_DESC}">`;
   const ogPng = join(DIST, "daitasu-talks-ogp.png");
   if (existsSync(ogPng)) {
     const { w, h } = pngSize(ogPng);
@@ -358,6 +371,35 @@ const cards = (await Promise.all(visible.map((t) => toCard(t, deckBySlug))))
 writeFileSync(
   join(DIST, "index.html"),
   renderIndex(cards.map(renderCard).join("\n"), buildIndexHead()),
+);
+
+// 検索エンジン向けファイル。sitemap には一覧に出しているデッキ（draft 除外済み）だけ載せる。
+// 404.html は Cloudflare Pages の SPA fallback（未知 URL に 200 でトップを返す）を止める役目。
+const sitemapUrls = [`${SITE}/`, ...cards.filter((c) => !c.external).map((c) => `${SITE}${c.href}`)];
+writeFileSync(join(DIST, "robots.txt"), `User-agent: *\nAllow: /\n\nSitemap: ${SITE}/sitemap.xml\n`);
+writeFileSync(
+  join(DIST, "sitemap.xml"),
+  `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemapUrls.map((u) => `  <url><loc>${esc(u)}</loc></url>`).join("\n")}
+</urlset>
+`,
+);
+writeFileSync(
+  join(DIST, "404.html"),
+  `<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404 Not Found | daitasu slides</title>
+</head>
+<body style="font-family: system-ui, sans-serif; text-align: center; padding: 4rem 1rem;">
+  <h1>404 Not Found</h1>
+  <p><a href="/">daitasu slides トップへ</a></p>
+</body>
+</html>
+`,
 );
 
 console.log(`\n✓ Built ${decks.length} deck(s) → ${relative(REPO_ROOT, DIST)}/`);
