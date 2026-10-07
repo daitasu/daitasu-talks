@@ -288,9 +288,9 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
 
 <style>
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
-.steps > div { border-top: 1px solid #2F3437; padding-top: 1rem; }
+.steps > div { border-top: 2px solid var(--dt-accent); padding-top: 1rem; }
 .steps p { margin: 0; }
-.step-no { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #787774; }
+.step-no { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--dt-accent); font-weight: 700; }
 .step-title { margin-top: 0.4rem !important; font-size: 1.3rem; font-weight: 700; }
 .step-body { margin-top: 0.6rem !important; font-size: 0.95rem; line-height: 1.7; color: #4b5563; }
 </style>
@@ -388,7 +388,7 @@ flowchart LR
   R --> DOM --> H
 ```
 
-<div class="mt-6 text-sm" style="color: #4b5563; line-height: 1.9;">
+<div class="mt-6 text-sm" style="line-height: 1.9;">
   <p class="m-0">AI が見るのは <b>schema だけ</b>。ドメイン知識も style も持たない</p>
   <p class="m-0">DB は <b>API の向こう</b>。データは権限つきで解決する</p>
   <p class="m-0">人間は AST から<b>写した DOM</b> を見る</p>
@@ -398,7 +398,7 @@ flowchart LR
 
 # 先月、<span class="accent">Jev</span> が登場した
 
-<p class="mt-1 text-base" style="color: #787774;">TypeSafe AI / 2026.09.15 公開 / 初の「System One モデル」</p>
+<p class="mt-1 text-base color-gray">TypeSafe AI / 2026.09.15 公開 / 初の「System One モデル」</p>
 
 <dl class="spec">
   <dt>出力</dt><dd>型付きの判断だけ。文章は書かない</dd>
@@ -411,9 +411,9 @@ flowchart LR
 <p class="mt-1 text-lg">逐次描画が要らなくなり、<b>UI をリアルタイムに書き換えられる</b>。</p>
 
 <style>
-.spec { display: grid; grid-template-columns: 7rem 1fr; margin-top: 1.6rem; border-top: 1px solid #EAEAEA; }
-.spec dt, .spec dd { margin: 0; padding: 0.7rem 0; border-bottom: 1px solid #EAEAEA; font-size: 1.05rem; }
-.spec dt { color: #787774; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; display: flex; align-items: center; }
+.spec { display: grid; grid-template-columns: 7rem 1fr; margin-top: 1.6rem; border-top: 1px solid var(--dt-border); }
+.spec dt, .spec dd { margin: 0; padding: 0.7rem 0; border-bottom: 1px solid var(--dt-border); font-size: 1.05rem; }
+.spec dt { color: var(--dt-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; display: flex; align-items: center; }
 </style>
 
 ---
