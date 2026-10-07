@@ -388,11 +388,28 @@ flowchart LR
   R --> DOM --> H
 ```
 
-<div class="mt-6 text-sm" style="line-height: 1.9;">
+<div class="grid grid-cols-2 gap-6 mt-4 items-start">
+<div class="text-sm mt-2" style="line-height: 1.9;">
   <p class="m-0">AI が見るのは <b>schema だけ</b>。ドメイン知識も style も持たない</p>
   <p class="m-0">DB は <b>API の向こう</b>。データは権限つきで解決する</p>
   <p class="m-0">人間は AST から<b>写した DOM</b> を見る</p>
 </div>
+<div>
+
+```txt
+packages/
+├─ schema/    AST の型（Zod）。React もドメインも知らない
+├─ agent/     schema を AI に渡し、AST を返させる
+├─ renderer/  AST → DOM。部品の実体と style
+└─ api/       DB を閉じ込め、権限でデータを解決
+```
+
+</div>
+</div>
+
+<style>
+.slidev-code, .slidev-code * { font-size: 9.5px !important; line-height: 1.6 !important; }
+</style>
 
 ---
 
