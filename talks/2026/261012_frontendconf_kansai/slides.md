@@ -266,36 +266,33 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
 
 # つまり、
 
-<div class="flex items-stretch justify-center gap-3 mt-10">
-  <div class="step-card">
-    <div class="step-no">1</div>
-    <div class="step-title">契約をつくる</div>
-    <div class="step-body">AI が利用可能な<b>特定パーツと規約</b>（catalog）を人間が作成する</div>
+<div class="steps">
+  <div>
+    <p class="step-no">01</p>
+    <p class="step-title">契約をつくる</p>
+    <p class="step-body">AI が使ってよい部品と規約（catalog）を、人間が書く</p>
   </div>
-  <div class="step-arrow">→</div>
-  <div class="step-card">
-    <div class="step-no">2</div>
-    <div class="step-title">AI が組み立てる</div>
-    <div class="step-body">それを元に、AI は HTML ではなく <b>JSON 構造</b>（spec）を組み立てる</div>
+  <div>
+    <p class="step-no">02</p>
+    <p class="step-title">AI が組み立てる</p>
+    <p class="step-body">AI は HTML ではなく、JSON の構造（spec）を返す</p>
   </div>
-  <div class="step-arrow">→</div>
-  <div class="step-card">
-    <div class="step-no">3</div>
-    <div class="step-title">描画関数が描く</div>
-    <div class="step-body">描画関数が<b>フレームワークに合わせて</b>、JSON を実際の UI に再描画する</div>
+  <div>
+    <p class="step-no">03</p>
+    <p class="step-title">描画関数が描く</p>
+    <p class="step-body">描画関数が、JSON をフレームワークの UI に変換する</p>
   </div>
 </div>
 
-<div class="mt-10 text-lg text-center color-gray">
-  AI が触るのは <b>JSON</b> だけ。HTML / CSS / コンポーネント実体には一切触れない。
-</div>
+<p class="mt-14 text-lg">AI が触るのは <b>JSON だけ</b>。HTML / CSS / コンポーネントの実体には触れない。</p>
 
 <style>
-.step-card { flex: 1; max-width: 260px; padding: 1.2rem 1.3rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.25); box-shadow: 0 16px 36px -22px rgba(30, 64, 128, 0.34); }
-.step-no { width: 2rem; height: 2rem; border-radius: 999px; background: #4a90d9; color: #fff; font-weight: 700; display: flex; align-items: center; justify-content: center; }
-.step-title { margin-top: 0.7rem; font-size: 1.15rem; font-weight: 700; }
-.step-body { margin-top: 0.5rem; font-size: 0.95rem; line-height: 1.6; color: #4b5563; }
-.step-arrow { align-self: center; font-size: 2rem; color: #4a90d9; font-weight: 700; }
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
+.steps > div { border-top: 1px solid #2F3437; padding-top: 1rem; }
+.steps p { margin: 0; }
+.step-no { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: #787774; }
+.step-title { margin-top: 0.4rem !important; font-size: 1.3rem; font-weight: 700; }
+.step-body { margin-top: 0.6rem !important; font-size: 0.95rem; line-height: 1.7; color: #4b5563; }
 </style>
 
 ---
@@ -372,112 +369,51 @@ type PriceNode = {
 
 # この木を軸に、システム境界を引く
 
-<div class="sys">
-  <!-- row 1: AI -->
-  <div class="sys-ai">
-    <div class="actor ai">🤖 AI（ユーザー）</div>
-    <div class="ai-arrows">
-      <span>↓ schema を読む</span>
-      <span>↑ AST を返す</span>
-    </div>
-  </div>
+```mermaid {theme: 'neutral', scale: 0.68}
+flowchart LR
+  AI["AI（ユーザー）"]
+  subgraph server["サーバ"]
+    DB[("DB")] --> API["API"]
+  end
+  subgraph front["フロントエンド"]
+    AST["AST<br/>type / props"] --> R["renderer<br/>部品・style"]
+  end
+  subgraph browser["ブラウザ"]
+    DOM["DOM"]
+  end
+  H["人間（ユーザー）"]
+  DB ~~~ AI
+  AI -- "schema を読み<br/>AST を返す" --> AST
+  API -- "Internet<br/>API 経由のみ" --> R
+  R --> DOM --> H
+```
 
-  <!-- row 2 -->
-  <div class="zone server">
-    <div class="zone-label">サーバ</div>
-    <div class="db">DB</div>
-    <div class="v-arrow">↓</div>
-    <div class="node">API<small>権限でデータを解決</small></div>
-  </div>
-
-  <div class="net">
-    <div class="net-label">🌐 Internet</div>
-    <div class="h-arrow"><small>API 経由のみ</small>━━━▶</div>
-  </div>
-
-  <div class="zone front">
-    <div class="zone-label">フロントエンド</div>
-    <div class="ai-zone">
-      <div class="ai-zone-label">AI に見えるのはここだけ</div>
-      <div class="node">schema</div>
-      <div class="node">AST<small>{ type, props }</small></div>
-    </div>
-    <div class="v-arrow">↓</div>
-    <div class="node">renderer<small>部品・style</small></div>
-  </div>
-
-  <div class="net plain">
-    <div class="h-arrow"><small>DOM</small>━━▶</div>
-  </div>
-
-  <div class="zone browser">
-    <div class="browser-bar"><i></i><i></i><i></i></div>
-    <div class="zone-label">ブラウザ</div>
-    <div class="actor human">🧑 人間（ユーザー）</div>
-    <div class="v-arrow">↑</div>
-    <div class="node">DOM</div>
-  </div>
+<div class="mt-6 text-sm" style="color: #4b5563; line-height: 1.9;">
+  <p class="m-0">AI が見るのは <b>schema だけ</b>。ドメイン知識も style も持たない</p>
+  <p class="m-0">DB は <b>API の向こう</b>。データは権限つきで解決する</p>
+  <p class="m-0">人間は AST から<b>写した DOM</b> を見る</p>
 </div>
-
-<div class="mt-6 text-lg text-center color-gray">
-  AI は <b>schema だけ</b>を見る。DB は <b>API の向こう</b>。人間は AST から<b>写した DOM</b> を見る。
-</div>
-
-<style>
-.sys { display: grid; grid-template-columns: 1.1fr 0.8fr 1.6fr 0.5fr 1.1fr; grid-template-rows: auto auto; gap: 0.5rem 0; margin-top: 0.8rem; }
-.sys-ai { grid-column: 3; grid-row: 1; display: flex; flex-direction: column; align-items: center; }
-.ai-arrows { display: flex; gap: 1.6rem; font-size: 0.85rem; color: #4a90d9; font-weight: 700; margin-top: 0.3rem; }
-.zone { grid-row: 2; position: relative; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 0.5rem; padding: 2rem 0.9rem 1rem; border-radius: 12px; }
-.zone-label { position: absolute; top: 0.5rem; left: 0.8rem; font-size: 0.85rem; font-weight: 700; color: #475569; }
-.server { grid-column: 1; background: #e8edf3; border: 2px solid #475569; }
-.front { grid-column: 3; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.4); }
-.browser { grid-column: 5; background: #fff; border: 1.5px solid #cbd5e1; padding-top: 2.2rem; }
-.browser .zone-label { top: 1.2rem; }
-.browser-bar { position: absolute; top: 0; left: 0; right: 0; height: 0.9rem; background: #e2e8f0; border-radius: 10px 10px 0 0; display: flex; gap: 0.25rem; align-items: center; padding-left: 0.5rem; }
-.browser-bar i { width: 0.4rem; height: 0.4rem; border-radius: 999px; background: #94a3b8; }
-.net { grid-row: 2; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 1.1rem; border-left: 2px dashed #cbd5e1; border-right: 2px dashed #cbd5e1; margin: 0 0.4rem; position: relative; }
-.net.plain { grid-column: 4; border: none; }
-.net:not(.plain) { grid-column: 2; }
-.net-label { position: absolute; top: 0.5rem; font-size: 0.85rem; font-weight: 700; color: #64748b; }
-.h-arrow { display: flex; flex-direction: column; align-items: center; color: #4a90d9; font-weight: 700; font-size: 0.9rem; line-height: 1.1; }
-.h-arrow small { font-size: 0.75rem; color: #475569; }
-.node { width: 100%; text-align: center; padding: 0.65rem 0.4rem; border-radius: 8px; background: #fff; border: 1.5px solid #4a90d9; font-weight: 700; font-size: 1.05rem; line-height: 1.2; }
-.node small { display: block; font-size: 0.75rem; font-weight: 400; color: #64748b; }
-.db { width: 5rem; padding: 1rem 0; text-align: center; font-weight: 700; background: #fff; border: 1.5px solid #475569; border-radius: 2.5rem / 0.8rem; }
-.v-arrow { color: #4a90d9; font-weight: 700; line-height: 1; }
-.ai-zone { width: 100%; display: flex; gap: 0.5rem; padding: 1.3rem 0.5rem 0.5rem; border: 2px dashed #4a90d9; border-radius: 10px; position: relative; }
-.ai-zone-label { position: absolute; top: 0.25rem; left: 0.5rem; font-size: 0.75rem; color: #4a90d9; font-weight: 700; }
-.actor { padding: 0.5rem 1rem; border-radius: 999px; font-weight: 700; font-size: 1.05rem; white-space: nowrap; }
-.actor.ai { background: #eef4fc; border: 1.5px solid #4a90d9; }
-.actor.human { background: #fff7ed; border: 1.5px solid #f59e0b; }
-</style>
 
 ---
 
 # 先月、<span class="accent">Jev</span> が登場した
 
-<div class="mt-1 text-base color-gray">TypeSafe AI ・ 2026.09.15 公開 ・ 初の「System One モデル」</div>
+<p class="mt-1 text-base" style="color: #787774;">TypeSafe AI / 2026.09.15 公開 / 初の「System One モデル」</p>
 
-<div class="grid grid-cols-4 gap-4 mt-6">
-  <div class="jev-card"><div class="jev-key">文章を書かない</div><div class="jev-desc"><b>型付きの判断</b>だけ返す</div></div>
-  <div class="jev-card"><div class="jev-key">一度に返す</div><div class="jev-desc"><b>逐次生成</b>しない</div></div>
-  <div class="jev-card"><div class="jev-key">0.1 秒台</div><div class="jev-desc">公称レイテンシ</div></div>
-  <div class="jev-card"><div class="jev-key">確信度つき</div><div class="jev-desc">判断に<b>確率</b>が付く</div></div>
-</div>
+<dl class="spec">
+  <dt>出力</dt><dd>型付きの判断だけ。文章は書かない</dd>
+  <dt>生成</dt><dd>トークンを逐次生成せず、一度に返す</dd>
+  <dt>速度</dt><dd>0.1 秒台（公称）</dd>
+  <dt>確信度</dt><dd>判断ごとに確率が付く</dd>
+</dl>
 
-<div class="jev-punch">
-  <p>schema から <code>type</code> / <code>props</code> を選ぶ ＝ <b>型付きの判断</b></p>
-  <p class="jev-arrow">↓</p>
-  <p><span class="accent">逐次描画は不要に。UI をリアルタイムに書き換えられる</span></p>
-</div>
+<p class="mt-8 text-lg">schema から <code>type</code> / <code>props</code> を選ぶのは、<b>型付きの判断</b>そのもの。</p>
+<p class="mt-1 text-lg">逐次描画が要らなくなり、<b>UI をリアルタイムに書き換えられる</b>。</p>
 
 <style>
-.jev-card { padding: 1rem 0.9rem; border-radius: 14px; background: #f6f8fc; border: 1.5px solid rgba(74, 144, 217, 0.3); box-shadow: 0 16px 36px -22px rgba(30, 64, 128, 0.34); text-align: center; }
-.jev-key { font-size: 1.3rem; font-weight: 700; color: #4a90d9; }
-.jev-desc { margin-top: 0.4rem; font-size: 0.9rem; color: #4b5563; }
-.jev-punch { margin-top: 2.2rem; text-align: center; font-size: 1.3rem; }
-.jev-punch p { margin: 0; }
-.jev-arrow { color: #4a90d9; font-weight: 700; }
+.spec { display: grid; grid-template-columns: 7rem 1fr; margin-top: 1.6rem; border-top: 1px solid #EAEAEA; }
+.spec dt, .spec dd { margin: 0; padding: 0.7rem 0; border-bottom: 1px solid #EAEAEA; font-size: 1.05rem; }
+.spec dt { color: #787774; font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; display: flex; align-items: center; }
 </style>
 
 ---
