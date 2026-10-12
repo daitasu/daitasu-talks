@@ -303,7 +303,7 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
 
 <div class="mt-2 text-base">
 
-「AI が使ってよいノード」の Union として UI を型定義し、AI にはこの木を返させる。
+- json-render (Generative UI)の考え方をもとに拡張し、業務SaaSに組み込むためのASTを考えてみる
 
 </div>
 
