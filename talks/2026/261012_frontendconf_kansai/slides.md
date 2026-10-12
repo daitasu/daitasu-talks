@@ -109,8 +109,8 @@ layout: two-cols
 - 生成される UI は**掛け捨て前提**
   - 会話ごとに生まれて、会話ごとに消える
 - 業務アプリケーションにおいては、**変えて良いUI**と**変えてはいけないUI**がある
-  - 変えて良いUI: ドメインルールに依存しないstyle, layout
-  - 変えてはいけないUI: 順序やレイアウトそのものが意味をなすもの、ドメインデータの表示
+  - 変えて良いUI: ドメインルールに依存しないstyle、意味を持たない並べ方
+  - 変えてはいけないUI: 意味を持つ並び順、ドメインデータの表示
 - しかし、AI 標準となった今、 **AI** がUIを提供するという構造は魅力的
   - ユーザーが自由にデザイン構築できるサービスを提供できる
 
@@ -123,7 +123,11 @@ layout: section
 # Generative UI の<span class="accent">仕組みの概観</span>を見てみよう
 
 <div class="mt-10 text-lg text-center color-gray">
-  Vercel Labs の <b>json-render</b>を例に、処理を見ていく
+  Vercel Labs の <strong>json-render</strong>を例に、処理を見ていく
+</div>
+
+<div class="mt-3 text-sm text-center color-gray">
+  参考: <a href="https://github.com/vercel-labs/json-render" target="_blank">https://github.com/vercel-labs/json-render</a>
 </div>
 
 ---
@@ -261,7 +265,7 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
 
 ---
 
-# つまり、
+# Generative UI は<span class="accent">契約・組み立て・描画</span>に分解できる
 
 <div class="steps">
   <div>
@@ -281,11 +285,10 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
   </div>
 </div>
 
-<p class="mt-14 text-lg">AI が触るのは <b>JSON だけ</b>。HTML / CSS / コンポーネントの実体には触れない。</p>
+<p class="mt-14 text-lg">AI が触るのは <strong>JSON だけ</strong>。HTML / CSS / コンポーネントの実体には触れない。</p>
 
 <style>
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
-.steps > div { border-top: 2px solid var(--dt-accent); padding-top: 1rem; }
 .steps p { margin: 0; }
 .step-no { font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; color: var(--dt-accent); font-weight: 700; }
 .step-title { margin-top: 0.4rem !important; font-size: 1.3rem; font-weight: 700; }
@@ -303,7 +306,7 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
 </div>
 
 ```ts
-type NodeBlock = TextNode | ButtonNode | PriceNode;
+type NodeBlock = TextNode | ButtonNode | PostsNode;
 ```
 
 <div class="grid grid-cols-3 gap-3 mt-1">
@@ -340,26 +343,31 @@ type ButtonNode = {
 ```ts
 type PostsNode = {
   type: "posts";
-  subscribe: { source: 'posts' },
-  actions: { like: 'post.like' }
+  props: { limit: 10 | 20 };
+  // API 取得・アクションはアプリが注入
+  subscribe: { source: "posts" };
+  actions: { like: "post.like" };
 };
 ```
 
 </div>
 </div>
 
-<div class="mt-2 text-sm color-gray">
+<div class="ast-notes mt-1 text-xs color-gray">
 
-- AI は下記のみを見る
-  - `type` ... **AIが利用可能なコンポーネント種別 
+- AI が書くのは `type` と `props` だけ
+  - `type` ... **AI が利用可能なコンポーネント種別**
   - `props` ... **AI に許可された編集範囲**
-  - `subscribe`, `action` ...そのコンポーネントが自律的に発火する外部APIの取得、アクション
-- 木（JSON）を保存しておけば、描画先は React でも Vue でもメールでも選べる
+- `subscribe` は部品が自分で取得し、`actions` はユーザーの操作で発火して、ユーザーの権限で実行される
+- 変えてはいけないもの（順序・ドメインデータ）は**部品の内側に閉じ込め**、AI には**置き場所だけ**を選ばせる
 
 </div>
 
 <style>
 .slidev-code, .slidev-code * { font-size: 9.5px !important; line-height: 1.5 !important; }
+.ast-notes ul { line-height: 1.6; }
+.ast-notes ul li { margin-top: 2px; }
+.ast-notes ul li::before { line-height: inherit; }
 </style>
 
 ---
@@ -372,7 +380,7 @@ flowchart LR
   subgraph server["サーバ"]
     DB[("DB")] --> API["API"]
   end
-  subgraph front["フロントエンド"]
+  subgraph front["描画基盤"]
     AST["AST<br/>type / props"] --> R["renderer<br/>部品・style"]
   end
   subgraph browser["ブラウザ"]
@@ -385,20 +393,27 @@ flowchart LR
   R --> DOM --> H
 ```
 
-<div class="grid grid-cols-2 gap-6 mt-4 items-start">
-<div class="text-sm mt-2" style="line-height: 1.9;">
+<div class="grid grid-cols-2 gap-6 mt-2 items-start">
+<div class="text-sm mt-2">
+
 - AI はschema のみを見て、作れるUI に一定の制約を作れる
-- DB はAPI 経由として、動的なデータ注入も権限つきで隠蔽できる
-- AST を使っているので、仮に人間がhtml で書く場合も同じ描画機構を使える
+- DB はAPI 経由とし、動的なデータ注入も権限つきで隠蔽できる
+- 仮に人間が html で書いても、AST 変換で同じ描画機構を使える
+  - 描画先は React でも Vue でもメールでもいい
+
 </div>
 <div>
 
 ```txt
+apps/
+├─ frontend/     packages を呼ぶアプリ層。AI が schema を取得
+└─ api/          DB を閉じ込め、権限でデータを解決
 packages/
-├─ schema/    AST の型（Zod）。React もドメインも知らない
-├─ agent/     schema を AI に渡し、AST を返させる
-├─ renderer/  AST → DOM。部品の実体と style
-└─ api/       DB を閉じ込め、権限でデータを解決
+├─ core/
+│  └─ schema/    AST の型（Zod）。React もドメインも知らない
+└─ renderer/
+   ├─ engine/    AST → DOM の描画処理
+   └─ registry/  コンポーネントの実体とマッピング
 ```
 
 </div>
@@ -406,25 +421,32 @@ packages/
 
 <style>
 .slidev-code, .slidev-code * { font-size: 9.5px !important; line-height: 1.6 !important; }
+.grid ul { line-height: 1.7; }
+.grid ul li { margin-top: 6px; }
 </style>
 
 ---
 
-# 先月、<span class="accent">Jev</span> が登場した
+# （余談）先月、<span class="accent">Jev</span> が登場した
 
 <p class="mt-1 text-base color-gray">TypeSafe AI / 2026.09.15 公開 / 初の「System One モデル」</p>
 
+<div class="jev-body">
 <dl class="spec">
   <dt>出力</dt><dd>型付きの判断だけ。文章は書かない</dd>
   <dt>生成</dt><dd>トークンを逐次生成せず、一度に返す</dd>
   <dt>速度</dt><dd>0.1 秒台（公称）</dd>
   <dt>確信度</dt><dd>判断ごとに確率が付く</dd>
 </dl>
+<img :src="$public('/typesafe-ai.png')" alt="TypeSafe AI" class="rounded-lg" />
+</div>
 
-<p class="mt-8 text-lg">schema から <code>type</code> / <code>props</code> を選ぶのは、<b>型付きの判断</b>そのもの。</p>
-<p class="mt-1 text-lg">逐次描画が要らなくなり、<b>UI をリアルタイムに書き換えられる</b>。</p>
+<p class="mt-8 text-lg">schema から <code>type</code> / <code>props</code> を選ぶのは、<strong>型付きの判断</strong>そのもの。</p>
+<p class="mt-1 text-lg">今日話した AST での UI 構築と Jev は相性が良く、<strong>リアルタイムな UI 変化</strong>を提供できる。</p>
 
 <style>
+.jev-body { display: grid; grid-template-columns: 1fr 18rem; gap: 2.5rem; align-items: center; }
+.jev-body img { width: 100%; }
 .spec { display: grid; grid-template-columns: 7rem 1fr; margin-top: 1.6rem; border-top: 1px solid var(--dt-border); }
 .spec dt, .spec dd { margin: 0; padding: 0.7rem 0; border-bottom: 1px solid var(--dt-border); font-size: 1.05rem; }
 .spec dt { color: var(--dt-text-muted); font-family: 'JetBrains Mono', monospace; font-size: 0.85rem; display: flex; align-items: center; }
@@ -440,9 +462,9 @@ packages/
   - しかし、**変えて/見えてはいけないもの** はある
 - Generative UI の仕組みは、**契約 → AST → 描画** に分解できる
   - AI が提供可能な範囲を制限し、**UIやデータを安全に保つ境界**が必要
-  - AI に渡すのは schema だけ。ドメイン知識・style・DB は渡さない
-  - データは API が権限つきで解決し、人間は AST から写像された DOM を見る
-- 判断特化の高速モデルで、**UI をリアルタイムに組み替える**時代が近づいている
-- これからのフロントエンドの責務は、**「AI に何を許すか」を schema として書き下すこと**
+  - AI に渡すのは schema だけ。
+    - 制約下でUIを作り、データは API が権限つきで解決。人間は AST から写像された DOM を見る
+- 判断特化の高速モデルで、**UI をリアルタイムに組み替える**時代も近づいている
+- **「AI に何を許すか」 でシステム境界を考えよう**
 
 </div>
