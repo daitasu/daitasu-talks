@@ -109,8 +109,8 @@ layout: two-cols
 - 生成される UI は**掛け捨て前提**
   - 会話ごとに生まれて、会話ごとに消える
 - 業務アプリケーションにおいては、**変えて良いUI**と**変えてはいけないUI**がある
-  - 変えて良いUI: ドメインルールに依存しないstyle、意味を持たない並べ方
-  - 変えてはいけないUI: 意味を持つ並び順、ドメインデータの表示
+  - ⭕️ ドメインルールに依存しないstyle、意味を持たない並べ方
+  - ❌️ 意味を持つ並び順、ドメインデータの表示
 - しかし、AI 標準となった今、 **AI** がUIを提供するという構造は魅力的
   - ユーザーが自由にデザイン構築できるサービスを提供できる
 
@@ -281,11 +281,13 @@ catalog の「使っていい部品と props」が、そのまま LLM への契�
   <div>
     <p class="step-no">03</p>
     <p class="step-title">描画関数が描く</p>
-    <p class="step-body">描画関数が、JSON をフレームワークの UI に変換する</p>
+    <p class="step-body">描画関数が、JSON をフレームワークの UI に変換する ※</p>
   </div>
 </div>
 
 <p class="mt-14 text-lg">AI が触るのは <strong>JSON だけ</strong>。HTML / CSS / コンポーネントの実体には触れない。</p>
+
+<p class="mt-1 text-xs" style="color: #9ca3af;">※ 正確には、json-render は JSON Patch で spec を 1 行ずつ書き換えていく。ただ概念上は、どの Generative UI 技術も近しい</p>
 
 <style>
 .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; margin-top: 3rem; }
@@ -396,9 +398,9 @@ flowchart LR
 <div class="grid grid-cols-2 gap-6 mt-2 items-start">
 <div class="text-sm mt-2">
 
-- AI はschema のみを見て、作れるUI に一定の制約を作れる
-- DB はAPI 経由とし、動的なデータ注入も権限つきで隠蔽できる
-- 仮に人間が html で書いても、AST 変換で同じ描画機構を使える
+- AI は**schema のみ**を見て、作れるUI に一定の制約を作れる
+- DB は**API 経由**とし、動的なデータ注入も**権限つき**で隠蔽できる
+- 仮に人間が html で書いても、AST 変換で**同じ描画機構**を使える
   - 描画先は React でも Vue でもメールでもいい
 
 </div>
