@@ -58,10 +58,6 @@ layout: intro
       <p class="ml-3">@daitasu</p>
     </div>
     <div>
-      <p>Belong to:</p>
-      <p class="ml-3">コミューン株式会社</p>
-    </div>
-    <div>
       <p>Favorite:</p>
       <p class="ml-3">TypeScript, Onsen, Dinosaurs</p>
     </div>
@@ -112,10 +108,11 @@ layout: two-cols
 
 - 生成される UI は**掛け捨て前提**
   - 会話ごとに生まれて、会話ごとに消える
-- 業務アプリケーションにおいては、**安定しない UI はリスクが高い**
-  - 描画時点では**確立された UI** が出される方が安心
-- しかし、ユーザーが **AIで**、**自分で**UIを組み立てられる仕組みは魅力的
-  - ノーコードツールの中間構築をAIが担う
+- 業務アプリケーションにおいては、**変えて良いUI**と**変えてはいけないUI**がある
+  - 変えて良いUI: ドメインルールに依存しないstyle, layout
+  - 変えてはいけないUI: 順序やレイアウトそのものが意味をなすもの、ドメインデータの表示
+- しかし、AI 標準となった今、 **AI** がUIを提供するという構造は魅力的
+  - ユーザーが自由にデザイン構築できるサービスを提供できる
 
 </div>
 
@@ -123,7 +120,7 @@ layout: two-cols
 layout: section
 ---
 
-# Generative UI の<span class="accent">仕組みだけ</span>、<br>うまく使えないだろうか？
+# Generative UI の<span class="accent">仕組みの概観</span>を見てみよう
 
 <div class="mt-10 text-lg text-center color-gray">
   Vercel Labs の <b>json-render</b>を例に、処理を見ていく
@@ -341,13 +338,10 @@ type ButtonNode = {
 <div>
 
 ```ts
-type PriceNode = {
-  type: "price";
-  props: {
-    amount: number;
-    currency: "JPY" | "USD";
-    showTax: boolean;
-  };
+type PostsNode = {
+  type: "posts";
+  subscribe: { source: 'posts' },
+  actions: { like: 'post.like' }
 };
 ```
 
@@ -356,7 +350,10 @@ type PriceNode = {
 
 <div class="mt-2 text-sm color-gray">
 
-- `type` が **AI に許可した語彙**、`props` が **AI に許可した値の範囲**。自由な HTML はどこにも出てこない
+- AI は下記のみを見る
+  - `type` ... **AIが利用可能なコンポーネント種別 
+  - `props` ... **AI に許可された編集範囲**
+  - `subscribe`, `action` ...そのコンポーネントが自律的に発火する外部APIの取得、アクション
 - 木（JSON）を保存しておけば、描画先は React でも Vue でもメールでも選べる
 
 </div>
@@ -390,9 +387,9 @@ flowchart LR
 
 <div class="grid grid-cols-2 gap-6 mt-4 items-start">
 <div class="text-sm mt-2" style="line-height: 1.9;">
-  <p class="m-0">AI が見るのは <b>schema だけ</b>。ドメイン知識も style も持たない</p>
-  <p class="m-0">DB は <b>API の向こう</b>。データは権限つきで解決する</p>
-  <p class="m-0">人間は AST から<b>写した DOM</b> を見る</p>
+- AI はschema のみを見て、作れるUI に一定の制約を作れる
+- DB はAPI 経由として、動的なデータ注入も権限つきで隠蔽できる
+- AST を使っているので、仮に人間がhtml で書く場合も同じ描画機構を使える
 </div>
 <div>
 
@@ -439,9 +436,10 @@ packages/
 
 <div class="mt-6 text-lg">
 
+- AIにより、**デザイン構築をユーザー側に委ねやすい時代**になっている
+  - しかし、**変えて/見えてはいけないもの** はある
 - Generative UI の仕組みは、**契約 → AST → 描画** に分解できる
-  - catalog（schema）で AI に許す語彙を決め、AI は木を返し、描画関数が UI にする
-- AI も**ユーザーの一人**として、境界の外側に置く
+  - AI が提供可能な範囲を制限し、**UIやデータを安全に保つ境界**が必要
   - AI に渡すのは schema だけ。ドメイン知識・style・DB は渡さない
   - データは API が権限つきで解決し、人間は AST から写像された DOM を見る
 - 判断特化の高速モデルで、**UI をリアルタイムに組み替える**時代が近づいている
