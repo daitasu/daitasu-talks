@@ -27,7 +27,7 @@ export type Talk =
     };
 
 export const talks: Talk[] = [
-  { kind: "slidev", slug: "2026/261016_tamadev", status: "draft" },
+  { kind: "slidev", slug: "2026/261016_tamadev" },
   { kind: "slidev", slug: "2026/261012_frontendconf_kansai" },
   { kind: "slidev", slug: "2026/0907_gotandats" },
   { kind: "slidev", slug: "2026/0710_tamagawadev" },
