@@ -1,32 +1,8 @@
-// 一覧（talks.daitasu.work トップ）に並べる登壇の master リスト。
-// 日付降順で表示される（date はソートキー）。
-// build.mjs がこれを読んでカードを生成する。
+// ポートフォリオの /talks 一覧と /talks/<slug>/ 詳細ページに並べる登壇の master リスト。
+// 一覧は日付降順で表示される。型は packages/shared/src/talks.ts を参照。
+import type { TalkEntry } from "@daitasu/shared/talks";
 
-export type Talk =
-  | {
-      kind: "slidev";
-      /** talks/<slug>/slides.md の <slug>（例: "2026/0708_nihonbashijs"）。
-       *  title / date / event / OGP はデッキから自動解決するので書かない。 */
-      slug: string;
-      /** "draft" は一覧に出さない（デッキ自体はビルドされ URL 直開きは可能）。
-       *  未指定は "shipped" 扱い。 */
-      status?: "draft" | "shipped";
-    }
-  | {
-      kind: "speakerdeck";
-      /** SpeakerDeck の talk URL。title と画像は og:title / og:image を build 時に取得。 */
-      url: string;
-      /** 登壇日（SpeakerDeck からは取れないので手動）。"YYYY-MM-DD"。 */
-      date: string;
-      /** 任意。イベント名。 */
-      event?: string;
-      /** 任意。fetch した og:title を上書き（or 取得失敗時のフォールバック）。 */
-      title?: string;
-      /** 任意。og:image を上書き。 */
-      image?: string;
-    };
-
-export const talks: Talk[] = [
+export const talks: TalkEntry[] = [
   { kind: "slidev", slug: "2026/261016_tamadev" },
   { kind: "slidev", slug: "2026/261012_frontendconf_kansai" },
   { kind: "slidev", slug: "2026/0907_gotandats" },
@@ -34,22 +10,21 @@ export const talks: Talk[] = [
   { kind: "slidev", slug: "2026/0708_nihonbashijs" },
   { kind: "slidev", slug: "2026/0612_tamadev" },
 
-  // 過去の SpeakerDeck 登壇（SpeakerDeck から date/title/画像を取得して追加）。
-  // date は SpeakerDeck の公開日。title / 画像は build 時に URL から自動取得。
-  // event は任意なので必要なら足す。※ 2026/0612 は slidev 版があるので除外。
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-yun-ying-ai-zan", date: "2026-05-12" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-shi-memasita-di-yu-komiyuniteiwonazeli-tishang-gerunoka-chu-metenoli-tishang-genobi", date: "2026-04-10" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/kai-fa-zu-zhi-noke-ti-jie-jue-wojia-su-surutamenoquan-xian-yi-rang-suruce-sareruce-tositenoxiang-kihe-ifang", date: "2026-03-04" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/koji-xian-nixue-he-qin-hokeyan-noqin-tatihezeng-ru-you-nolun-qu-dong-kai-fa", date: "2026-02-19" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/xing-an-quan-defei-yi-cun-naqing-liang-aiezientohuremuwaku-tankstack-ai", date: "2026-01-09" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/aiezientogadui-hua-de-nauiwofan-su-mcp-uidebian-waruyuzati-yan", date: "2025-11-12" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/zhi-zhong-nobi-worong-kasitekai-fa-saikuruwogao-su-nihui-su-qing-bao-tou-ming-xing-tozhi-zhong-yue-jing-karakao-eruaihurendorinazhi-zhong-jian-lian-xi", date: "2025-09-11" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/minna-xiao-yan-ninaare-woshi-xian-suru-zhi-zhong-hun-he-kai-fa-zu-zhi-nomu-biao-she-ding-ping-jia-nogai-shan-shi-li", date: "2025-08-22" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/typescript-de-railway-oriented-programming-xing-an-quan-naerahandoringuwozuo-ru", date: "2025-03-19" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/establishing-a-system-for-continuous-inquiry-about-where-we-are", date: "2024-07-23" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/designsystem-history-stores-20220310", date: "2022-03-11" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/zhi-neng-heng-duan-xing-sukuramuti-zhi-ninatutekarafalsetimugai-shan-huo-dong-improvement-activity-for-multi-functional-team", date: "2020-12-12" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/components-design-of-frontend-in-stores-dot-jp", date: "2019-10-24" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/vuedefalseanimesiyonfalsehua", date: "2019-03-22" },
-  { kind: "speakerdeck", url: "https://speakerdeck.com/daitasu/lifffalseogong-nisentryhaikaga", date: "2018-12-12" },
+  // 過去の SpeakerDeck 登壇。title / 画像 / 埋め込みプレイヤーは build 時に URL から取得する。
+  // slug は詳細ページの URL になる。event / eventUrl は任意。※ 2026/0612 は slidev 版があるので除外。
+  { kind: "speakerdeck", slug: "2026/0512_tachikawaany-opening", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-yun-ying-ai-zan", date: "2026-05-12", event: "Tachikawa.any" },
+  { kind: "speakerdeck", slug: "2026/0410_why-local-community", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-shi-memasita-di-yu-komiyuniteiwonazeli-tishang-gerunoka-chu-metenoli-tishang-genobi", date: "2026-04-10" },
+  { kind: "speakerdeck", slug: "2026/0304_delegation", url: "https://speakerdeck.com/daitasu/kai-fa-zu-zhi-noke-ti-jie-jue-wojia-su-surutamenoquan-xian-yi-rang-suruce-sareruce-tositenoxiang-kihe-ifang", date: "2026-03-04", event: "Engineering Management Conference Japan 2026" },
+  { kind: "speakerdeck", slug: "2026/0219_driven-development", url: "https://speakerdeck.com/daitasu/koji-xian-nixue-he-qin-hokeyan-noqin-tatihezeng-ru-you-nolun-qu-dong-kai-fa", date: "2026-02-19" },
+  { kind: "speakerdeck", slug: "2026/0109_tanstack-ai", url: "https://speakerdeck.com/daitasu/xing-an-quan-defei-yi-cun-naqing-liang-aiezientohuremuwaku-tankstack-ai", date: "2026-01-09" },
+  { kind: "speakerdeck", slug: "2025/1112_mcp-ui", url: "https://speakerdeck.com/daitasu/aiezientogadui-hua-de-nauiwofan-su-mcp-uidebian-waruyuzati-yan", date: "2025-11-12" },
+  { kind: "speakerdeck", slug: "2025/0911_dplus-tokyo", url: "https://speakerdeck.com/daitasu/zhi-zhong-nobi-worong-kasitekai-fa-saikuruwogao-su-nihui-su-qing-bao-tou-ming-xing-tozhi-zhong-yue-jing-karakao-eruaihurendorinazhi-zhong-jian-lian-xi", date: "2025-09-11", event: "D-Plus Tokyo #18" },
+  { kind: "speakerdeck", slug: "2025/0822_evaluation", url: "https://speakerdeck.com/daitasu/minna-xiao-yan-ninaare-woshi-xian-suru-zhi-zhong-hun-he-kai-fa-zu-zhi-nomu-biao-she-ding-ping-jia-nogai-shan-shi-li", date: "2025-08-22", event: "教えて！おたくの評価制度" },
+  { kind: "speakerdeck", slug: "2025/0319_railway-oriented-programming", url: "https://speakerdeck.com/daitasu/typescript-de-railway-oriented-programming-xing-an-quan-naerahandoringuwozuo-ru", date: "2025-03-19", event: "コネヒトさんとのクローズドイベント" },
+  { kind: "speakerdeck", slug: "2024/0723_where-we-are", url: "https://speakerdeck.com/daitasu/establishing-a-system-for-continuous-inquiry-about-where-we-are", date: "2024-07-23", event: "SEN Developer Meetsup" },
+  { kind: "speakerdeck", slug: "2022/0310_stores-designsystem", url: "https://speakerdeck.com/daitasu/designsystem-history-stores-20220310", date: "2022-03-10", event: "Frontend Talk 〜デザインシステム構築のリアルな裏側〜【hey｜note｜ANDPAD】" },
+  { kind: "speakerdeck", slug: "2020/1212_cross-functional-scrum", url: "https://speakerdeck.com/daitasu/zhi-neng-heng-duan-xing-sukuramuti-zhi-ninatutekarafalsetimugai-shan-huo-dong-improvement-activity-for-multi-functional-team", date: "2020-12-12", event: "Developer Boost 2020" },
+  { kind: "speakerdeck", slug: "2019/1024_stores-components-design", url: "https://speakerdeck.com/daitasu/components-design-of-frontend-in-stores-dot-jp", date: "2019-10-24", event: "STORES.jp Meetup for Front-end Engineers #1" },
+  { kind: "speakerdeck", slug: "2019/0322_vue-animation", url: "https://speakerdeck.com/daitasu/vuedefalseanimesiyonfalsehua", date: "2019-03-22" },
+  { kind: "speakerdeck", slug: "2018/1212_liff-sentry", url: "https://speakerdeck.com/daitasu/lifffalseogong-nisentryhaikaga", date: "2018-12-12" },
 ];

@@ -10,6 +10,9 @@ importers:
 
   apps/talks:
     dependencies:
+      '@daitasu/shared':
+        specifier: workspace:*
+        version: link:../../packages/shared
       '@slidev/cli':
         specifier: ^52.16.0
         version: 52.16.0(@nuxt/kit@3.21.8)(@types/markdown-it@14.1.2)(@types/node@24.19.2)(@vue/compiler-sfc@3.5.35)(lightningcss@1.32.0)(markdown-it@14.2.0)(playwright-chromium@1.60.0)(postcss@8.5.15)(rolldown@1.0.3)

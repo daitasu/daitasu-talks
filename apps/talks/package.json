@@ -12,6 +12,7 @@
     "build": "node scripts/build.mts"
   },
   "dependencies": {
+    "@daitasu/shared": "workspace:*",
     "@slidev/cli": "^52.16.0",
     "@slidev/theme-default": "latest",
     "@slidev/types": "^52.16.0",
@@ -19,5 +20,8 @@
   },
   "devDependencies": {
     "playwright-chromium": "^1.52.0"
+  },
+  "exports": {
+    "./config": "./talks.config.ts"
   }
 }

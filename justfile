@@ -46,6 +46,7 @@ scaffold slug title date event year=YEAR:
     talk:
       date: "{{ date }}"
       event: "{{ event }}"
+      eventUrl: ""
     layout: cover
     ---
 
