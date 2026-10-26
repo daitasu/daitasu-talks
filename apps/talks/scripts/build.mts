@@ -16,7 +16,7 @@ import { talks as talkList, type Talk } from "../talks.config.ts";
 // ---------- 設定 ----------
 
 const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
-const REPO_ROOT = join(TALKS_DIR, "..");
+const REPO_ROOT = join(TALKS_DIR, "../..");
 const DIST = join(REPO_ROOT, "dist");
 const ROOT_PUBLIC = join(TALKS_DIR, "public");
 // 本番ドメイン。OGP の og:image は絶対 URL 必須なのでここを前置する。

@@ -32,7 +32,7 @@ start port="4173":
 scaffold slug title date event year=YEAR:
     #!/usr/bin/env bash
     set -euo pipefail
-    talk_dir="talks/{{ year }}/{{ slug }}"
+    talk_dir="apps/talks/{{ year }}/{{ slug }}"
     if [ -e "$talk_dir" ]; then
       echo "Error: $talk_dir already exists" >&2
       exit 1

@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  talks:
+  apps/talks:
     dependencies:
       '@slidev/cli':
         specifier: ^52.16.0
