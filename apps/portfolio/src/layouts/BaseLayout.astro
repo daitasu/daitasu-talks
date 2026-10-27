@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
+import { SITE_NAME } from "../lib/site.ts";
 
 type Props = {
   /** 未指定ならサイト名だけを title にする。 */
@@ -13,7 +14,6 @@ type Props = {
   noindex?: boolean;
 };
 
-const SITE_NAME = "daitasu";
 const DEFAULT_OG_IMAGE = "/daitasu-talks-ogp.png";
 
 const { title, description, image = DEFAULT_OG_IMAGE, ogType = "website", noindex = false } = Astro.props;
