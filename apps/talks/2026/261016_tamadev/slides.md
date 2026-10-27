@@ -2,7 +2,7 @@
 theme: ../../themes/daitasu
 colorSchema: light
 title: 立川市は如何にして今の発展を遂げたのか -旧地図から見た地政の歴史-
-description: 2026年10月16日 「多摩.dev #5 秋の夜長のトーク会」における登壇資料です。
+description: "2026年10月16日 「多摩.dev #5 秋の夜長のトーク会」における登壇資料です。"
 talk:
   date: "2026-10-16"
   event: "多摩.dev #5 秋の夜長のトーク会"

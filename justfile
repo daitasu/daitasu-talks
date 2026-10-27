@@ -42,7 +42,7 @@ scaffold slug title date event year=YEAR:
     ---
     theme: ../../themes/daitasu
     colorSchema: light
-    title: {{ title }}
+    title: "{{ title }}"
     talk:
       date: "{{ date }}"
       event: "{{ event }}"
