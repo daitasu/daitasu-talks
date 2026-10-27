@@ -1,5 +1,3 @@
-// 全 slidev デッキを apps/portfolio/public/slides/<year>/<dir>/ にビルドし、表紙を og.png に書き出す。
-// 一覧・詳細ページは apps/portfolio（Astro）が担当し、デッキは詳細ページから iframe で読み込まれる。
 // Astro は build のたびに outDir を空にするので、public/ に置いて dist/ へコピーさせる（dev でも配信される）。
 // apps/portfolio は og.png の有無を見てサムネイルを決めるので、このビルドを先に走らせる。
 
@@ -14,7 +12,7 @@ const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
 const REPO_ROOT = join(TALKS_DIR, "../..");
 const SLIDES_DIST = join(REPO_ROOT, "apps", "portfolio", "public", "slides");
 const OG_TMP = join(TALKS_DIR, ".og-tmp");
-// 既定で生成する（本番と同じ成果物をローカルでも確認できるように）。速く回したいときは SKIP_OG=1。要 headless ブラウザ。
+// ローカルでも本番と同じ成果物にするため、既定で OGP を生成する。headless ブラウザが必要。省略は SKIP_OG=1。
 const GEN_OG = !process.env.SKIP_OG;
 
 const esc = (s: string): string =>
@@ -22,8 +20,8 @@ const esc = (s: string): string =>
 
 const outDirOf = (deck: Deck): string => join(SLIDES_DIST, deck.slug);
 
-// hash router: 静的配信で SPA fallback 設定が不要（デッキは /slides/<year>/<dir>/、スライドは #/<n>）。
-// --base 由来のナビゲーションバグはテーマ側で補正、asset は deploy base + $public() で解決する。
+// hash router: 静的配信で SPA fallback 設定が不要。
+// --base 由来のナビゲーションバグはテーマ側で補正し、画像などの asset はテーマの $public() で base を前置して解決する。
 const buildDeck = (deck: Deck): void => {
   execFileSync(
     "npx",
@@ -32,7 +30,6 @@ const buildDeck = (deck: Deck): void => {
   );
 };
 
-// 表紙（1 枚目）を PNG 出力して og.png に置く。throws。
 // slidev export は --output のディレクトリを丸ごとクリーンするので、必ず一時ディレクトリに吐いてから og.png だけコピーする。
 const exportCover = (deck: Deck): void => {
   const tmp = join(OG_TMP, deck.slug);
@@ -47,7 +44,7 @@ const exportCover = (deck: Deck): void => {
   copyFileSync(join(tmp, "1.png"), join(outDirOf(deck), "og.png")); // png export は "<n>.png" で吐く
 };
 
-// デッキ単体の URL は詳細ページの埋め込み元なので、canonical を詳細ページに向けて評価をそちらへ寄せる。
+// デッキ単体の URL は詳細ページの埋め込み元なので、canonical を詳細ページに向けて検索エンジンの評価をそちらへ寄せる。
 // Slidev は lang="en" 固定で吐き、title に " - Slidev" を付けるので直す。
 const injectHead = (deck: Deck): void => {
   const htmlPath = join(outDirOf(deck), "index.html");

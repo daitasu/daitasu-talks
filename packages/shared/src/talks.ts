@@ -20,9 +20,9 @@ export type TalkEntry =
       date: string;
       event?: string;
       eventUrl?: string;
-      /** 取得した og:title を上書き（または取得失敗時のフォールバック）。 */
+      /** 取得した oEmbed の title より優先する。取得に失敗したときの代わりにもなる。 */
       title?: string;
-      /** 取得した og:image を上書き。 */
+      /** SpeakerDeck の表紙画像より優先する。取得に失敗したときの代わりにもなる。 */
       image?: string;
     };
 

@@ -6,7 +6,7 @@ export type NavItem = {
   icon: NavIcon;
 };
 
-/** サイドナビの並び。ページを足すときはここに 1 行追加し、アイコンは NavIconSvg に足す。 */
+/** サイドナビの並び。ページを足すときはここに 1 行追加する。 */
 export const NAV_ITEMS: NavItem[] = [
   { href: "/", label: "Home", icon: "home" },
   { href: "/resume/", label: "Resume", icon: "resume" },

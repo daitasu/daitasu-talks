@@ -1,4 +1,4 @@
-/** daitasu/daitasu（GitHub プロフィール README）を Markdown の正とし、ビルド時に取得する。 */
+/** Markdown の取得元は daitasu/daitasu（GitHub プロフィール README）。ビルド時に取得する。 */
 const PROFILE_RAW_BASE = "https://raw.githubusercontent.com/daitasu/daitasu/main";
 
 export const PROFILE_DOCUMENTS = [

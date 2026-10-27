@@ -1,5 +1,5 @@
 /*
- * talks.daitasu.work（スライドテーマ daitasu）と同じ白×青の海モチーフ。
+ * スライドテーマ daitasu（apps/talks/themes/daitasu）と同じ白×青の海モチーフ。
  * 色はすべてトークンで持ち、<html data-theme> で切り替える（値は ThemeScript が保存値か OS 設定から決める）。
  */
 :root {
@@ -64,7 +64,6 @@ body {
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* 下端の波（スライド表紙と同じモチーフ） */
 body::after {
   content: "";
   position: fixed;
@@ -91,7 +90,6 @@ a {
   outline-offset: 2px;
 }
 
-/* GitHub から取得した Markdown（README / resume）の本文 */
 .prose {
   line-height: 1.85;
   font-size: 0.98rem;

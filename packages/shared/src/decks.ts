@@ -39,7 +39,7 @@ const parseFrontmatter = (markdown: string): Record<string, unknown> => {
   }
 };
 
-/** slides.md の headmatter から一覧・詳細ページに使うメタを読む。title が無ければ fallbackTitle を使う。 */
+/** slides.md の frontmatter から一覧・詳細ページに使うメタを読む。 */
 export const parseDeckMeta = (markdown: string, fallbackTitle: string): DeckMeta => {
   const frontmatter = parseFrontmatter(markdown);
   const talk = isRecord(frontmatter.talk) ? frontmatter.talk : {};

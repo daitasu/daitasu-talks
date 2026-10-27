@@ -10,8 +10,8 @@ export const talks: TalkEntry[] = [
   { kind: "slidev", slug: "2026/0708_nihonbashijs" },
   { kind: "slidev", slug: "2026/0612_tamadev" },
 
-  // 過去の SpeakerDeck 登壇。title / 画像 / 埋め込みプレイヤーは build 時に URL から取得する。
-  // slug は詳細ページの URL になる。event / eventUrl は任意。※ 2026/0612 は slidev 版があるので除外。
+  // 過去の SpeakerDeck 登壇。title / 画像 / 埋め込みは build 時に URL から取得する。
+  // 2026/0612 は slidev 版があるので、SpeakerDeck 版は載せない。
   { kind: "speakerdeck", slug: "2026/0512_tachikawaany-opening", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-yun-ying-ai-zan", date: "2026-05-12", event: "Tachikawa.any" },
   { kind: "speakerdeck", slug: "2026/0410_why-local-community", url: "https://speakerdeck.com/daitasu/tachikawa-dot-any-shi-memasita-di-yu-komiyuniteiwonazeli-tishang-gerunoka-chu-metenoli-tishang-genobi", date: "2026-04-10" },
   { kind: "speakerdeck", slug: "2026/0304_delegation", url: "https://speakerdeck.com/daitasu/kai-fa-zu-zhi-noke-ti-jie-jue-wojia-su-surutamenoquan-xian-yi-rang-suruce-sareruce-tositenoxiang-kihe-ifang", date: "2026-03-04", event: "Engineering Management Conference Japan 2026" },

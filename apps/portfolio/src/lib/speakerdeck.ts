@@ -10,7 +10,10 @@ const PLAYER_SRC_PATTERN = /src="(https:\/\/speakerdeck\.com\/player\/([0-9a-f]+
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
 
-/** oEmbed の html に含まれるプレイヤー iframe から埋め込み URL と表紙画像を取り出す。形式が想定外なら null。 */
+/**
+ * oEmbed の html に含まれるプレイヤー iframe から埋め込み URL を取り出す。形式が想定外なら null。
+ * 表紙画像は oEmbed に無いので、プレイヤー URL の ID から files.speakerdeck.com の URL を組み立てる。
+ */
 export const parseOembed = (json: unknown): SpeakerdeckEmbed | null => {
   if (!isRecord(json) || typeof json.html !== "string") return null;
   const match = json.html.match(PLAYER_SRC_PATTERN);
