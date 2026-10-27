@@ -1,0 +1,121 @@
+---
+import { isActiveNav, NAV_ITEMS } from "../lib/nav.ts";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const AVATAR_URL = "https://github.com/daitasu.png";
+const SITE_LABEL = "daitasu.work";
+const { pathname } = Astro.url;
+---
+
+<header class="site-header">
+  <div class="container top">
+    <a class="brand" href="/">
+      <img class="avatar" src={AVATAR_URL} alt="" width="36" height="36" />
+      <span>{SITE_LABEL}</span>
+    </a>
+    <div class="actions">
+      <ThemeToggle />
+    </div>
+  </div>
+  <nav class="container nav" aria-label="サイト内ナビゲーション">
+    <ul>
+      {
+        NAV_ITEMS.map((item) => (
+          <li>
+            <a
+              class:list={["nav-link", { active: isActiveNav(item.href, pathname) }]}
+              href={item.href}
+              aria-current={isActiveNav(item.href, pathname) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+    color: inherit;
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .avatar {
+    flex-shrink: 0;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 2px solid var(--color-accent-soft);
+    border-radius: 999px;
+  }
+
+  .actions {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .nav {
+    overflow-x: auto;
+  }
+
+  .nav ul {
+    display: flex;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.6rem 1rem;
+    border-bottom: 2px solid transparent;
+    color: var(--color-muted);
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color 0.16s ease, border-color 0.16s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--color-accent);
+  }
+
+  .nav-link.active {
+    border-bottom-color: var(--color-accent);
+    color: var(--color-accent);
+  }
+
+  @media (min-width: 576px) {
+    .nav-link {
+      padding: 0.6rem 1.5rem;
+    }
+  }
+</style>

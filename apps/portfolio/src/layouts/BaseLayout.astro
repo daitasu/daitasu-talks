@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import SideNav from "../components/SideNav.astro";
+import SiteHeader from "../components/SiteHeader.astro";
 import ThemeScript from "../components/ThemeScript.astro";
 
 type Props = {
@@ -45,12 +45,10 @@ const imageUrl = new URL(image, Astro.site).href;
     <slot name="head" />
   </head>
   <body>
-    <SideNav />
-    <div class="content-area">
-      <main class="main">
-        <slot />
-      </main>
-    </div>
+    <SiteHeader />
+    <main class="container main">
+      <slot />
+    </main>
   </body>
 </html>
 
@@ -58,24 +56,19 @@ const imageUrl = new URL(image, Astro.site).href;
   .main {
     position: relative;
     z-index: 1;
-    max-width: var(--content-max-width);
-    margin: 0 auto;
-    padding: 2rem 1rem 9rem;
+    padding-top: 2rem;
+    padding-bottom: 9rem;
   }
 
   @media (min-width: 576px) {
     .main {
-      padding: 2.5rem 1.5rem 9rem;
+      padding-top: 2.5rem;
     }
   }
 
   @media (min-width: 960px) {
-    .content-area {
-      padding-left: var(--sidebar-width);
-    }
-
     .main {
-      padding: 3.5rem 2rem 9rem;
+      padding-top: 3.5rem;
     }
   }
 </style>

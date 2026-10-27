@@ -22,8 +22,7 @@
   --shadow-card-hover: 0 22px 48px -22px rgba(30, 64, 128, 0.5);
 
   --font-sans: "Zen Kaku Gothic New", system-ui, sans-serif;
-  --sidebar-width: 15rem;
-  --content-max-width: 1080px;
+  --container-max-width: 1200px;
   --radius-card: 16px;
 }
 
@@ -88,6 +87,28 @@ a {
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;
+}
+
+/* ヘッダーと本文で左右の端をそろえる */
+.container {
+  max-width: var(--container-max-width);
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 576px) {
+  .container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .container {
+    padding-left: 2rem;
+    padding-right: 2rem;
+  }
 }
 
 .prose {
