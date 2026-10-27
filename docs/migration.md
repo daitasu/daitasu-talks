@@ -78,15 +78,16 @@ curl -sI https://talks.daitasu.work/talks/2026/0708_nihonbashijs/og.png | grep -
 
 ## 4. GitHub リポジトリをリネームする
 
-`daitasu-talks` → `portfolio.daitasu.work`。
+`daitasu-talks` → `portfolio`。
 
 ```bash
-gh repo rename portfolio.daitasu.work --repo daitasu/daitasu-talks
-git remote set-url origin git@github.com:daitasu/portfolio.daitasu.work.git
+gh repo rename portfolio --repo daitasu/daitasu-talks
+git remote set-url origin git@github.com:daitasu/portfolio.git
 ```
 
 GitHub は旧名からのアクセスをリダイレクトするが、手元の remote は新しい名前に向け直しておく。
 リポジトリの About にある Website も `https://portfolio.daitasu.work/` に変える。
+Cloudflare Pages のプロジェクト名（`daitasu-talks`）は GitHub のリポジトリ名と無関係なので、変えない。
 
 ## 5. daitasu/daitasu の更新で再ビルドさせる
 
@@ -94,29 +95,12 @@ GitHub は旧名からのアクセスをリダイレクトするが、手元の 
 daitasu/daitasu 側から `repository_dispatch` を送って、このリポジトリのデプロイを起動する。
 
 1. Fine-grained personal access token を作る。
-   - Repository access: `daitasu/portfolio.daitasu.work` のみ
+   - Repository access: `daitasu/portfolio` のみ
    - Permissions: Contents を Read and write（`repository_dispatch` の送信に必要）
 2. daitasu/daitasu の Settings → Secrets and variables → Actions に `PORTFOLIO_DISPATCH_TOKEN` として登録する。
-3. daitasu/daitasu に `.github/workflows/notify-portfolio.yml` を置く。
+3. daitasu/daitasu の `.github/workflows/notify-portfolio.yml` が、`README.md` / `resume.md` を main に push したときに `profile-updated` を送る。
 
-```yaml
-name: Notify portfolio
-
-on:
-  push:
-    branches: [main]
-    paths: [README.md, resume.md]
-
-jobs:
-  dispatch:
-    runs-on: ubuntu-latest
-    steps:
-      - run: gh api repos/daitasu/portfolio.daitasu.work/dispatches -f event_type=profile-updated
-        env:
-          GH_TOKEN: ${{ secrets.PORTFOLIO_DISPATCH_TOKEN }}
-```
-
-確認: daitasu/daitasu の `resume.md` を更新して push し、このリポジトリの Actions で `repository_dispatch` 起動の Deploy が走ることを見る。
+確認: daitasu/daitasu の Actions で Notify portfolio を手動実行（Run workflow）し、このリポジトリの Actions で `repository_dispatch` 起動の Deploy が走ることを見る。
 
 ## 6. 後片付け
 
