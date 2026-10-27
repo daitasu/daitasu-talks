@@ -12,21 +12,25 @@ dev slug="":
 list:
     pnpm talks
 
+# ポートフォリオ（Astro）の開発サーバー起動。iframe のデッキは just build 済みのものが表示される
+portfolio:
+    pnpm dev:portfolio
+
 # PDF エクスポート（引数なしで対話式、SLUG 指定で直エクスポート）
 pdf slug="":
     pnpm export {{ slug }}
 
-# 全トークを dist/ にビルド（Cloudflare Pages 配信用）
+# デッキと OGP をビルドし、ポートフォリオを apps/portfolio/dist/ に組み立てる（Cloudflare Pages 配信用。SKIP_OG=1 で OGP 生成を省略）
 build:
     pnpm build
 
-# ビルド結果（dist/）をローカル配信して本番同等の見た目を確認（port 4173）
+# ビルド結果（apps/portfolio/dist/）をローカル配信して本番同等の見た目を確認（port 4173）
 start port="4173":
     #!/usr/bin/env bash
     set -euo pipefail
-    [ -d dist ] || { echo "Error: dist/ がない。先に just build を実行して" >&2; exit 1; }
+    [ -d apps/portfolio/dist ] || { echo "Error: apps/portfolio/dist/ がない。先に just build を実行して" >&2; exit 1; }
     echo "▸ http://localhost:{{ port }}/"
-    python3 -m http.server {{ port }} --directory dist
+    python3 -m http.server {{ port }} --directory apps/portfolio/dist
 
 # 新しいトークの雛形のみ作成（dev サーバーは起動しない）
 scaffold slug title date event year=YEAR:
