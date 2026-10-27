@@ -10,5 +10,8 @@
     "build": "pnpm --filter talks run build && pnpm --filter portfolio run build",
     "test": "pnpm --recursive run test",
     "check": "pnpm --filter @daitasu/shared run typecheck && pnpm --filter portfolio run check"
+  },
+  "devDependencies": {
+    "wrangler": "4.153.0"
   }
 }
