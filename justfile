@@ -67,7 +67,7 @@ new slug title date event year=YEAR: (scaffold slug title date event year)
     [ -d node_modules ] || pnpm install
     just dev {{ slug }}
 
-# ポートフォリオ（Astro）の開発サーバー起動。iframe のデッキは just build 済みのものが表示される
+# ポートフォリオ（Astro）の開発サーバー起動。iframe のデッキは just build 済みのものが表示される（一覧の OGP サムネイルは起動時に読むので、build し直したら再起動する）
 [group('portfolio')]
 dev-portfolio:
     pnpm dev:portfolio
