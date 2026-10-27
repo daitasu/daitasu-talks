@@ -15,7 +15,8 @@ concurrency:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    # ubuntu-latest が新しい版に変わると、Playwright が対応するまで OGP 用のブラウザを入れられないので固定する
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       deployments: write
