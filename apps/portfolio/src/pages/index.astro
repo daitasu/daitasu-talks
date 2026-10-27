@@ -1,0 +1,51 @@
+---
+import { getEntry, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const readme = await getEntry("profile", "readme");
+if (readme === undefined) throw new Error("profile コレクションに readme がありません");
+const { Content } = await render(readme);
+---
+
+<BaseLayout description="daitasu のポートフォリオ。経歴・登壇資料・アウトプットをまとめています。">
+  <section class="hero">
+    <img class="avatar" src="https://github.com/daitasu.png" alt="daitasu のアイコン" width="96" height="96" />
+    <h1>daitasu</h1>
+  </section>
+  <div class="prose">
+    <Content />
+  </div>
+</BaseLayout>
+
+<style>
+  .hero {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .avatar {
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 3px solid var(--color-accent-soft);
+    border-radius: 999px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+  }
+
+  @media (min-width: 576px) {
+    .avatar {
+      width: 6rem;
+      height: 6rem;
+    }
+
+    h1 {
+      font-size: 2.3rem;
+    }
+  }
+</style>

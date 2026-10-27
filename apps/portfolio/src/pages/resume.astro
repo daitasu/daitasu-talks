@@ -1,0 +1,23 @@
+---
+import { getEntry, render } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const resume = await getEntry("profile", "resume");
+if (resume === undefined) throw new Error("profile コレクションに resume がありません");
+const { Content } = await render(resume);
+---
+
+<BaseLayout title="Resume" description="daitasu の職歴・登壇・アウトプット・コミュニティ活動">
+  <h1 class="page-title">Resume</h1>
+  <div class="prose">
+    <Content />
+  </div>
+</BaseLayout>
+
+<style>
+  .page-title {
+    margin: 0 0 2rem;
+    font-size: 1.7rem;
+    letter-spacing: 0.01em;
+  }
+</style>
