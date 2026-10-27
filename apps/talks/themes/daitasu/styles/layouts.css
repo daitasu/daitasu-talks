@@ -30,6 +30,12 @@ html.light {
 }
 
 /* ---------- Slide container background ---------- */
+/* slidev は 16:9 に収まらない端数を黒で塗るため、ポートフォリオの iframe 埋め込みで左右に黒い線が出る。
+   スライドと同じ色にする（slidev 側の :root 指定より詳細度を上げる）。 */
+html:root {
+  --slidev-slide-container-background: var(--dt-bg);
+}
+
 .slide-content {
   background: var(--dt-bg) !important;
 }
