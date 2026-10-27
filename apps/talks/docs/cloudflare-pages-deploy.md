@@ -27,7 +27,7 @@
 4. デッキの `index.html` に、詳細ページを指す canonical を入れる。
 
 出力先を `public/` にしているのは、Astro が build のたびに outDir を空にするため。
-`public/` に置けば Astro が `dist/` にコピーし、`just portfolio`（Astro の dev サーバー）でもそのまま配信される。
+`public/` に置けば Astro が `dist/` にコピーし、`just dev-portfolio`（Astro の dev サーバー）でもそのまま配信される。
 
 ```
 apps/portfolio/dist/

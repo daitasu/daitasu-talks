@@ -23,7 +23,7 @@ just dev
 just dev 0708_nihonbashijs
 
 # ポートフォリオの開発サーバー起動
-just portfolio
+just dev-portfolio
 
 # 全体をビルドしてローカル配信（SKIP_OG=1 で表紙 OGP 画像の生成を省略）
 just build
@@ -38,7 +38,7 @@ just test
 just check
 ```
 
-`just portfolio` の詳細ページに埋め込まれるスライドは、`just build` で `apps/portfolio/public/slides/` に出力したもの。
+`just dev-portfolio` の詳細ページに埋め込まれるスライドは、`just build` で `apps/portfolio/public/slides/` に出力したもの。
 スライドを直したら `just build` をやり直す。
 
 ## 構成

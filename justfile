@@ -69,7 +69,7 @@ new slug title date event year=YEAR: (scaffold slug title date event year)
 
 # ポートフォリオ（Astro）の開発サーバー起動。iframe のデッキは just build 済みのものが表示される
 [group('portfolio')]
-portfolio:
+dev-portfolio:
     pnpm dev:portfolio
 
 # デッキと OGP をビルドし、ポートフォリオを apps/portfolio/dist/ に組み立てる（SKIP_OG=1 で OGP 生成を省略）
