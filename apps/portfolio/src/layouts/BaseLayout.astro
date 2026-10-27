@@ -14,7 +14,7 @@ type Props = {
   noindex?: boolean;
 };
 
-const DEFAULT_OG_IMAGE = "/daitasu-talks-ogp.png";
+const DEFAULT_OG_IMAGE = "/ogp.png";
 
 const { title, description, image = DEFAULT_OG_IMAGE, ogType = "website", noindex = false } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
