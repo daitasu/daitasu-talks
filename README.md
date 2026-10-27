@@ -32,12 +32,14 @@ just start
 # PDF エクスポート（引数なしで対話式、SLUG 指定で直エクスポート）
 just pdf
 just pdf 0708_nihonbashijs
+
+# テストと型チェック
+just test
+just check
 ```
 
 `just portfolio` の詳細ページに埋め込まれるスライドは、`just build` で `apps/portfolio/public/slides/` に出力したもの。
 スライドを直したら `just build` をやり直す。
-
-テストと型チェックは `pnpm test` / `pnpm check`。
 
 ## 構成
 
@@ -80,7 +82,7 @@ just scaffold my-talk "タイトル" 2026-07-01 "イベント名"
 just new my-talk "タイトル" 2027-01-01 "イベント名" 2027
 ```
 
-`apps/talks/<year>/<slug>/slides.md` が以下の frontmatter で生成される。
+`apps/talks/<year>/<slug>/slides.md` が以下の frontmatter で生成され、`apps/talks/talks.config.ts` に draft として登録される。
 `eventUrl` にイベントページの URL を書くと、詳細ページのイベント名がリンクになる。
 
 ```yaml
@@ -100,7 +102,10 @@ layout: cover
 > frontmatter は YAML なので、半角スペースに続く `#` 以降はコメントとして捨てられる。
 > `#` を含む値（例: `多摩.dev #3`）は必ず引用符で囲む。
 
-一覧に出すには `apps/talks/talks.config.ts` に `{ kind: "slidev", slug: "<year>/<dir>" }` を足す（`<dir>` は `apps/talks/<year>/` 直下のディレクトリ名）。
+draft は詳細ページとスライドだけがビルドされ、一覧と sitemap には出ない（詳細ページは noindex）。
+公開するときは、`talks.config.ts` の該当エントリから `status: "draft"` を消す。
+`talks.config.ts` に無いデッキはビルドされない。
+
 SpeakerDeck の登壇は `kind: "speakerdeck"` で `slug`（詳細ページの URL）、`url`、`date` を書く。
 タイトルと表紙画像、埋め込みプレイヤーはビルド時に SpeakerDeck から取得する。
 
