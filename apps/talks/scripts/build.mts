@@ -1,5 +1,6 @@
-// 全 slidev デッキを <repo>/dist/slides/<year>/<dir>/ にビルドし、表紙を og.png に書き出す。
+// 全 slidev デッキを apps/portfolio/public/slides/<year>/<dir>/ にビルドし、表紙を og.png に書き出す。
 // 一覧・詳細ページは apps/portfolio（Astro）が担当し、デッキは詳細ページから iframe で読み込まれる。
+// Astro は build のたびに outDir を空にするので、public/ に置いて dist/ へコピーさせる（dev でも配信される）。
 // apps/portfolio は og.png の有無を見てサムネイルを決めるので、このビルドを先に走らせる。
 
 import { copyFileSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
@@ -11,8 +12,8 @@ import { SITE_URL, toSlidesPath, toTalkPath } from "@daitasu/shared/talks";
 
 const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
 const REPO_ROOT = join(TALKS_DIR, "../..");
-const SLIDES_DIST = join(REPO_ROOT, "dist", "slides");
-const OG_TMP = join(REPO_ROOT, "dist", ".og-tmp");
+const SLIDES_DIST = join(REPO_ROOT, "apps", "portfolio", "public", "slides");
+const OG_TMP = join(TALKS_DIR, ".og-tmp");
 // 既定で生成する（本番と同じ成果物をローカルでも確認できるように）。速く回したいときは SKIP_OG=1。要 headless ブラウザ。
 const GEN_OG = !process.env.SKIP_OG;
 

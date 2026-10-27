@@ -1,0 +1,121 @@
+---
+import { toTalkPath } from "@daitasu/shared/talks";
+import { formatTalkDate } from "../lib/date.ts";
+import type { TalkItem } from "../lib/talks.ts";
+
+type Props = {
+  talk: TalkItem;
+};
+
+const { talk } = Astro.props;
+---
+
+<a class="card" href={toTalkPath(talk.slug)}>
+  {talk.kind === "speakerdeck" && <span class="badge">Speakerdeck</span>}
+  {
+    talk.image ? (
+      <img class="thumb" src={talk.image} alt="" loading="lazy" />
+    ) : (
+      <div class="thumb thumb-ph">
+        <span>{talk.title}</span>
+      </div>
+    )
+  }
+  <div class="body">
+    <h2>{talk.title}</h2>
+    <p class="meta">
+      <time datetime={talk.date}>{formatTalkDate(talk.date)}</time>
+      {talk.event && <span class="ev">{talk.event}</span>}
+    </p>
+  </div>
+</a>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-card);
+    color: inherit;
+    text-decoration: none;
+    transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  }
+
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: color-mix(in srgb, var(--color-accent) 50%, transparent);
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  /* 角の枠にはみ出して重なる SpeakerDeck バッジ */
+  .badge {
+    position: absolute;
+    top: -9px;
+    left: -9px;
+    z-index: 2;
+    padding: 0.24rem 0.62rem;
+    border-radius: 7px;
+    background: var(--color-badge);
+    color: #fff;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    box-shadow: 0 5px 12px -4px rgba(0, 146, 135, 0.6);
+  }
+
+  .thumb {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--color-thumb);
+    border-bottom: 1px solid var(--color-border);
+    border-radius: calc(var(--radius-card) - 1px) calc(var(--radius-card) - 1px) 0 0;
+  }
+
+  .thumb-ph {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--color-placeholder-from), var(--color-placeholder-to));
+    text-align: center;
+  }
+
+  .thumb-ph span {
+    color: var(--color-accent-strong);
+    font-size: 0.95rem;
+    font-weight: 700;
+  }
+
+  .body {
+    padding: 1rem 1.15rem 1.2rem;
+  }
+
+  .body h2 {
+    margin: 0;
+    font-size: 1.02rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .meta {
+    margin: 0.55rem 0 0;
+    color: var(--color-muted);
+    font-size: 0.82rem;
+  }
+
+  .ev {
+    color: var(--color-accent);
+    font-weight: 600;
+  }
+
+  .ev::before {
+    content: " · ";
+    color: var(--color-muted);
+    font-weight: 400;
+  }
+</style>

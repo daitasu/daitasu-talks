@@ -1,0 +1,182 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import { SITE_URL, toTalkPath } from "@daitasu/shared/talks";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { formatTalkDate } from "../../lib/date.ts";
+import type { TalkItem } from "../../lib/talks.ts";
+
+type Props = {
+  talk: TalkItem;
+};
+
+export const getStaticPaths = (async () =>
+  (await getCollection("talks")).map((entry) => ({
+    params: { slug: entry.data.slug },
+    props: { talk: entry.data },
+  }))) satisfies GetStaticPaths;
+
+const { talk } = Astro.props;
+
+const sourceLabel = talk.kind === "slidev" ? "スライドを全画面で開く" : "Speaker Deck で開く";
+const structuredData = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "PresentationDigitalDocument",
+  name: talk.title,
+  description: talk.description,
+  url: `${SITE_URL}${toTalkPath(talk.slug)}`,
+  datePublished: talk.date,
+  author: { "@type": "Person", name: "daitasu", url: SITE_URL },
+  ...(talk.image && { image: new URL(talk.image, SITE_URL).href }),
+  ...(talk.event && { about: talk.event }),
+}).replaceAll("<", "\\u003c");
+---
+
+<BaseLayout title={talk.title} description={talk.description} image={talk.image || undefined} ogType="article">
+  <script slot="head" type="application/ld+json" set:html={structuredData} />
+
+  <a class="back" href="/talks/">← Talks</a>
+  <article>
+    <header class="header">
+      <h1>{talk.title}</h1>
+      <dl class="meta">
+        <div>
+          <dt>登壇日</dt>
+          <dd><time datetime={talk.date}>{formatTalkDate(talk.date)}</time></dd>
+        </div>
+        {
+          talk.event && (
+            <div>
+              <dt>イベント</dt>
+              <dd>
+                {talk.eventUrl ? (
+                  <a href={talk.eventUrl} target="_blank" rel="noopener">
+                    {talk.event}
+                  </a>
+                ) : (
+                  talk.event
+                )}
+              </dd>
+            </div>
+          )
+        }
+      </dl>
+    </header>
+
+    {
+      talk.embedUrl ? (
+        <div class="frame">
+          <iframe
+            src={talk.embedUrl}
+            title={talk.title}
+            allowfullscreen
+            data-forward-hash={talk.kind === "slidev" ? "" : undefined}
+          />
+        </div>
+      ) : (
+        <p class="no-embed">埋め込みを読み込めませんでした。下のリンクからスライドを開いてください。</p>
+      )
+    }
+
+    <p class="actions">
+      <a class="source" href={talk.sourceUrl} target="_blank" rel="noopener">{sourceLabel} ↗</a>
+    </p>
+    <p class="description">{talk.description}</p>
+  </article>
+</BaseLayout>
+
+<script>
+  // talks.daitasu.work 時代の共有リンク（…/#/12 のようなスライド番号付き）を 301 後も活かすため、
+  // 詳細ページの hash を slidev の iframe にそのまま渡す。
+  const frame = document.querySelector<HTMLIFrameElement>("iframe[data-forward-hash]");
+  if (frame && location.hash) frame.src = `${frame.src.split("#")[0]}${location.hash}`;
+</script>
+
+<style>
+  .back {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: var(--color-muted);
+    font-size: 0.88rem;
+    text-decoration: none;
+  }
+
+  .back:hover {
+    color: var(--color-accent);
+  }
+
+  h1 {
+    margin: 0;
+    font-size: 1.45rem;
+    line-height: 1.5;
+  }
+
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1.5rem;
+    margin: 0.9rem 0 1.6rem;
+    font-size: 0.9rem;
+  }
+
+  .meta div {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .meta dt {
+    color: var(--color-muted);
+  }
+
+  .meta dd {
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .frame {
+    overflow: hidden;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-card);
+    background: var(--color-thumb);
+    box-shadow: var(--shadow-card);
+  }
+
+  .frame iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .no-embed {
+    padding: 2rem 1rem;
+    border: 1px dashed var(--color-border);
+    border-radius: var(--radius-card);
+    color: var(--color-muted);
+    text-align: center;
+  }
+
+  .actions {
+    margin: 1rem 0 0;
+    text-align: right;
+    font-size: 0.88rem;
+  }
+
+  .source {
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .description {
+    margin: 1.5rem 0 0;
+    color: var(--color-muted);
+    line-height: 1.8;
+  }
+
+  @media (min-width: 576px) {
+    h1 {
+      font-size: 1.7rem;
+    }
+  }
+</style>
