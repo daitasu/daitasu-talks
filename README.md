@@ -9,6 +9,8 @@ daitasu のポートフォリオサイトと、登壇スライドを管理する
 
 タスクランナーに [just](https://github.com/casey/just) を利用。未インストールなら `brew install just`。
 
+パッケージマネージャは pnpm（バージョンは `package.json` の `packageManager` を参照）。Node.js 25 以降は corepack が同梱されないため、`npm install -g pnpm@10.12.1` などで別途入れる。asdf で Node.js を管理している場合は、入れたあとに `asdf reshim nodejs` を実行する。
+
 ```bash
 pnpm install
 
