@@ -7,6 +7,7 @@ import { fileURLToPath } from "node:url";
 import { execFileSync } from "node:child_process";
 import { findDecks, type Deck } from "@daitasu/shared/decks";
 import { SITE_URL, toSlidesPath, toTalkPath } from "@daitasu/shared/talks";
+import { talks } from "../talks.config.ts";
 
 const TALKS_DIR = join(fileURLToPath(import.meta.url), "../..");
 const REPO_ROOT = join(TALKS_DIR, "../..");
@@ -69,7 +70,14 @@ const processDeck = (deck: Deck): void => {
   injectHead(deck);
 };
 
-const decks = findDecks(TALKS_DIR);
+// 詳細ページは talks.config.ts のエントリからしか作られないので、載っていないデッキをビルドすると
+// canonical が 404 を指す。config に足し忘れたデッキは警告して飛ばす。
+const configuredSlugs = new Set(talks.filter((talk) => talk.kind === "slidev").map((talk) => talk.slug));
+const allDecks = findDecks(TALKS_DIR);
+allDecks
+  .filter((deck) => !configuredSlugs.has(deck.slug))
+  .forEach((deck) => console.warn(`! talks.config.ts に無いのでスキップ: ${deck.slug}`));
+const decks = allDecks.filter((deck) => configuredSlugs.has(deck.slug));
 rmSync(SLIDES_DIST, { recursive: true, force: true });
 mkdirSync(SLIDES_DIST, { recursive: true });
 decks.forEach(processDeck);
