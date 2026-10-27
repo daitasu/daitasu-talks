@@ -42,6 +42,7 @@ just check
 
 `just dev-portfolio` の詳細ページに埋め込まれるスライドは、`just build` で `apps/portfolio/public/slides/` に出力したもの。
 スライドを直したら `just build` をやり直す。
+一覧の OGP サムネイルは開発サーバーの起動時に読み込むため、`just build` をやり直したら `just dev-portfolio` も再起動する。
 
 ## 構成
 
