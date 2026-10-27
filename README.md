@@ -1,6 +1,9 @@
-# daitasu slides
+# portfolio.daitasu.work
 
-登壇スライドを管理する monorepo。[Slidev](https://sli.dev) で作成。
+daitasu のポートフォリオサイトと、登壇スライドを管理する monorepo。
+
+- ポートフォリオ: [Astro](https://astro.build)。`/`（プロフィール）、`/resume/`（職歴）、`/talks/`（登壇一覧と詳細ページ）
+- 登壇スライド: [Slidev](https://sli.dev)。詳細ページから iframe で埋め込む
 
 ## 使い方
 
@@ -15,26 +18,54 @@ just
 # トーク一覧を表示
 just list
 
-# 開発サーバー起動（引数なしで対話式、SLUG 指定で直起動）
+# スライドの開発サーバー起動（引数なしで対話式、SLUG 指定で直起動）
 just dev
-just dev sample
+just dev 0708_nihonbashijs
+
+# ポートフォリオの開発サーバー起動
+just portfolio
+
+# 全体をビルドしてローカル配信（SKIP_OG=1 で表紙 OGP 画像の生成を省略）
+just build
+just start
 
 # PDF エクスポート（引数なしで対話式、SLUG 指定で直エクスポート）
 just pdf
-just pdf sample
+just pdf 0708_nihonbashijs
 ```
+
+`just portfolio` の詳細ページに埋め込まれるスライドは、`just build` で `apps/portfolio/public/slides/` に出力したもの。
+スライドを直したら `just build` をやり直す。
+
+テストと型チェックは `pnpm test` / `pnpm check`。
 
 ## 構成
 
 ```
-talks/
-├── themes/daitasu/   # 共通テーマ
-├── scripts/          # ヘルパースクリプト
-├── 2026/
-│   └── sample/       # サンプルプレゼン
-│       └── slides.md
-└── package.json
+apps/
+├── portfolio/          # Astro。一覧・詳細ページ・プロフィール・職歴
+│   └── src/
+│       ├── content.config.ts  # README / resume.md と登壇データの取得
+│       ├── lib/nav.ts         # サイドナビの項目
+│       └── pages/
+└── talks/              # Slidev
+    ├── talks.config.ts # 一覧に並べる登壇（slidev / SpeakerDeck）の master リスト
+    ├── themes/daitasu/ # 共通テーマ
+    ├── scripts/        # ヘルパースクリプト
+    └── 2026/<dir>/slides.md
+packages/
+└── shared/             # 登壇データの型、デッキ探索、URL 規約
 ```
+
+URL は次のとおり。
+
+| パス | 中身 |
+| --- | --- |
+| `/talks/<year>/<dir>/` | 詳細ページ（Astro） |
+| `/slides/<year>/<dir>/` | スライド本体（Slidev。詳細ページの iframe の中身） |
+
+プロフィールと職歴の Markdown は [daitasu/daitasu](https://github.com/daitasu/daitasu) の `README.md` / `resume.md` で管理し、ビルド時に取得する。
+このリポジトリでは編集しない。
 
 ## 新しいトークを追加する
 
@@ -49,16 +80,32 @@ just scaffold my-talk "タイトル" 2026-07-01 "イベント名"
 just new my-talk "タイトル" 2027-01-01 "イベント名" 2027
 ```
 
-`talks/<year>/<slug>/slides.md` が以下の frontmatter で生成される：
+`apps/talks/<year>/<slug>/slides.md` が以下の frontmatter で生成される。
+`eventUrl` にイベントページの URL を書くと、詳細ページのイベント名がリンクになる。
 
 ```yaml
 ---
 theme: ../../themes/daitasu
 colorSchema: light
-title: タイトル
+title: "タイトル"
 talk:
   date: "2026-07-01"
   event: "イベント名"
+  eventUrl: ""
 layout: cover
 ---
 ```
+
+> [!WARNING]
+> frontmatter は YAML なので、半角スペースに続く `#` 以降はコメントとして捨てられる。
+> `#` を含む値（例: `多摩.dev #3`）は必ず引用符で囲む。
+
+一覧に出すには `apps/talks/talks.config.ts` に `{ kind: "slidev", slug: "<year>/<dir>" }` を足す（`<dir>` は `apps/talks/<year>/` 直下のディレクトリ名）。
+SpeakerDeck の登壇は `kind: "speakerdeck"` で `slug`（詳細ページの URL）、`url`、`date` を書く。
+タイトルと表紙画像、埋め込みプレイヤーはビルド時に SpeakerDeck から取得する。
+
+## デプロイ
+
+main への push、または daitasu/daitasu の更新通知（`repository_dispatch`）で `.github/workflows/deploy.yml` が Cloudflare Pages にデプロイする。
+仕組みの詳細は [apps/talks/docs/cloudflare-pages-deploy.md](apps/talks/docs/cloudflare-pages-deploy.md)、
+talks.daitasu.work からの移行手順は [docs/migration.md](docs/migration.md) を参照。
