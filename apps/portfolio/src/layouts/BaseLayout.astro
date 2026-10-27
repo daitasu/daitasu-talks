@@ -10,12 +10,13 @@ type Props = {
   /** og:image。サイト内パスか絶対 URL。未指定ならサイト共通の OGP 画像。 */
   image?: string;
   ogType?: "website" | "article";
+  noindex?: boolean;
 };
 
 const SITE_NAME = "daitasu";
 const DEFAULT_OG_IMAGE = "/daitasu-talks-ogp.png";
 
-const { title, description, image = DEFAULT_OG_IMAGE, ogType = "website" } = Astro.props;
+const { title, description, image = DEFAULT_OG_IMAGE, ogType = "website", noindex = false } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const imageUrl = new URL(image, Astro.site).href;
@@ -30,6 +31,7 @@ const imageUrl = new URL(image, Astro.site).href;
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex" />}
     <link rel="icon" href="/favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta property="og:site_name" content={SITE_NAME} />

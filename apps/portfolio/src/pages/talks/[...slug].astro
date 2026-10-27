@@ -25,14 +25,20 @@ const structuredData = JSON.stringify({
   name: talk.title,
   description: talk.description,
   url: `${SITE_URL}${toTalkPath(talk.slug)}`,
-  datePublished: talk.date,
   author: { "@type": "Person", name: "daitasu", url: SITE_URL },
+  ...(talk.date && { datePublished: talk.date }),
   ...(talk.image && { image: new URL(talk.image, SITE_URL).href }),
   ...(talk.event && { about: talk.event }),
 }).replaceAll("<", "\\u003c");
 ---
 
-<BaseLayout title={talk.title} description={talk.description} image={talk.image || undefined} ogType="article">
+<BaseLayout
+  title={talk.title}
+  description={talk.description}
+  image={talk.image || undefined}
+  ogType="article"
+  noindex={!talk.listed}
+>
   <script slot="head" type="application/ld+json" set:html={structuredData} />
 
   <a class="back" href="/talks/">← Talks</a>

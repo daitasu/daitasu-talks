@@ -1,26 +1,29 @@
 import type { Deck } from "@daitasu/shared/decks";
 import { toSlidesPath, type TalkEntry } from "@daitasu/shared/talks";
+import { z } from "astro/zod";
 import { formatProseDate } from "./date.ts";
 import type { SpeakerdeckEmbed } from "./speakerdeck.ts";
 
-/** 一覧カードと詳細ページの両方で使う、slidev / SpeakerDeck を正規化した登壇 1 件。 */
-export type TalkItem = {
-  slug: string;
-  kind: TalkEntry["kind"];
-  title: string;
-  date: string;
-  event: string;
-  eventUrl: string;
-  description: string;
-  /** サムネイル・OGP 画像。slidev はサイト内パス、SpeakerDeck は絶対 URL。空ならプレースホルダ表示。 */
-  image: string;
-  /** iframe で埋め込む URL。空なら埋め込みなしで sourceUrl へのリンクだけを出す。 */
-  embedUrl: string;
-  /** スライド本体を単体で開く URL。 */
-  sourceUrl: string;
-  /** false は一覧に出さない（詳細ページは生成する）。 */
-  listed: boolean;
-};
+/** 一覧カードと詳細ページの両方で使う、slidev / SpeakerDeck を正規化した登壇 1 件。talks コレクションのスキーマを兼ねる。 */
+export const talkItemSchema = z.object({
+  slug: z.string(),
+  kind: z.enum(["slidev", "speakerdeck"]),
+  title: z.string(),
+  date: z.string(),
+  event: z.string(),
+  eventUrl: z.string(),
+  description: z.string(),
+  // サムネイル・OGP 画像。slidev はサイト内パス、SpeakerDeck は絶対 URL。空ならプレースホルダ表示。
+  image: z.string(),
+  // iframe で埋め込む URL。空なら埋め込みなしで sourceUrl へのリンクだけを出す。
+  embedUrl: z.string(),
+  // スライド本体を単体で開く URL。
+  sourceUrl: z.string(),
+  // false は一覧に出さない（詳細ページは生成し、noindex にする）。
+  listed: z.boolean(),
+});
+
+export type TalkItem = z.infer<typeof talkItemSchema>;
 
 export type ResolveTalksDeps = {
   decks: Deck[];
@@ -31,8 +34,10 @@ export type ResolveTalksDeps = {
 
 const COVER_IMAGE_NAME = "og.png";
 
-export const describeTalk = (date: string, event: string): string =>
-  event ? `${formatProseDate(date)} 「${event}」における登壇資料です。` : `${formatProseDate(date)} の登壇資料です。`;
+export const describeTalk = (date: string, event: string): string => {
+  const subject = [date && formatProseDate(date), event && `「${event}」`].filter(Boolean).join(" ");
+  return subject ? `${subject}${event ? "における" : "の"}登壇資料です。` : "登壇資料です。";
+};
 
 const resolveEntry = async (entry: TalkEntry, deps: ResolveTalksDeps): Promise<TalkItem | null> => {
   if (entry.kind === "slidev") {
@@ -75,10 +80,8 @@ const resolveEntry = async (entry: TalkEntry, deps: ResolveTalksDeps): Promise<T
   };
 };
 
-/** talks.config.ts の並びを TalkItem に正規化し、日付の新しい順に並べる。解決できないエントリは警告して除く。 */
-export const resolveTalks = async (entries: TalkEntry[], deps: ResolveTalksDeps): Promise<TalkItem[]> => {
-  const resolved = await Promise.all(entries.map((entry) => resolveEntry(entry, deps)));
-  return resolved
-    .filter((talk): talk is TalkItem => talk !== null)
-    .toSorted((a, b) => b.date.localeCompare(a.date));
-};
+/** talks.config.ts の並びを TalkItem に正規化する。解決できないエントリは警告して除く。 */
+export const resolveTalks = async (entries: TalkEntry[], deps: ResolveTalksDeps): Promise<TalkItem[]> =>
+  (await Promise.all(entries.map((entry) => resolveEntry(entry, deps)))).filter(
+    (talk): talk is TalkItem => talk !== null,
+  );

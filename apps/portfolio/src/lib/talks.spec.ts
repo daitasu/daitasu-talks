@@ -44,7 +44,15 @@ describe("describeTalk", () => {
   });
 
   it("イベント名が無ければ日付だけで説明すること", () => {
-    expect(describeTalk("2026-07-08", "")).toBe("2026年7月8日 の登壇資料です。");
+    expect(describeTalk("2026-07-08", "")).toBe("2026年7月8日の登壇資料です。");
+  });
+
+  it("日付が無ければイベント名だけで説明すること", () => {
+    expect(describeTalk("", "Nihonbashi.js #11")).toBe("「Nihonbashi.js #11」における登壇資料です。");
+  });
+
+  it("どちらも無ければ汎用の説明にすること", () => {
+    expect(describeTalk("", "")).toBe("登壇資料です。");
   });
 });
 
@@ -127,13 +135,6 @@ describe("resolveTalks", () => {
       const warn = vi.fn();
       await resolveOne(SPEAKERDECK_ENTRY, createDeps({ fetchSpeakerdeckEmbed: vi.fn().mockResolvedValue(null), warn }));
       expect(warn).toHaveBeenCalledWith(`SpeakerDeck の埋め込み取得に失敗 ${SPEAKERDECK_ENTRY.url}`);
-    });
-  });
-
-  describe("並び順", () => {
-    it("日付の新しい順に並べること", async () => {
-      const talks = await resolveTalks([SPEAKERDECK_ENTRY, { kind: "slidev", slug: DECK.slug }], createDeps());
-      expect(talks.map((talk) => talk.date)).toEqual(["2026-07-08", "2025-09-11"]);
     });
   });
 });

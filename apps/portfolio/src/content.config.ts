@@ -7,7 +7,7 @@ import { findDecks } from "@daitasu/shared/decks";
 import { talks as talkEntries } from "talks/config";
 import { fetchProfileMarkdown, PROFILE_DOCUMENTS, rewriteProfileLinks } from "./lib/profile.ts";
 import { fetchSpeakerdeckEmbed } from "./lib/speakerdeck.ts";
-import { resolveTalks } from "./lib/talks.ts";
+import { resolveTalks, talkItemSchema } from "./lib/talks.ts";
 
 const profile = defineCollection({
   loader: {
@@ -42,19 +42,7 @@ const talks = defineCollection({
       );
     },
   },
-  schema: z.object({
-    slug: z.string(),
-    kind: z.enum(["slidev", "speakerdeck"]),
-    title: z.string(),
-    date: z.string(),
-    event: z.string(),
-    eventUrl: z.string(),
-    description: z.string(),
-    image: z.string(),
-    embedUrl: z.string(),
-    sourceUrl: z.string(),
-    listed: z.boolean(),
-  }),
+  schema: talkItemSchema,
 });
 
 export const collections = { profile, talks };

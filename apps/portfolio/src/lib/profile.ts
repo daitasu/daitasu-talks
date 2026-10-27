@@ -6,8 +6,6 @@ export const PROFILE_DOCUMENTS = [
   { id: "resume", fileName: "resume.md" },
 ] as const;
 
-export type ProfileDocumentId = (typeof PROFILE_DOCUMENTS)[number]["id"];
-
 // GitHub 上で読まれる前提のリンクを、このサイト内のページへ張り替える。
 const LINK_REWRITES: ReadonlyArray<readonly [string, string]> = [
   ["https://github.com/daitasu/daitasu/blob/main/resume.md", "/resume/"],
