@@ -1,11 +1,14 @@
 {
-  "name": "daitasu-slides",
+  "name": "portfolio.daitasu.work",
   "private": true,
   "packageManager": "pnpm@10.12.1",
   "scripts": {
     "dev": "pnpm --filter talks run dev",
+    "dev:portfolio": "pnpm --filter portfolio run dev",
     "talks": "pnpm --filter talks run list",
     "export": "pnpm --filter talks run export",
-    "build": "pnpm --filter talks run build"
+    "build": "pnpm --filter talks run build && pnpm --filter portfolio run build",
+    "test": "pnpm --recursive run test",
+    "check": "pnpm --filter @daitasu/shared run typecheck && pnpm --filter portfolio run check"
   }
 }

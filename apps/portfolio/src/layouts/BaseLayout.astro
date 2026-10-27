@@ -1,0 +1,74 @@
+---
+import "../styles/global.css";
+import SiteHeader from "../components/SiteHeader.astro";
+import ThemeScript from "../components/ThemeScript.astro";
+import { SITE_NAME } from "../lib/site.ts";
+
+type Props = {
+  /** 未指定ならサイト名だけを title にする。 */
+  title?: string;
+  description: string;
+  /** og:image。サイト内パスか絶対 URL。未指定ならサイト共通の OGP 画像。 */
+  image?: string;
+  ogType?: "website" | "article";
+  noindex?: boolean;
+};
+
+const DEFAULT_OG_IMAGE = "/ogp.png";
+
+const { title, description, image = DEFAULT_OG_IMAGE, ogType = "website", noindex = false } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const imageUrl = new URL(image, Astro.site).href;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <ThemeScript />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+    {noindex && <meta name="robots" content="noindex" />}
+    <link rel="icon" href="/favicon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title ?? SITE_NAME} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@daitasu" />
+    <slot name="head" />
+  </head>
+  <body>
+    <SiteHeader />
+    <main class="container main">
+      <slot />
+    </main>
+  </body>
+</html>
+
+<style>
+  .main {
+    position: relative;
+    z-index: 1;
+    padding-top: 2rem;
+    padding-bottom: 9rem;
+  }
+
+  @media (min-width: 576px) {
+    .main {
+      padding-top: 2.5rem;
+    }
+  }
+
+  @media (min-width: 960px) {
+    .main {
+      padding-top: 3.5rem;
+    }
+  }
+</style>

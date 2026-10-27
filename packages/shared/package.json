@@ -1,0 +1,21 @@
+{
+  "name": "@daitasu/shared",
+  "type": "module",
+  "private": true,
+  "exports": {
+    "./talks": "./src/talks.ts",
+    "./decks": "./src/decks.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.0"
+  }
+}

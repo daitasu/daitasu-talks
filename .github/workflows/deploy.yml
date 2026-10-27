@@ -4,6 +4,14 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
+  # daitasu/daitasu の README.md / resume.md 更新時に再ビルドする（送信側は docs/migration.md 参照）
+  repository_dispatch:
+    types: [profile-updated]
+
+# push と daitasu/daitasu からの通知が重なっても、後発のビルド（新しい README を取得したもの）を残す
+concurrency:
+  group: deploy
+  cancel-in-progress: true
 
 jobs:
   deploy:
@@ -24,12 +32,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Test
+        run: pnpm test
+
+      - name: Type check
+        run: pnpm check
+
       # pnpm 10 は依存の postinstall を無視するため、OGP 生成用ブラウザを明示導入する。
       - name: Install Playwright browser (for OGP export)
         run: pnpm --filter talks exec playwright install --with-deps chromium
 
-      # CI=true なので build.mjs が各デッキの表紙を og.png に書き出し、meta を注入する。
-      - name: Build all decks into dist/
+      - name: Build
         run: pnpm build
 
       - name: Deploy to Cloudflare Pages
@@ -38,4 +51,4 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           # project-name は Cloudflare Pages のプロジェクト名に合わせる
-          command: pages deploy dist --project-name=daitasu-talks --branch=main
+          command: pages deploy apps/portfolio/dist --project-name=daitasu-talks --branch=main

@@ -1,0 +1,24 @@
+---
+// 描画前に <html data-theme> を確定させ、ダーク時の白フラッシュを防ぐ。
+---
+
+<script is:inline>
+  (() => {
+    const KEY = "theme";
+    const media = window.matchMedia("(prefers-color-scheme: dark)");
+    const readStored = () => {
+      try {
+        return localStorage.getItem(KEY);
+      } catch {
+        return null;
+      }
+    };
+    const apply = () => {
+      const stored = readStored();
+      const theme = stored === "light" || stored === "dark" ? stored : media.matches ? "dark" : "light";
+      document.documentElement.dataset.theme = theme;
+    };
+    apply();
+    media.addEventListener("change", apply);
+  })();
+</script>
