@@ -33,9 +33,9 @@
 ## 3. talks.daitasu.work を 301 で転送する
 
 Pages の `_redirects` はホスト名で条件分岐できないので、ゾーン側の Redirect Rules を使う。
-`daitasu.work` ゾーン → Rules → Redirect Rules で、次の 2 本をこの順に作る。
+`daitasu.work` ゾーン → Rules → Redirect Rules で、次の 3 本をこの順に作る。
 Redirect Rules は上から評価し、最初に一致したルールで転送する。
-ルール 2 を先に置くと `/` もルール 2 に一致し、旧トップが一覧ではなくプロフィールへ飛ぶ。
+ルール 3 は他のすべてに一致するので最後に置く。先に置くと `/` も旧 OGP 画像もルール 3 で転送され、旧トップはプロフィールへ、旧 OGP 画像は 404 へ飛ぶ。
 
 ### ルール 1: トップを一覧へ
 
@@ -45,7 +45,19 @@ Redirect Rules は上から評価し、最初に一致したルールで転送�
   ```
 - 転送先: Static、`https://portfolio.daitasu.work/talks/`、ステータス 301。
 
-### ルール 2: それ以外はパスを保ったままドメインだけ差し替え
+### ルール 2: 旧 OGP 画像を /slides/ へ
+
+SNS が共有済みカードの画像（`talks.daitasu.work/talks/<year>/<dir>/og.png`）を取り直したときに 404 にしないためのルール。
+新しい og.png は `/slides/<year>/<dir>/og.png` にある。
+
+- 条件:
+  ```
+  (http.request.full_uri wildcard "https://talks.daitasu.work/talks/*/og.png")
+  ```
+- 転送先: Dynamic、式は `wildcard_replace(http.request.full_uri, "https://talks.daitasu.work/talks/*/og.png", "https://portfolio.daitasu.work/slides/${1}/og.png")`、ステータス 301。
+- 正規表現（`matches` / `regex_replace`）は上位プラン限定のため、どのプランでも使える wildcard で書いている。
+
+### ルール 3: それ以外はパスを保ったままドメインだけ差し替え
 
 - 条件:
   ```
@@ -60,6 +72,8 @@ curl -sI https://talks.daitasu.work/ | grep -i location
 # location: https://portfolio.daitasu.work/talks/
 curl -sI https://talks.daitasu.work/talks/2026/0708_nihonbashijs/ | grep -i location
 # location: https://portfolio.daitasu.work/talks/2026/0708_nihonbashijs/
+curl -sI https://talks.daitasu.work/talks/2026/0708_nihonbashijs/og.png | grep -i location
+# location: https://portfolio.daitasu.work/slides/2026/0708_nihonbashijs/og.png
 ```
 
 ## 4. GitHub リポジトリをリネームする
