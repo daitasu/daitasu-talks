@@ -1,5 +1,6 @@
 ---
 import { isActiveNav, NAV_ITEMS } from "../lib/nav.ts";
+import LangToggle from "./LangToggle.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 
 const AVATAR_URL = "https://github.com/daitasu.png";
@@ -9,15 +10,16 @@ const { pathname } = Astro.url;
 
 <header class="site-header">
   <div class="container top">
-    <a class="brand" href="/">
+    <a class="brand notranslate" translate="no" href="/">
       <img class="avatar" src={AVATAR_URL} alt="" width="36" height="36" />
       <span>{SITE_LABEL}</span>
     </a>
     <div class="actions">
       <ThemeToggle />
+      <LangToggle />
     </div>
   </div>
-  <nav class="container nav" aria-label="サイト内ナビゲーション">
+  <nav class="container nav notranslate" translate="no" aria-label="サイト内ナビゲーション">
     <ul>
       {
         NAV_ITEMS.map((item) => (

@@ -1,0 +1,101 @@
+---
+import { SOURCE_LANG, TRANSLATED_LANG } from "../lib/translate.ts";
+
+const LANGS = [SOURCE_LANG, TRANSLATED_LANG];
+---
+
+<div class="lang-toggle notranslate" translate="no" role="group" aria-label="表示言語">
+  {
+    LANGS.map((lang) => (
+      <button type="button" data-lang={lang} aria-pressed={lang === SOURCE_LANG ? "true" : "false"}>
+        {lang.toUpperCase()}
+      </button>
+    ))
+  }
+</div>
+<div id="google_translate_element" hidden></div>
+
+<script>
+  import { buildLangCookies, readSiteLang, SOURCE_LANG, TRANSLATED_LANG, type SiteLang } from "../lib/translate.ts";
+
+  declare global {
+    interface Window {
+      googleTranslateElementInit?: () => void;
+      google?: {
+        translate: {
+          TranslateElement: new (options: { pageLanguage: string; includedLanguages: string; autoDisplay: boolean }, elementId: string) => unknown;
+        };
+      };
+    }
+  }
+
+  const GOOGLE_TRANSLATE_SCRIPT_URL = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+  const TRANSLATE_ELEMENT_ID = "google_translate_element";
+
+  const isSiteLang = (value: string | undefined): value is SiteLang => value === SOURCE_LANG || value === TRANSLATED_LANG;
+
+  // 原文のまま見る人には Google のスクリプトを読ませない
+  const loadGoogleTranslate = (): void => {
+    window.googleTranslateElementInit = () => {
+      if (!window.google) return;
+      new window.google.translate.TranslateElement(
+        { pageLanguage: SOURCE_LANG, includedLanguages: TRANSLATED_LANG, autoDisplay: false },
+        TRANSLATE_ELEMENT_ID,
+      );
+    };
+    const script = document.createElement("script");
+    script.src = GOOGLE_TRANSLATE_SCRIPT_URL;
+    script.async = true;
+    document.head.append(script);
+  };
+
+  const currentLang = readSiteLang(document.cookie);
+
+  document.querySelectorAll<HTMLButtonElement>(".lang-toggle button").forEach((button) => {
+    const { lang } = button.dataset;
+    button.setAttribute("aria-pressed", String(lang === currentLang));
+    button.addEventListener("click", () => {
+      if (!isSiteLang(lang) || lang === currentLang) return;
+      buildLangCookies(lang, location.hostname).forEach((cookie) => {
+        document.cookie = cookie;
+      });
+      // 翻訳済みの DOM を原文へ戻す公開 API がないため、切り替えは cookie を書いて読み込み直す
+      location.reload();
+    });
+  });
+
+  if (currentLang === TRANSLATED_LANG) loadGoogleTranslate();
+</script>
+
+<style>
+  .lang-toggle {
+    display: inline-flex;
+    padding: 0.2rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+
+  button {
+    min-width: 3rem;
+    padding: 0.3rem 0.75rem;
+    border: none;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--color-muted);
+    font: inherit;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.16s ease, background-color 0.16s ease;
+  }
+
+  button:hover {
+    color: var(--color-accent);
+  }
+
+  button[aria-pressed="true"] {
+    background: var(--color-accent);
+    color: var(--color-bg);
+  }
+</style>
