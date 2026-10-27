@@ -1,0 +1,24 @@
+{
+  "name": "portfolio",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "@daitasu/shared": "workspace:*",
+    "astro": "^7.3.8",
+    "dayjs": "^1.11.23",
+    "talks": "workspace:*"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.12",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.0"
+  }
+}

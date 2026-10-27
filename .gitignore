@@ -7,3 +7,6 @@ dist
 components.d.ts
 .wrangler
 draft-blogs/
+apps/portfolio/public/slides
+.og-tmp
+.astro
