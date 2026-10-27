@@ -3,7 +3,8 @@
   - 本文の邪魔にならないよう既定は薄く、hover でくっきり
   - export/PDF (isPrintMode) では非表示 → OGP 画像や PDF を汚さない
   - フルスクリーン登壇中も非表示 → 投影画面に出さない
-  リンク先はサイトルート（talks.daitasu.work のデッキ一覧）。
+  - ポートフォリオの詳細ページに iframe で埋め込まれているときも非表示 → 詳細ページ側に戻る導線がある
+  リンク先はポートフォリオの登壇一覧（/talks/）。
 -->
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue'
@@ -12,16 +13,20 @@ import { useNav } from '@slidev/client'
 const { isPrintMode } = useNav()
 
 const isFullscreen = ref(false)
+const isEmbedded = ref(false)
 const sync = () => { isFullscreen.value = !!document.fullscreenElement }
-onMounted(() => document.addEventListener('fullscreenchange', sync))
+onMounted(() => {
+  isEmbedded.value = window.self !== window.top
+  document.addEventListener('fullscreenchange', sync)
+})
 onUnmounted(() => document.removeEventListener('fullscreenchange', sync))
 </script>
 
 <template>
   <a
-    v-if="!isPrintMode && !isFullscreen"
+    v-if="!isPrintMode && !isFullscreen && !isEmbedded"
     class="back-to-index"
-    href="/"
+    href="/talks/"
     title="スライド一覧へ戻る"
   >
     <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
