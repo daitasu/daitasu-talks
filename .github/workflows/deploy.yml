@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # daitasu/daitasu の README.md / resume.md 更新時に再ビルドする（送信側は docs/migration.md 参照）
+  # daitasu/daitasu の README.md / resume.md 更新時に再ビルドする（送信側は apps/talks/docs/cloudflare-pages-deploy.md 参照）
   repository_dispatch:
     types: [profile-updated]
 
